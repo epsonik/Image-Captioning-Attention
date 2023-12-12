@@ -92,7 +92,7 @@ def set_trainer():
         decoder_optimizer,
         start_epoch,
         epochs_since_improvement,
-        best_bleu4
+        best_bleu4,
         caption_model = load_checkpoint(config.checkpoint, config.fine_tune_encoder, config.encoder_lr)
 
     # move to GPU, if available
@@ -103,6 +103,7 @@ def set_trainer():
     loss_function = nn.CrossEntropyLoss().to(device)
 
     # custom dataloaders
+    # normalizacja za pomoca sredniej i odchylenia standardowego
     normalize = transforms.Normalize(
         mean = [0.485, 0.456, 0.406],
         std = [0.229, 0.224, 0.225]
@@ -117,6 +118,7 @@ def set_trainer():
         num_workers = config.workers,
         pin_memory = True
     )
+    # transforms.Compose laczy kilka normalizacji ze soba
     val_loader = DataLoader(
         CaptionDataset(
             data_folder, data_name, 'val',

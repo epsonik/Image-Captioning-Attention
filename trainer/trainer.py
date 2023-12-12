@@ -175,6 +175,7 @@ class Trainer:
             loss = self.loss_function(scores, targets)
 
             # doubly stochastic attention regularization (in paper: show, attend and tell)
+            # wzór 14
             if self.caption_model == 'att2all':
                 loss += self.tau * ((1. - alphas.sum(dim = 1)) ** 2).mean()
 
