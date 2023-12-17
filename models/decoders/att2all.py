@@ -136,6 +136,7 @@ class Decoder(BasicDecoder):
         self.init_h = nn.Linear(encoder_dim, decoder_dim)  # layer to initial hidden state of LSTMCell
         self.init_c = nn.Linear(encoder_dim, decoder_dim)  # layer to initial cell state of LSTMCell
         self.f_beta = nn.Linear(decoder_dim, encoder_dim)  # sigmoid-activated gate
+        # \text{Sigmoid}(x) = \sigma(x) = \frac{1}{1 + \exp(-x)}
         self.sigmoid = nn.Sigmoid()
 
     def init_hidden_state(self, encoder_out: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
