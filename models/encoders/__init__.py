@@ -25,6 +25,7 @@ def make(embed_dim: int) -> nn.Module:
             model = AttentionEncoderInceptionV3()
         if pretrained_encoder == 'DenseNet201':
             model = AttentionEncoderDenseNet201()
+
     elif model_name == 'adaptive_att' or model_name == 'spatial_att':
         model = AdaptiveAttentionEncoderResNet(
             decoder_dim = config.decoder_dim,
