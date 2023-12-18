@@ -2,6 +2,8 @@ from torch import nn
 
 from config import config
 from .resnet import EncoderResNet, AttentionEncoderResNet, AdaptiveAttentionEncoderResNet
+from .inception import AttentionEncoderInceptionV3
+from .densenet import AttentionEncoderDenseNet201
 
 def make(embed_dim: int) -> nn.Module:
     """
@@ -13,11 +15,16 @@ def make(embed_dim: int) -> nn.Module:
         Dimention of word embeddings
     """
     model_name = config.caption_model
+    pretrained_encoder = config.pretrained_encoder
 
     if model_name == 'show_tell':
         model = EncoderResNet(embed_dim=embed_dim)
     elif model_name == 'att2all':
         model = AttentionEncoderResNet()
+        if pretrained_encoder == 'InceptionV3':
+            model = AttentionEncoderInceptionV3()
+        if pretrained_encoder == 'DenseNet201':
+            model = AttentionEncoderDenseNet201()
     elif model_name == 'adaptive_att' or model_name == 'spatial_att':
         model = AdaptiveAttentionEncoderResNet(
             decoder_dim = config.decoder_dim,

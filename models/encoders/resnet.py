@@ -157,7 +157,6 @@ class AttentionEncoderResNet(nn.Module):
 
         return feature_map
 
-
 class AdaptiveAttentionEncoderResNet(nn.Module):
     """
     Implementation of the encoder proposed in paper [1].
