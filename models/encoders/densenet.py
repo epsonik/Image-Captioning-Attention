@@ -47,6 +47,8 @@ class DenseNet201(nn.Module):
             Feature map after resized
         """
         feature_map = self.densenet201(images)  # (batch_size, 2048, image_size/32, image_size/32)
+        print("2feature_map.shape")
+        print(feature_map.shape)
         feature_map = self.adaptive_pool(feature_map)  # (batch_size, 2048, encoded_image_size = 7, encoded_image_size = 7)
         return feature_map
 
@@ -96,6 +98,8 @@ class AttentionEncoderDenseNet201(nn.Module):
             Feature map of the image
         """
         feature_map = self.CNN(images)  # (batch_size, 2048, encoded_image_size = 7, encoded_image_size = 7)
+        print("1feature_map.shape")
+        print(feature_map.shape)
         feature_map = feature_map.permute(0, 2, 3, 1)  # (batch_size, encoded_image_size = 7, encoded_image_size = 7, 2048)
 
         batch_size = feature_map.size(0)
