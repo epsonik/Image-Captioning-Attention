@@ -119,12 +119,12 @@ class Decoder(BasicDecoder):
         dropout: float = 0.5
     ) -> None:
         super(Decoder, self).__init__(
-            embed_dim = embed_dim,
-            embeddings = embeddings,
-            fine_tune = fine_tune,
-            decoder_dim = decoder_dim,
-            vocab_size = vocab_size,
-            dropout = dropout
+            embed_dim=embed_dim,
+            embeddings=embeddings,
+            fine_tune=fine_tune,
+            decoder_dim=decoder_dim,
+            vocab_size=vocab_size,
+            dropout=dropout
         )
 
         self.encoder_dim = encoder_dim
@@ -138,6 +138,8 @@ class Decoder(BasicDecoder):
         self.f_beta = nn.Linear(decoder_dim, encoder_dim)  # sigmoid-activated gate
         # \text{Sigmoid}(x) = \sigma(x) = \frac{1}{1 + \exp(-x)}
         self.sigmoid = nn.Sigmoid()
+        print("encoder_dim")
+        print(encoder_dim)
 
     def init_hidden_state(self, encoder_out: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
@@ -201,6 +203,8 @@ class Decoder(BasicDecoder):
         sort_ind : torch.Tensor
             Sorted indices
         """
+        print("2encoder_out.shape)")
+        print(encoder_out.shape)
         batch_size = encoder_out.size(0)
         num_pixels = encoder_out.size(1)
         encoder_dim = encoder_out.size(-1)
@@ -240,7 +244,8 @@ class Decoder(BasicDecoder):
             batch_size_t = sum([l > t for l in decode_lengths])
 
             # attention
-            attention_weighted_encoding, alpha = self.attention(encoder_out[:batch_size_t], h[:batch_size_t])  # (batch_size_t, encoder_dim), (batch_size_t, num_pixels)
+            attention_weighted_encoding, alpha = self.attention(encoder_out[:batch_size_t], h[
+                                                                                            :batch_size_t])  # (batch_size_t, encoder_dim), (batch_size_t, num_pixels)
             # 4.2.1
             # a gating variable which decide how much context info will be used at each time step
             # β = sigmod(f_beta(h_{t-1}))
@@ -312,7 +317,8 @@ class Decoder(BasicDecoder):
         # tensor to store top k sequences' scores; now they're just 0
         top_k_scores = torch.zeros(k, 1).to(device)  # (k, 1)
         # tensor to store top k sequences' alphas; now they're just 1
-        seqs_alpha = torch.ones(k, 1, enc_image_size, enc_image_size).to(device)  # (k, 1, enc_image_size, enc_image_size)
+        seqs_alpha = torch.ones(k, 1, enc_image_size, enc_image_size).to(
+            device)  # (k, 1, enc_image_size, enc_image_size)
 
         # lists to store completed sequences, their alphas and scores
         complete_seqs = list()
@@ -341,12 +347,13 @@ class Decoder(BasicDecoder):
             attention_weighted_encoding = beta * attention_weighted_encoding
 
             # LSTM
-            h, c = self.decode_step(torch.cat([embeddings, attention_weighted_encoding], dim=1), (h, c))  # (s, decoder_dim)
+            h, c = self.decode_step(torch.cat([embeddings, attention_weighted_encoding], dim=1),
+                                    (h, c))  # (s, decoder_dim)
 
             # compute word probability over the vocabulary
             scores = self.fc(h)  # (s, vocab_size)
             logging.info('scores %s shape %s\n', scores, scores.shape)
-            scores = F.log_softmax(scores, dim = 1)  # (s, vocab_size)
+            scores = F.log_softmax(scores, dim=1)  # (s, vocab_size)
             logging.info('Softamx scores %s shape %s\n', scores, scores.shape)
             # record score
             # (k, 1) will be expanded to (k, vocab_size), then (k, vocab_size) + (s, vocab_size) -> (s, vocab_size)
@@ -370,7 +377,8 @@ class Decoder(BasicDecoder):
             # add new words and alphas to sequences
             seqs = torch.cat([seqs[prev_word_inds], next_word_inds.unsqueeze(1)], dim=1)  # (s, step+1)
             logging.info('seqs %s shape %s\n', seqs, seqs.shape)
-            seqs_alpha = torch.cat([seqs_alpha[prev_word_inds], alpha[prev_word_inds].unsqueeze(1)], dim = 1)  # (s, step+1, enc_image_size, enc_image_size)
+            seqs_alpha = torch.cat([seqs_alpha[prev_word_inds], alpha[prev_word_inds].unsqueeze(1)],
+                                   dim=1)  # (s, step+1, enc_image_size, enc_image_size)
 
             # which sequences are incomplete (didn't reach <end>)?
             incomplete_inds = [ind for ind, next_word in enumerate(next_word_inds) if next_word != word_map['<end>']]
@@ -417,7 +425,7 @@ class Decoder(BasicDecoder):
         seq = complete_seqs[i]
         logging.info('Final seq %s shape %s\n', seq, len(seq))
         alphas = complete_seqs_alpha[i]
-        logging.info('alphas %s shape %s\n', alphas,  len(alphas))
+        logging.info('alphas %s shape %s\n', alphas, len(alphas))
         # predict sentence
         # predict = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
 
