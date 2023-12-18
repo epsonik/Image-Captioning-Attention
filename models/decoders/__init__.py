@@ -41,6 +41,7 @@ def make(
             attention_dim = config.attention_dim,
             decoder_dim = config.decoder_dim,
             vocab_size = vocab_size,
+            encoder_dim = config.encoder_dim,
             dropout = config.dropout
         )
     elif model_name == 'adaptive_att' or model_name == 'spatial_att':
