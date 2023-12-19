@@ -25,7 +25,7 @@ class DenseNet201(nn.Module):
 
         # we need the feature map of the last conv layer,
         # so we remove the last two layers of resnet (average pool and fc)
-        modules = list(densenet201.children())[:-2]
+        modules = list(densenet201.children())[:-1]
         self.densenet201 = nn.Sequential(*modules)
 
         # resize input images with different size to fixed size

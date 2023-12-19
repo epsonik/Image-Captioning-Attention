@@ -25,7 +25,7 @@ class Inceptionv3(nn.Module):
 
         # we need the feature map of the last conv layer,
         # so we remove the last two layers of resnet (average pool and fc)
-        modules = list(inception.children())[:-2]
+        modules = list(inception.children())[:-3]
         self.inception = nn.Sequential(*modules)
 
         # resize input images with different size to fixed size
