@@ -156,8 +156,6 @@ class Trainer:
 
             # forward encoder
             imgs = self.encoder(imgs)
-            print("imgs.shape")
-            print(imgs.shape)
             # forward decoder
             if self.caption_model == 'att2all':
                 scores, caps_sorted, decode_lengths, alphas, sort_ind = self.decoder(imgs, caps, caplens)

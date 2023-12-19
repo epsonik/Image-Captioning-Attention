@@ -68,8 +68,6 @@ def set_trainer():
             embed_dim = embed_dim,
             embeddings = embeddings
         )
-        print("decoder.encoder_dim")
-        print(decoder.encoder_dim)
         # optimizer for decoder
 
         # print(len(list(decoder.parameters())))

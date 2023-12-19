@@ -138,8 +138,6 @@ class Decoder(BasicDecoder):
         self.f_beta = nn.Linear(decoder_dim, encoder_dim)  # sigmoid-activated gate
         # \text{Sigmoid}(x) = \sigma(x) = \frac{1}{1 + \exp(-x)}
         self.sigmoid = nn.Sigmoid()
-        print("encoder_dim")
-        print(encoder_dim)
 
     def init_hidden_state(self, encoder_out: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
@@ -158,12 +156,8 @@ class Decoder(BasicDecoder):
         c : torch.Tensor (batch_size, decoder_dim)
             Intial cell state
         """
-        print("encoder_out.shape")
-        print(encoder_out.shape)
         # 1/L * (\sum_i^L a_i)
         mean_encoder_out = encoder_out.mean(dim=1)
-        print("mean_encoder_out.shape)")
-        print(mean_encoder_out.shape)
         h = self.init_h(mean_encoder_out)  # h_0: (batch_size, decoder_dim)
         c = self.init_c(mean_encoder_out)  # c_0: (batch_size, decoder_dim)
         return h, c
@@ -203,8 +197,6 @@ class Decoder(BasicDecoder):
         sort_ind : torch.Tensor
             Sorted indices
         """
-        print("2encoder_out.shape)")
-        print(encoder_out.shape)
         batch_size = encoder_out.size(0)
         num_pixels = encoder_out.size(1)
         encoder_dim = encoder_out.size(-1)
@@ -224,8 +216,6 @@ class Decoder(BasicDecoder):
         # each batch contains a caption, all batches have the same number of rows (words),
         # since we previously padded the ones shorter than max_caption_length
         embeddings = self.embedding(encoded_captions)  # (batch_size, max_caption_length, embed_dim)
-        print("1encoder_out.shape)")
-        print(encoder_out.shape)
         # initialize hidden state and cell state
         h, c = self.init_hidden_state(encoder_out)  # (batch_size, decoder_dim)
 
