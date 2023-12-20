@@ -3,7 +3,6 @@ import numpy as np
 
 from .bleu import Bleu
 from .cider import Cider
-from .meteor import Meteor
 from .rouge import Rouge
 
 class Metrics:
@@ -49,14 +48,9 @@ class Metrics:
         return rouge_score[0]
 
     @property
-    def meteor(self) -> float:
-        meteor_score = Meteor().compute_score(self.ref_sentence, self.hypo_sentence)
-        return meteor_score[0]
-
-    @property
     def all_metrics(self) -> Tuple[Union[float, np.float64, Tuple[float]]]:
         """Return all metrics"""
-        return self.belu, self.cider, self.rouge, self.meteor
+        return self.belu, self.cider, self.rouge
 
 
 def setup_corpus(

@@ -109,7 +109,7 @@ def load_checkpoint(
         Type of the caption model
     """
     checkpoint = torch.load(checkpoint_path)
-    checkpoint.keyes()
+    checkpoint.keys()
     start_epoch = checkpoint['epoch'] + 1
     epochs_since_improvement = checkpoint['epochs_since_improvement']
     best_bleu4 = checkpoint['bleu-4']

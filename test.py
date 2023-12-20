@@ -128,8 +128,8 @@ if __name__ == '__main__':
     logging.basicConfig(filename=config.messages_file, filemode='a', level=logging.INFO)
     beam_size = 5
 
-    (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
-
+    # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
+    (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(beam_size)
     print("\nScores @ beam size of %d are:" % beam_size)
     print("   BLEU-1: %.4f" % bleu1)
     print("   BLEU-2: %.4f" % bleu2)
@@ -137,4 +137,3 @@ if __name__ == '__main__':
     print("   BLEU-4: %.4f" % bleu4)
     print("   CIDEr: %.4f" % cider)
     print("   ROUGE-L: %.4f" % rouge)
-    print("   METEOR: %.4f" % meteor)

@@ -37,6 +37,7 @@ class config:
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
     model_basename = 'att2all_coco_emb_dense_net'  # any name you want
+    messages_file = os.path.join(base_path, output_path, 'logs/att2all/messages.txt')
 
     # training parameters
     epochs = 100
