@@ -9,12 +9,12 @@ class config:
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
                                     # refer to README.md for more info about each model
-    output_path = "data/output/coco_emb_dense_net/"
+    output_path = "data/output/coco_emb/"
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '../images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '../images/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/home/wisla/Images/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/home/wisla/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'coco_emb_dense_net'  # any name you want
+    dataset_basename = 'coco_emb'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -42,13 +42,14 @@ class config:
     # training parameters
     epochs = 100
     batch_size = 400
-    pretrained_encoder = 'DenseNet201' #denseNet201 InceptionV3 Resnet101
-    encoder_dim = 1920
+    pretrained_encoder = 'Resnet101' #denseNet201 InceptionV3 Resnet101
+    encoder_dim = 2048
     fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
-    checkpoint = os.path.join(base_path, output_path, 'checkpoints/best_checkpoint_att2all_coco_emb_dense_net.pth.tar')  # path to load checkpoint, None if none
+    # checkpoint = os.path.join(base_path, output_path, 'checkpoints/best_checkpoint_att2all_coco_emb_dense_net.pth.tar')  # path to load checkpoint, None if none
+    checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
               # you only need to set this when 'caption_model' is set to 'att2all'
