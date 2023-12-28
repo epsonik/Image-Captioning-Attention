@@ -19,7 +19,6 @@ def set_trainer():
     data_name = config.dataset_basename
 
     # GPU / CPU
-    torch.set_default_device("cuda:1" if torch.cuda.is_available() else "cpu")
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
     # load word2id map
