@@ -28,7 +28,7 @@ class config:
     embed_pretrain = True  # false: initialize embedding weights randomly
     # true: load pre-trained word embeddings
     embed_path = os.path.join(base_path,
-                              '../images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
+                              '/home/wisla/Images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_dim = 512  # dimension of word embeddings
     # only makes sense when `embed_pretrain = False`
     fine_tune_embeddings = True  # fine-tune word embeddings?
