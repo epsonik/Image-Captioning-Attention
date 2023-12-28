@@ -78,7 +78,7 @@ def data_preprocess(
             continue
         path = os.path.join(image_folder, img['filename'])  # path of current image
         if config.dataset_type == 'coco':
-            path = os.path.join(image_folder, img['file_path'], img['filename'])  # path of current image
+            path = os.path.join(image_folder, img['filepath'], img['filename'])  # path of current image
 
         if img['split'] in {'train', 'restval'}:
             train_image_paths.append(path)
