@@ -253,7 +253,8 @@ class Decoder(BasicDecoder):
             preds = self.fc(self.dropout(h))  # (batch_size_t, vocab_size)
             predictions[:batch_size_t, t, :] = preds
             alphas[:batch_size_t, t, :] = alpha
-
+        print("atttoall")
+        print(sort_ind.get_device())
         return predictions, encoded_captions, decode_lengths, alphas, sort_ind
 
     def beam_search(
