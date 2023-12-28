@@ -205,7 +205,7 @@ class Decoder(BasicDecoder):
         # Because in 'train.py', 'pack_padded_sequence' will be used to deal with the pads in captions
         # and 'pack_padded_sequence' requires the captions sorted by decreasing lengths
         caption_lengths, sort_ind = caption_lengths.squeeze(1).sort(dim=0, descending=True)
-        sort_ind.to('cpu')
+        sort_ind.to(torch.device("cpu"))
         # Sort_ind contains elements of the batch index of the tensor encoder_out.
         # For example, if sort_ind is [3,2,0],
         # then that means the descending order starts with batch number 3,then batch number 2, and finally batch number 0.
