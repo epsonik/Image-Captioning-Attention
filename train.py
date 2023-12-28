@@ -13,13 +13,13 @@ from config import config
 
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
-
 def set_trainer():
     # data parameters
     data_folder = config.dataset_output_path
     data_name = config.dataset_basename
 
     # GPU / CPU
+    torch.set_default_device("cuda:1" if torch.cuda.is_available() else "cpu")
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
     # load word2id map

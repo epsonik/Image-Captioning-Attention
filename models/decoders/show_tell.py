@@ -14,7 +14,7 @@ import torchvision
 import torch.nn.functional as F
 
 from .decoder import Decoder as BasicDecoder
-
+torch.set_default_device("cuda:1" if torch.cuda.is_available() else "cpu")
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 

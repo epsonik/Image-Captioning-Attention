@@ -14,7 +14,7 @@ import torchvision
 import torch.nn.functional as F
 import logging
 from .decoder import Decoder as BasicDecoder
-
+torch.set_default_device("cuda:1" if torch.cuda.is_available() else "cpu")
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 
@@ -205,7 +205,7 @@ class Decoder(BasicDecoder):
         # Sort input captions by decreasing lengths
         # Because in 'train.py', 'pack_padded_sequence' will be used to deal with the pads in captions
         # and 'pack_padded_sequence' requires the captions sorted by decreasing lengths
-        caption_lengths, sort_ind = caption_lengths.squeeze(1).sort(dim=0, descending=True, device=device)
+        caption_lengths, sort_ind = caption_lengths.squeeze(1).sort(dim=0, descending=True)
         # Sort_ind contains elements of the batch index of the tensor encoder_out.
         # For example, if sort_ind is [3,2,0],
         # then that means the descending order starts with batch number 3,then batch number 2, and finally batch number 0.
