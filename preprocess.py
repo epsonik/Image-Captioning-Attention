@@ -11,6 +11,7 @@ from PIL import Image
 
 from config import config
 
+
 def data_preprocess(
     karpathy_json_path: str,
     image_folder: str,
@@ -75,8 +76,9 @@ def data_preprocess(
 
         if len(captions) == 0:
             continue
-
         path = os.path.join(image_folder, img['filename'])  # path of current image
+        if config.dataset_type == 'coco':
+            path = os.path.join(image_folder, img['file_path'], img['filename'])  # path of current image
 
         if img['split'] in {'train', 'restval'}:
             train_image_paths.append(path)
@@ -120,7 +122,7 @@ def data_preprocess(
             h.attrs['captions_per_image'] = captions_per_image
 
             # create dataset inside HDF5 file to store images
-            images = h.create_dataset('images', (len(impaths), 3, resized_size, resized_size), dtype = 'uint8')
+            images = h.create_dataset('images', (len(impaths), 3, resized_size, resized_size), dtype='uint8')
 
             print("\nReading %s images and captions, storing to file...\n" % split)
 
@@ -136,7 +138,7 @@ def data_preprocess(
                 else:
                     # if num of captions is more than captions_per_image,
                     # just select captions_per_image captions randomly
-                    captions = sample(imcaps[i], k = captions_per_image)
+                    captions = sample(imcaps[i], k=captions_per_image)
 
                 # sanity check
                 assert len(captions) == captions_per_image
@@ -146,7 +148,7 @@ def data_preprocess(
                 if len(img.shape) == 2:
                     # deal with grayscale image (2-D)
                     img = img[:, :, np.newaxis]
-                    img = np.concatenate([img, img, img], axis = 2)
+                    img = np.concatenate([img, img, img], axis=2)
                 # img = imresize(img, (resized_size, resized_size))
                 img = np.array(Image.fromarray(img).resize((resized_size, resized_size)))
                 img = img.transpose(2, 0, 1)
@@ -181,11 +183,11 @@ def data_preprocess(
 
 if __name__ == '__main__':
     data_preprocess(
-        karpathy_json_path = config.dataset_caption_path,
-        image_folder = config.dataset_image_path,
-        captions_per_image = config.captions_per_image,
-        min_word_freq = config.min_word_freq,
-        output_folder = config.dataset_output_path,
-        max_len = config.max_caption_len,
-        resized_size = 256
+        karpathy_json_path=config.dataset_caption_path,
+        image_folder=config.dataset_image_path,
+        captions_per_image=config.captions_per_image,
+        min_word_freq=config.min_word_freq,
+        output_folder=config.dataset_output_path,
+        max_len=config.max_caption_len,
+        resized_size=256
     )
