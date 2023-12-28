@@ -255,6 +255,8 @@ class Decoder(BasicDecoder):
             alphas[:batch_size_t, t, :] = alpha
         print("atttoall")
         print(sort_ind.get_device())
+        print("encoder_out")
+        print(encoder_out.get_device())
         return predictions, encoded_captions, decode_lengths, alphas, sort_ind
 
     def beam_search(
