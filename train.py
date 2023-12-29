@@ -12,7 +12,7 @@ from utils import CaptionDataset, load_embeddings, load_checkpoint
 from config import config
 
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
-
+torch.cuda.empty_cache()
 def set_trainer():
     # data parameters
     data_folder = config.dataset_output_path
