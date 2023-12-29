@@ -311,7 +311,8 @@ class Trainer:
                 print("trainer")
                 print(sort_ind.get_device())
                 sort_ind.to(torch.device('cpu'))
-                print(sort_ind.get_device())
+                print("allcaps")
+                print(allcaps.get_device())
                 print(sort_ind.type())
                 allcaps = allcaps[sort_ind]  # because images were sorted in the decoder
                 for j in range(allcaps.shape[0]):
