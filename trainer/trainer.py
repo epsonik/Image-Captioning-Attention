@@ -313,7 +313,7 @@ class Trainer:
                 sort_ind.cpu()
                 print("allcaps")
                 print(allcaps.get_device())
-                print(sort_ind.type())
+                print(sort_ind.get_device())
                 allcaps = allcaps[sort_ind]  # because images were sorted in the decoder
                 for j in range(allcaps.shape[0]):
                     img_caps = allcaps[j].tolist()
