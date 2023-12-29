@@ -310,7 +310,7 @@ class Trainer:
                 # ground truth
                 print("trainer")
                 print(sort_ind.get_device())
-                sort_ind.to(torch.device('cpu'))
+                sort_ind.cpu()
                 print("allcaps")
                 print(allcaps.get_device())
                 print(sort_ind.type())
