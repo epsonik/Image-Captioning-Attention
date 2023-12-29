@@ -9,6 +9,7 @@ from utils import TensorboardWriter, AverageMeter, save_checkpoint, accuracy, \
     clip_gradient, adjust_learning_rate
 from metrics import Metrics
 
+
 class Trainer:
     """
     Encoder-decoder pipeline. Tearcher Forcing is used during training and validation.
@@ -75,6 +76,7 @@ class Trainer:
     log_dir : str, optional
         Path to the folder to save logs for tensorboard
     """
+
     def __init__(
         self,
         caption_model: str,
@@ -109,7 +111,7 @@ class Trainer:
         self.epochs_since_improvement = epochs_since_improvement
         self.best_bleu4 = best_bleu4
 
-        self.train_loader =  train_loader
+        self.train_loader = train_loader
         self.val_loader = val_loader
         self.encoder = encoder
         self.decoder = decoder
@@ -176,7 +178,7 @@ class Trainer:
             # doubly stochastic attention regularization (in paper: show, attend and tell)
             # wzór 14
             if self.caption_model == 'att2all':
-                loss += self.tau * ((1. - alphas.sum(dim = 1)) ** 2).mean()
+                loss += self.tau * ((1. - alphas.sum(dim=1)) ** 2).mean()
 
             # clear gradient of last batch
             self.decoder_optimizer.zero_grad()
@@ -218,10 +220,10 @@ class Trainer:
                     'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                     'Top-5 Accuracy {top5.val:.3f} ({top5.avg:.3f})'.format(
                         epoch, i, len(self.train_loader),
-                        batch_time = batch_time,
-                        data_time = data_time,
-                        loss = losses,
-                        top5 = top5accs
+                        batch_time=batch_time,
+                        data_time=data_time,
+                        loss=losses,
+                        top5=top5accs
                     )
                 )
 
@@ -274,15 +276,15 @@ class Trainer:
                 # remove timesteps that we didn't decode at, or are pads
                 # pack_padded_sequence is an easy trick to do this
                 scores_copy = scores.clone()
-                scores = pack_padded_sequence(scores, decode_lengths, batch_first = True)[0]
-                targets = pack_padded_sequence(targets, decode_lengths, batch_first = True)[0]
+                scores = pack_padded_sequence(scores, decode_lengths, batch_first=True)[0]
+                targets = pack_padded_sequence(targets, decode_lengths, batch_first=True)[0]
 
                 # calc loss
                 loss = self.loss_function(scores, targets)
 
                 # doubly stochastic attention regularization (in paper: show, attend and tell)
                 if self.caption_model == 'att2all':
-                    loss += self.tau * ((1. - alphas.sum(dim = 1)) ** 2).mean()
+                    loss += self.tau * ((1. - alphas.sum(dim=1)) ** 2).mean()
 
                 # keep track of metrics
                 losses.update(loss.item(), sum(decode_lengths))
@@ -294,13 +296,13 @@ class Trainer:
 
                 if i % self.print_freq == 0:
                     print('Validation: [{0}/{1}]\t'
-                        'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                        'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                        'Top-5 Accuracy {top5.val:.3f} ({top5.avg:.3f})\t'.format(i, len(self.val_loader),
-                                                                                    batch_time = batch_time,
-                                                                                    loss = losses,
-                                                                                    top5 = top5accs)
-                    )
+                          'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                          'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                          'Top-5 Accuracy {top5.val:.3f} ({top5.avg:.3f})\t'.format(i, len(self.val_loader),
+                                                                                    batch_time=batch_time,
+                                                                                    loss=losses,
+                                                                                    top5=top5accs)
+                          )
 
                 # store ground truth captions and predicted captions of each image
                 # for n images, each of them has one prediction and multiple ground truths (a, b, c...):
@@ -310,7 +312,7 @@ class Trainer:
                 # ground truth
                 print("trainer")
                 print(sort_ind.get_device())
-                sort_ind.cpu()
+                sort_ind = sort_ind.cpu()
                 print("allcaps")
                 print(allcaps.get_device())
                 print(sort_ind.get_device())
@@ -326,7 +328,7 @@ class Trainer:
                     ground_truth.append(img_captions)
 
                 # prediction
-                _, preds = torch.max(scores_copy, dim = 2)
+                _, preds = torch.max(scores_copy, dim=2)
                 preds = preds.tolist()
                 temp_preds = list()
                 for j, p in enumerate(preds):
@@ -343,10 +345,10 @@ class Trainer:
 
             print(
                 '\n * LOSS - {loss.avg:.3f}, TOP-5 ACCURACY - {top5.avg:.3f}, BLEU-4 - {bleu}, CIDEr - {cider}\n'.format(
-                    loss = losses,
-                    top5 = top5accs,
-                    bleu = bleu4,
-                    cider = cider
+                    loss=losses,
+                    top5=top5accs,
+                    bleu=bleu4,
+                    cider=cider
                 )
             )
 
@@ -366,7 +368,7 @@ class Trainer:
                     adjust_learning_rate(self.encoder_optimizer, 0.8)
 
             # train an epoch
-            self.train(epoch = epoch)
+            self.train(epoch=epoch)
 
             # validate an epoch
             recent_bleu4 = self.validate()
@@ -382,13 +384,13 @@ class Trainer:
 
             # save checkpoint
             save_checkpoint(
-                epoch = epoch,
-                epochs_since_improvement = self.epochs_since_improvement,
-                encoder = self.encoder,
-                decoder = self.decoder,
-                encoder_optimizer = self.encoder_optimizer,
-                decoder_optimizer = self.decoder_optimizer,
-                caption_model = self.caption_model,
-                bleu4 = recent_bleu4,
-                is_best = is_best
+                epoch=epoch,
+                epochs_since_improvement=self.epochs_since_improvement,
+                encoder=self.encoder,
+                decoder=self.decoder,
+                encoder_optimizer=self.encoder_optimizer,
+                decoder_optimizer=self.decoder_optimizer,
+                caption_model=self.caption_model,
+                bleu4=recent_bleu4,
+                is_best=is_best
             )
