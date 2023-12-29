@@ -9,7 +9,7 @@ import torch.nn.functional as F
 import torchvision.transforms as transforms
 
 from utils import visualize_att_beta, visualize_att
-import config
+from config import config
 device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
 def generate_caption(
