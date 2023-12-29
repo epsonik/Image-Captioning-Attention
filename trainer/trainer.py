@@ -310,12 +310,7 @@ class Trainer:
                 # ground_truth = [ [ [ref1a], [ref1b], [ref1c] ], ..., [ [refna], [refnb] ] ]
 
                 # ground truth
-                print("trainer")
-                print(sort_ind.get_device())
                 sort_ind = sort_ind.cpu()
-                print("allcaps")
-                print(allcaps.get_device())
-                print(sort_ind.get_device())
                 allcaps = allcaps[sort_ind]  # because images were sorted in the decoder
                 for j in range(allcaps.shape[0]):
                     img_caps = allcaps[j].tolist()
