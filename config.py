@@ -7,16 +7,17 @@ import os
 
 class config:
     # global parameters
+    cuda_device = "cuda:2"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
-    caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
+    caption_model = 'show_tell'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
-    output_path = "data/output/coco_emb/"
+    output_path = "data/output/show_tell_coco_emb_resnet/"
     dataset_type = 'coco'
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/home/wisla/Images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home/wisla/Images/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/home/odra/Images/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/home/odra/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'coco_emb'  # any name you want
+    dataset_basename = 'show_tell_coco_emb_resnet'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -39,8 +40,8 @@ class config:
     decoder_dim = 128  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'att2all_coco_emb'  # any name you want
-    messages_file = os.path.join(base_path, output_path, 'logs/att2all/messages.txt')
+    model_basename = 'show_tell_coco_emb_resnet'  # any name you want
+    messages_file = os.path.join(base_path, output_path, 'logs/show_tell_coco_emb_resnet/messages.txt')
 
     # training parameters
     epochs = 100
@@ -58,5 +59,6 @@ class config:
     # you only need to set this when 'caption_model' is set to 'att2all'
     # tensorboard
     tensorboard = True  # enable tensorboard or not?
-    log_dir = os.path.join(base_path, output_path, 'logs/att2all/')  # folder for saving logs for tensorboard
+    log_dir = os.path.join(base_path, output_path,
+                           'logs/show_tell_coco_emb_resnet/')  # folder for saving logs for tensorboard
     # only makes sense when `tensorboard = True`

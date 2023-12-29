@@ -14,7 +14,8 @@ import torchvision
 import torch.nn.functional as F
 import logging
 from .decoder import Decoder as BasicDecoder
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+import config
+device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
 
 class Attention(nn.Module):

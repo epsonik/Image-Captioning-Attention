@@ -18,7 +18,7 @@ def set_trainer():
     data_name = config.dataset_basename
 
     # GPU / CPU
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
     # load word2id map
     word_map_file = os.path.join(data_folder, 'wordmap_' + data_name + '.json')
