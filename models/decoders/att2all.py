@@ -14,7 +14,7 @@ import torchvision
 import torch.nn.functional as F
 import logging
 from .decoder import Decoder as BasicDecoder
-import config
+from config import config
 device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
 
