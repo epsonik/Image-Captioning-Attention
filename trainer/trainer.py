@@ -350,6 +350,8 @@ class Trainer:
         return bleu4
 
     def run_train(self) -> None:
+        print("Currently used device")
+        print("Currently used device: ", torch.cuda.current_device())
         # epochs
         for epoch in range(self.start_epoch, self.epochs):
 
