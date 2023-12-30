@@ -21,7 +21,7 @@ def set_trainer():
     device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
     # load word2id map
-    word_map_file = os.path.join(data_folder, 'wordmap_' + data_name + '.json')
+    word_map_file = os.path.join(data_folder, 'wordmap' + '.json')
     with open(word_map_file, 'r') as j:
         word_map = json.load(j)
 

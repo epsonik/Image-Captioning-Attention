@@ -107,7 +107,7 @@ def data_preprocess(
     base_filename = config.dataset_basename
 
     # save word map (word2id) to a JSON
-    with open(os.path.join(output_folder, 'wordmap_' + base_filename + '.json'), 'w') as j:
+    with open(os.path.join(output_folder, 'wordmap' + '.json'), 'w') as j:
         json.dump(word_map, j)
 
     # sample captions for each image, save images to HDF5 file, and captions and their lengths to JSON files
@@ -117,7 +117,7 @@ def data_preprocess(
         (val_image_paths, val_image_captions, 'val'),
         (test_image_paths, test_image_captions, 'test')
     ]:
-        with h5py.File(os.path.join(output_folder, split + '_images_' + base_filename + '.hdf5'), 'a') as h:
+        with h5py.File(os.path.join(output_folder, split + '_images' + '.hdf5'), 'a') as h:
             # make a note of the number of captions that are sampled per image
             h.attrs['captions_per_image'] = captions_per_image
 
@@ -174,10 +174,10 @@ def data_preprocess(
             assert images.shape[0] * captions_per_image == len(enc_captions) == len(caplens)
 
             # save encoded captions and their lengths to JSON files
-            with open(os.path.join(output_folder, split + '_captions_' + base_filename + '.json'), 'w') as j:
+            with open(os.path.join(output_folder, split + '_captions' + '.json'), 'w') as j:
                 json.dump(enc_captions, j)
 
-            with open(os.path.join(output_folder, split + '_caplength_' + base_filename + '.json'), 'w') as j:
+            with open(os.path.join(output_folder, split + '_caplength' + '.json'), 'w') as j:
                 json.dump(caplens, j)
 
 

@@ -22,7 +22,7 @@ cudnn.benchmark = True  # set to true only if inputs to model are fixed size; ot
 data_folder = config.dataset_output_path  # folder with data files saved by preprocess.py
 data_name = config.dataset_basename  # base name shared by data files
 
-word_map_file = config.dataset_output_path + 'wordmap_' + data_name + '.json'  # word map, ensure it's the same the data was encoded with and the model was trained with
+word_map_file = config.dataset_output_path + 'wordmap' + '.json'  # word map, ensure it's the same the data was encoded with and the model was trained with
 checkpoint = config.model_path + 'best_checkpoint_' + config.model_basename + '.pth.tar'  # model checkpoint
 
 # load model
