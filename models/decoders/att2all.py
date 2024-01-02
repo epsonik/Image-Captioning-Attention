@@ -12,7 +12,6 @@ import torch
 from torch import nn
 import torchvision
 import torch.nn.functional as F
-import logging
 from .decoder import Decoder as BasicDecoder
 from config import config
 device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
@@ -286,7 +285,6 @@ class Decoder(BasicDecoder):
         import math
 
         k = beam_size
-        logging.info('Beam size %s\n', beam_size)
         encoder_dim = encoder_out.size(-1)
         num_pixels = encoder_out.size(1)
         enc_image_size = int(math.sqrt(num_pixels))  # enc_image_size * enc_image_size = num_pixels
@@ -294,13 +292,11 @@ class Decoder(BasicDecoder):
         # check the size of vocabulary
         assert len(word_map) == self.vocab_size
         vocab_size = len(word_map)
-        logging.info('Vocab size %s\n', vocab_size)
         # we'll treat the problem as having a batch size of k
         encoder_out = encoder_out.expand(k, num_pixels, encoder_dim)  # (k, num_pixels, encoder_dim)
 
         # tensor to store top k previous words at each step; now they're just <start>
         k_prev_words = torch.LongTensor([[word_map['<start>']]] * k).to(device)  # (k, 1)
-        logging.info('k_prev_words %s shape %s\n', k_prev_words, k_prev_words.shape)
         # tensor to store top k sequences; now they're just <start>
         seqs = k_prev_words  # (k, 1)
         # tensor to store top k sequences' scores; now they're just 0
@@ -320,7 +316,6 @@ class Decoder(BasicDecoder):
 
         # s is a number less than or equal to k, because sequences are removed from this process once they hit <end>
         while True:
-            logging.info('Step number %s\n', step)
             embeddings = self.embedding(k_prev_words).squeeze(1)  # (s, embed_dim)
 
             # attention
@@ -341,9 +336,7 @@ class Decoder(BasicDecoder):
 
             # compute word probability over the vocabulary
             scores = self.fc(h)  # (s, vocab_size)
-            logging.info('scores %s shape %s\n', scores, scores.shape)
             scores = F.log_softmax(scores, dim=1)  # (s, vocab_size)
-            logging.info('Softamx scores %s shape %s\n', scores, scores.shape)
             # record score
             # (k, 1) will be expanded to (k, vocab_size), then (k, vocab_size) + (s, vocab_size) -> (s, vocab_size)
             scores = top_k_scores.expand_as(scores) + scores  # (s, vocab_size)
@@ -356,54 +349,36 @@ class Decoder(BasicDecoder):
                 top_k_scores, top_k_words = scores.view(-1).topk(k, 0, True, True)  # (s)
 
             # convert unrolled indices to actual indices of scores
-            logging.info('top_k_words %s shape %s\n', top_k_words, top_k_words.shape)
-            logging.info('top_k_scores %s shape %s\n', top_k_scores, top_k_scores.shape)
             prev_word_inds = top_k_words // vocab_size  # (s)
             next_word_inds = top_k_words % vocab_size  # (s)
 
-            logging.info('prev_word_inds %s shape %s\n', prev_word_inds, prev_word_inds.shape)
-            logging.info('next_word_inds %s shape %s\n', next_word_inds, next_word_inds.shape)
             # add new words and alphas to sequences
             seqs = torch.cat([seqs[prev_word_inds], next_word_inds.unsqueeze(1)], dim=1)  # (s, step+1)
-            logging.info('seqs %s shape %s\n', seqs, seqs.shape)
             seqs_alpha = torch.cat([seqs_alpha[prev_word_inds], alpha[prev_word_inds].unsqueeze(1)],
                                    dim=1)  # (s, step+1, enc_image_size, enc_image_size)
 
             # which sequences are incomplete (didn't reach <end>)?
             incomplete_inds = [ind for ind, next_word in enumerate(next_word_inds) if next_word != word_map['<end>']]
-            logging.info('incomplete_inds %s shape %s\n', incomplete_inds, len(incomplete_inds))
             complete_inds = list(set(range(len(next_word_inds))) - set(incomplete_inds))
-            logging.info('complete_inds %s shape %s\n', complete_inds, len(complete_inds))
             # set aside complete sequences
             if len(complete_inds) > 0:
                 complete_seqs.extend(seqs[complete_inds].tolist())
                 complete_seqs_alpha.extend(seqs_alpha[complete_inds].tolist())
                 complete_seqs_scores.extend(top_k_scores[complete_inds])
-
-                logging.info('complete_seqs %s shape %s\n', complete_seqs, len(complete_seqs))
-                logging.info('complete_seqs_alpha %s shape %s\n', complete_seqs_alpha, len(complete_seqs_alpha))
-                logging.info('complete_seqs_scores %s shape %s\n', complete_seqs_scores, len(complete_seqs_scores))
             k -= len(complete_inds)  # reduce beam length accordingly
-            logging.info('k %s\n', k)
             if k == 0:
                 break
 
             # proceed with incomplete sequences
             seqs = seqs[incomplete_inds]
-            logging.info('incomplete sequences %s  shape %s\n', seqs, seqs.shape)
             seqs_alpha = seqs_alpha[incomplete_inds]
-            logging.info('seqs_alpha %s len %s', seqs_alpha, len(seqs_alpha))
             h = h[prev_word_inds[incomplete_inds]]
             c = c[prev_word_inds[incomplete_inds]]
             encoder_out = encoder_out[prev_word_inds[incomplete_inds]]
-            logging.info('encoder_out %s shape %s\n', encoder_out, len(encoder_out.shape))
             top_k_scores = top_k_scores[incomplete_inds].unsqueeze(1)
-            logging.info('top_k_scores %s shape %s\n', top_k_scores, top_k_scores.shape)
             k_prev_words = next_word_inds[incomplete_inds].unsqueeze(1)
-            logging.info('k_prev_words %s shape %s\n', k_prev_words, k_prev_words.shape)
             # break if things have been going on too long
             if step > 50:
-                logging.info('za dlugie')
                 complete_seqs.extend(seqs.tolist())
                 complete_seqs_scores.extend(top_k_scores)
                 complete_seqs_alpha.extend(seqs_alpha.tolist())
@@ -412,9 +387,7 @@ class Decoder(BasicDecoder):
 
         i = complete_seqs_scores.index(max(complete_seqs_scores))
         seq = complete_seqs[i]
-        logging.info('Final seq %s shape %s\n', seq, len(seq))
         alphas = complete_seqs_alpha[i]
-        logging.info('alphas %s shape %s\n', alphas, len(alphas))
         # predict sentence
         # predict = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
 

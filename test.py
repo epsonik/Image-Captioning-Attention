@@ -14,7 +14,6 @@ from torch.utils.data import DataLoader
 from utils import CaptionDataset, load_checkpoint
 from metrics import Metrics
 from config import config
-import logging
 device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
@@ -106,7 +105,6 @@ def evaluate(beam_size: int) -> float:
         if caption_model == 'show_tell':
             seq = decoder.beam_search(encoder_out, beam_size, word_map)
         elif caption_model == 'att2all' or caption_model == 'spatial_att':
-            logging.info('Ground truth captions %s', img_caps)
             seq, _ = decoder.beam_search(encoder_out, beam_size, word_map)
         elif caption_model == 'adaptive_att':
             seq, _, _ = decoder.beam_search(encoder_out, beam_size, word_map)
@@ -124,7 +122,6 @@ def evaluate(beam_size: int) -> float:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename=config.messages_file, filemode='a', level=logging.INFO)
     beam_size = 5
 
     # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
