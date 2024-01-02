@@ -4,6 +4,7 @@ from typing import Tuple
 
 from config import config
 
+
 def save_checkpoint(
     epoch: int,
     epochs_since_improvement: int,
@@ -64,6 +65,7 @@ def save_checkpoint(
     if is_best:
         torch.save(state, config.model_path + 'best_' + filename)
 
+
 def load_checkpoint(
     checkpoint_path: str, fine_tune_encoder: bool, encoder_lr: float
 ) -> Tuple[nn.Module, nn.Module, optim.Optimizer, optim.Optimizer, int, int, float, str]:
@@ -121,21 +123,21 @@ def load_checkpoint(
     encoder_optimizer = checkpoint['encoder_optimizer']
     if config.fine_tune_encoder is True and encoder_optimizer is None:
         encoder.CNN.fine_tune(fine_tune_encoder)
-        encoder_optimizer = optim.Adam(
-            params = filter(lambda p: p.requires_grad, encoder.CNN.parameters()),
-            lr = encoder_lr
-        )
+        encoder_optimizer = optim.Adam(params=filter(lambda p: p.requires_grad, encoder.CNN.parameters()),
+                                       lr=encoder_lr)
 
     caption_model = checkpoint['caption_model']
 
     return encoder, encoder_optimizer, decoder, decoder_optimizer, \
-            start_epoch, epochs_since_improvement, best_bleu4, caption_model
+           start_epoch, epochs_since_improvement, best_bleu4, caption_model
+
 
 class AverageMeter:
     """
     Keep track of most recent, average, sum, and count of a metric
     """
-    def __init__(self, tag = None, writer = None):
+
+    def __init__(self, tag=None, writer=None):
         self.writer = writer
         self.tag = tag
         self.reset()
@@ -146,7 +148,7 @@ class AverageMeter:
         self.sum = 0
         self.count = 0
 
-    def update(self, val, n = 1):
+    def update(self, val, n=1):
         self.val = val
         self.sum += val * n
         self.count += n
@@ -155,6 +157,7 @@ class AverageMeter:
         # tensorboard
         if self.writer is not None:
             self.writer.add_scalar(self.tag, val)
+
 
 def clip_gradient(optimizer: optim.Optimizer, grad_clip: float) -> None:
     """
@@ -172,6 +175,7 @@ def clip_gradient(optimizer: optim.Optimizer, grad_clip: float) -> None:
         for param in group['params']:
             if param.grad is not None:
                 param.grad.data.clamp_(-grad_clip, grad_clip)
+
 
 def adjust_learning_rate(
     optimizer: optim.Optimizer, shrink_factor: float
@@ -191,6 +195,7 @@ def adjust_learning_rate(
     for param_group in optimizer.param_groups:
         param_group['lr'] = param_group['lr'] * shrink_factor
     print("The new learning rate is %f\n" % (optimizer.param_groups[0]['lr'],))
+
 
 def accuracy(scores: torch.Tensor, targets: torch.Tensor, k: int) -> float:
     """
