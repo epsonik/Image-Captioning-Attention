@@ -25,7 +25,7 @@ def make(
     """
     model_name = config.caption_model
     encoder_dim = 2048
-    if config.pretrained_encoder == 'denseNet201':
+    if config.pretrained_encoder == 'DenseNet201':
         encoder_dim = 1920
 
     if model_name == 'show_tell':
