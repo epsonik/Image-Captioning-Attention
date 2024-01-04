@@ -124,8 +124,6 @@ def load_checkpoint(
     if config.fine_tune_encoder is True and encoder_optimizer is None:
 
         encoder.CNN.fine_tune(fine_tune_encoder)
-        a=[*encoder.CNN.parameters()]
-        print(a)
         encoder_optimizer = optim.Adam(params=filter(lambda p: p.requires_grad, encoder.CNN.parameters()),
                                        lr=encoder_lr)
 
