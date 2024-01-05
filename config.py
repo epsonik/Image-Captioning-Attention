@@ -6,7 +6,7 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:3"
+    cuda_device = "cuda:1"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
                                     # refer to README.md for more info about each model
@@ -43,7 +43,7 @@ class config:
 
     # training parameters
     epochs = 100
-    batch_size = 50
+    batch_size = 40
     pretrained_encoder = 'DenseNet201' #DenseNet201 InceptionV3 Resnet101
     fine_tune_encoder = True  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
