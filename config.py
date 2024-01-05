@@ -6,17 +6,17 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:1"
+    cuda_device = "cuda:3"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
                                     # refer to README.md for more info about each model
-    output_path = "data/output/DenseNet201_glove300_fte_true/"
+    output_path = "data/output/Resnet101_glove300_fte_false_decoder_dim_256/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/home/data/Images/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/home/data/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'DenseNet201_glove300_fte_true'  # any name you want
+    dataset_basename = 'Resnet101_glove300_fte_false_decoder_dim_256'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -36,21 +36,21 @@ class config:
     # model parameters
     attention_dim = 128  # dimension of attention network
                          # you only need to set this when the model includes an attention network
-    decoder_dim = 128  # dimension of decoder's hidden layer
+    decoder_dim = 256  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'DenseNet201_glove300_fte_true'  # any name you want
+    model_basename = 'Resnet101_glove300_fte_false_decoder_dim_256'  # any name you want
 
     # training parameters
     epochs = 100
-    batch_size = 40
-    pretrained_encoder = 'DenseNet201' #DenseNet201 InceptionV3 Resnet101
-    fine_tune_encoder = True  # fine-tune encoder or not
+    batch_size = 400
+    pretrained_encoder = 'Resnet101' #DenseNet201 InceptionV3 Resnet101
+    fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
-    checkpoint = os.path.join(base_path, output_path, 'checkpoints/checkpoint_DenseNet201_glove300_fte_false.pth.tar')  # path to load checkpoint, None if none
-    # checkpoint = None
+    # checkpoint = os.path.join(base_path, output_path, 'checkpoints/checkpoint_DenseNet201_glove300_fte_false.pth.tar')  # path to load checkpoint, None if none
+    checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
               # you only need to set this when 'caption_model' is set to 'att2all'
