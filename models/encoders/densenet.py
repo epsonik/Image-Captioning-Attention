@@ -60,7 +60,7 @@ class DenseNet201(nn.Module):
         for param in self.densenet201.parameters():
             param.requires_grad = False
         # only fine-tune conv block 2-4
-        for module in list(self.densenet201.children())[5:]:
+        for module in list(self.densenet201.children())[0][4:]:
             for param in module.parameters():
                 param.requires_grad = fine_tune
 
