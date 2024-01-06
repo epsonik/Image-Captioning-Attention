@@ -7,17 +7,17 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:1"
+    cuda_device = "cuda:0"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
-    caption_model = 'show_tell'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
+    caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
-    output_path = "data/output/show_tell_coco_emb_resnet/"
+    output_path = "data/output/InceptionV3_glove300_fte_false/"
     dataset_type = 'coco'
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/home/data/Images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home/data/Images/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/home/dane/Images/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/home/dane/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'show_tell_coco_emb_resnet'  # any name you want
+    dataset_basename = 'InceptionV3_glove300_fte_false'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -29,7 +29,7 @@ class config:
     embed_pretrain = True  # false: initialize embedding weights randomly
     # true: load pre-trained word embeddings
     embed_path = os.path.join(base_path,
-                              '/home/wisla/Images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
+                              '/home/dane/Images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_dim = 512  # dimension of word embeddings
     # only makes sense when `embed_pretrain = False`
     fine_tune_embeddings = True  # fine-tune word embeddings?
@@ -40,13 +40,12 @@ class config:
     decoder_dim = 128  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'show_tell_coco_emb_resnet'  # any name you want
+    model_basename = 'InceptionV3_glove300_fte_false'  # any name you want
 
     # training parameters
     epochs = 100
     batch_size = 400
-    pretrained_encoder = 'Resnet101'  # denseNet201 InceptionV3 Resnet101
-    encoder_dim = 2048
+    pretrained_encoder = 'InceptionV3'  # denseNet201 InceptionV3 Resnet101
     fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
@@ -59,5 +58,5 @@ class config:
     # tensorboard
     tensorboard = True  # enable tensorboard or not?
     log_dir = os.path.join(base_path, output_path,
-                           'logs/show_tell_coco_emb_resnet/')  # folder for saving logs for tensorboard
+                           'logs/InceptionV3_glove300_fte_false/')  # folder for saving logs for tensorboard
     # only makes sense when `tensorboard = True`
