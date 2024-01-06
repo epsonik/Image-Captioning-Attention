@@ -2,8 +2,9 @@ from torch import nn
 
 from config import config
 from .resnet import EncoderResNet, AttentionEncoderResNet, AdaptiveAttentionEncoderResNet
-from .inception import AttentionEncoderInceptionV3
-from .densenet import AttentionEncoderDenseNet201
+from .inception import AttentionEncoderInceptionV3, EncoderInceptionV3
+from .densenet import AttentionEncoderDenseNet201, EncoderDenseNet201
+
 
 def make(embed_dim: int) -> nn.Module:
     """
@@ -19,6 +20,10 @@ def make(embed_dim: int) -> nn.Module:
 
     if model_name == 'show_tell':
         model = EncoderResNet(embed_dim=embed_dim)
+        if pretrained_encoder == 'InceptionV3':
+            model = EncoderInceptionV3()
+        if pretrained_encoder == 'DenseNet201':
+            model = EncoderDenseNet201()
     elif model_name == 'att2all':
         model = AttentionEncoderResNet()
         if pretrained_encoder == 'InceptionV3':
@@ -28,8 +33,8 @@ def make(embed_dim: int) -> nn.Module:
 
     elif model_name == 'adaptive_att' or model_name == 'spatial_att':
         model = AdaptiveAttentionEncoderResNet(
-            decoder_dim = config.decoder_dim,
-            embed_dim = embed_dim
+            decoder_dim=config.decoder_dim,
+            embed_dim=embed_dim
         )
     else:
         raise Exception("Model not supported: ", model_name)
