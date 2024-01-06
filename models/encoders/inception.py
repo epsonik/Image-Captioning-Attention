@@ -22,7 +22,11 @@ class Inceptionv3(nn.Module):
 
         # pretrained ResNet-101 model (on ImageNet)
         inception = torchvision.models.inception_v3(pretrained = True)
-
+        num_ftrs = inception.AuxLogits.fc.in_features
+        inception.AuxLogits.fc = nn.Linear(num_ftrs, 300)
+        # Handle the primary net
+        num_ftrs = self.model.fc.in_features
+        self.model.fc = nn.Linear(num_ftrs, self.num_classes)
         # we need the feature map of the last conv layer,
         # so we remove the last two layers of resnet (average pool and fc)
         modules = list(inception.children())[:-3]
