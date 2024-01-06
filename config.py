@@ -7,15 +7,15 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:2"
+    cuda_device = "cuda:0"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'show_tell'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
     output_path = "data/output/show_tell_coco_emb_resnet/"
     dataset_type = 'coco'
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/home/odra/Images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home/odra/Images/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/home2/data/images/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/home2/data/images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
     dataset_basename = 'show_tell_coco_emb_resnet'  # any name you want
 
