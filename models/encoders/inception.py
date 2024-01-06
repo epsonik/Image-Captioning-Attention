@@ -23,7 +23,7 @@ class Inceptionv3(nn.Module):
         self.enc_image_size = encoded_image_size  # size of resized feature map
 
         # pretrained ResNet-101 model (on ImageNet)
-        inception = torchvision.models.inception_v3(pretrained=True, aux_logits=False)
+        inception = torchvision.models.inception_v3(pretrained=True)
 
         # we need the feature map of the last conv layer,
         # so we remove the last two layers of resnet (average pool and fc)
