@@ -126,6 +126,7 @@ if __name__ == '__main__':
 
     # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
     (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(beam_size)
+    print("Scores for @" % data_name)
     print("\nScores @ beam size of %d are:" % beam_size)
     print("   BLEU-1: %.4f" % bleu1)
     print("   BLEU-2: %.4f" % bleu2)
