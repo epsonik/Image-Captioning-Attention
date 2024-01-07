@@ -48,7 +48,7 @@ def load_embeddings(
         Dimension of the embeddings
     """
     emb_basename = os.path.basename(emb_file)
-    cache_path = os.path.join(output_folder, emb_basename + '_' + output_basename + '.pth.tar')
+    cache_path = os.path.join(output_folder, emb_basename + '.pth.tar')
 
     # no cache, load embeddings from .txt file
     if not os.path.isfile(cache_path):
