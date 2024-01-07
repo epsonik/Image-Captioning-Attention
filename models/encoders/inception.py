@@ -42,8 +42,6 @@ class Inceptionv3(nn.Module):
 
         # resize input images with different size to fixed size
         # r"""Applies a 2D adaptive average pooling over an input signal composed of several input planes.
-        self.adaptive_pool = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
-
         self.fine_tune()
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
@@ -59,8 +57,7 @@ class Inceptionv3(nn.Module):
             Feature map after resized
         """
         feature_map = self.inception(images)  # (batch_size, 2048, image_size/32, image_size/32)
-        feature_map = self.adaptive_pool(feature_map[0])  # (batch_size, 2048, encoded_image_size = 7, encoded_image_size = 7)
-        return feature_map
+        return feature_map[0]
 
     def fine_tune(self, fine_tune: bool = True) -> None:
         """
