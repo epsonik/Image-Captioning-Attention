@@ -10,13 +10,13 @@ class config:
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
                                     # refer to README.md for more info about each model
-    output_path = "data/output/Resnet101_glove300_fte_false_decoder_dim_512/"
+    output_path = "data/output/DenseNet201_glove300_fte_false_decoder_dim_512/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/home/dane/Images/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/home/dane/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'Resnet101_glove300_fte_false_decoder_dim_512'  # any name you want
+    dataset_basename = 'DenseNet201_glove300_fte_false_decoder_dim_512'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -44,13 +44,13 @@ class config:
     # training parameters
     epochs = 30
     batch_size = 300
-    pretrained_encoder = 'Resnet101' #DenseNet201 InceptionV3 Resnet101
+    pretrained_encoder = 'DenseNet201' #DenseNet201 InceptionV3 Resnet101
     fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
-    checkpoint = os.path.join(base_path, output_path, 'checkpoints/checkpoint_Resnet101_glove300_fte_false_decoder_dim_512.pth.tar')  # path to load checkpoint, None if none
-    # checkpoint = None
+    # checkpoint = os.path.join(base_path, output_path, 'checkpoints/checkpoint_Resnet101_glove300_fte_false_decoder_dim_512.pth.tar')  # path to load checkpoint, None if none
+    checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
               # you only need to set this when 'caption_model' is set to 'att2all'
