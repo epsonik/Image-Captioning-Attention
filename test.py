@@ -14,7 +14,9 @@ from torch.utils.data import DataLoader
 from utils import CaptionDataset, load_checkpoint
 from metrics import Metrics
 from config import config
-device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
+
+device = torch.device(
+    config.cuda_device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
 # some path
@@ -87,7 +89,8 @@ def evaluate(beam_size: int) -> float:
     prediction = list()
 
     # for each image
-    for i, (image, caps, caplens, allcaps) in enumerate(tqdm(loader, desc="Evaluating at beam size " + str(beam_size))):
+    for i, (image, caps, caplens, allcaps) in enumerate(
+        tqdm(loader, desc="Evaluating at beam size " + str(beam_size) + "for " + str(data_name))):
         # move to GPU device, if available
         image = image.to(device)  # (1, 3, 256, 256)
 
