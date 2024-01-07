@@ -90,7 +90,7 @@ def evaluate(beam_size: int) -> float:
 
     # for each image
     for i, (image, caps, caplens, allcaps) in enumerate(
-        tqdm(loader, desc="Evaluating at beam size " + str(beam_size) + "for " + str(data_name))):
+        tqdm(loader, desc="Evaluating at beam size " + str(beam_size) + " for " + str(data_name) + "\n")):
         # move to GPU device, if available
         image = image.to(device)  # (1, 3, 256, 256)
 
