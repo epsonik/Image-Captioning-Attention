@@ -90,7 +90,7 @@ def evaluate(beam_size: int) -> float:
 
     # for each image
     for i, (image, caps, caplens, allcaps) in enumerate(
-        tqdm(loader, desc="Evaluating at beam size " + str(beam_size) + " for " + str(data_name))):
+        tqdm(loader, desc="Evaluating at beam size " + str(beam_size))):
         # move to GPU device, if available
         image = image.to(device)  # (1, 3, 256, 256)
 
@@ -128,8 +128,8 @@ if __name__ == '__main__':
     beam_size = 5
 
     # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
+    print("Scores for " % data_name)
     (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(beam_size)
-    print("Scores for @" % data_name)
     print("\nScores @ beam size of %d are:" % beam_size)
     print("   BLEU-1: %.4f" % bleu1)
     print("   BLEU-2: %.4f" % bleu2)
