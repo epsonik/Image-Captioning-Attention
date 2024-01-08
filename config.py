@@ -16,7 +16,7 @@ class config:
     dataset_image_path = os.path.join(base_path, '/home/dane/Images/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/home/dane/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'DenseNet201_glove300_fte_false_decoder_dim_512'  # any name you want
+    dataset_basename = 'Resnet101_glove300_fte_false_decoder_dim_512'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
