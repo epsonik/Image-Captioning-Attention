@@ -42,7 +42,7 @@ class config:
     model_basename = 'Resnet101_glove300_fte_true_decoder_dim_512'  # any name you want
 
     # training parameters
-    epochs = 30
+    epochs = 50
     batch_size = 300
     pretrained_encoder = 'Resnet101' #DenseNet201 InceptionV3 Resnet101
     fine_tune_encoder = True  # fine-tune encoder or not
