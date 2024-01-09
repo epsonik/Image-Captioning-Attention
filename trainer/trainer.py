@@ -356,7 +356,7 @@ class Trainer:
 
             # decay learning rate if there is no improvement for 8 consecutive epochs
             # terminate training if there is no improvement for 20 consecutive epochs
-            if self.epochs_since_improvement == 20:
+            if self.epochs_since_improvement == 50:
                 break
             if self.epochs_since_improvement > 0 and self.epochs_since_improvement % 8 == 0:
                 adjust_learning_rate(self.decoder_optimizer, 0.8)
