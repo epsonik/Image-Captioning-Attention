@@ -43,13 +43,13 @@ class config:
 
     # training parameters
     epochs = 30
-    batch_size = 400
+    batch_size = 300
     pretrained_encoder = 'DenseNet201' #DenseNet201 InceptionV3 Resnet101
     fine_tune_encoder = True  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
-    checkpoint = os.path.join(base_path, output_path, 'checkpoints/checkpoint_Resnet101_glove300_fte_false_decoder_dim_256.pth.tar')  # path to load checkpoint, None if none
+    checkpoint = os.path.join(base_path, output_path, 'checkpoints/checkpoint_DenseNet201_glove300_fte_false_decoder_dim_256.pth.tar')  # path to load checkpoint, None if none
     # checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
