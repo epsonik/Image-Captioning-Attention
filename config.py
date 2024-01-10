@@ -39,7 +39,7 @@ class config:
     decoder_dim = 512  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'Resnet101_glove300_fte_false_decoder_dim_512'  # any name you want
+    model_basename = 'DenseNet201_glove300_fte_false_decoder_dim_512'  # any name you want
 
     # training parameters
     epochs = 30
