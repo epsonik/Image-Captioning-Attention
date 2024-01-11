@@ -156,21 +156,19 @@ if __name__ == '__main__':
         model_path = os.path.join(config.base_path, "output", data_name, "checkpoints")
         checkpoint = os.path.join('best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         print(checkpoint)
-        # beam_size = 2
-        # # load model
-        # checkpoint = torch.load(checkpoint, map_location=str(device))
-        #
-        # decoder = checkpoint['decoder']
-        # decoder = decoder.to(device)
-        # decoder.eval()
-        #
-        # encoder = checkpoint['encoder']
-        # encoder = encoder.to(device)
-        # encoder.eval()
-        #
-        # caption_model = checkpoint['caption_model']
-        #
-        # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(encoder, decoder, config.caption_model, beam_size)
-        # print("Scores for ", data_name)
-        # (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(beam_size)
-        # generate_report(data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+        beam_size = 2
+        # load model
+        checkpoint = torch.load(checkpoint, map_location=str(device))
+
+        decoder = checkpoint['decoder']
+        decoder = decoder.to(device)
+        decoder.eval()
+
+        encoder = checkpoint['encoder']
+        encoder = encoder.to(device)
+        encoder.eval()
+
+        caption_model = checkpoint['caption_model']
+        print("Scores for ", data_name)
+        (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, config.caption_model, beam_size)
+        generate_report(data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
