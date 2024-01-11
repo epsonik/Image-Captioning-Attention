@@ -135,7 +135,7 @@ def generate_report(config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
     temp["CIDEr"] = cider
     # Save final csv file
 
-    with open(os.path.join(data_f, "final_results.csv"), 'a') as f:
+    with open(os.path.join(data_f, "final_results_k2.csv"), 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writerow(temp)
         f.close()
@@ -149,15 +149,13 @@ if __name__ == '__main__':
     #                "Resnet101_glove300_fte_true_decoder_dim_256", "Resnet101_glove300_fte_false_decoder_dim_256",
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false"
     #                ]
-    output_path = [
-        "DenseNet201_glove300_fte_true_decoder_dim_512"
-    ]
+    output_path = ["DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"]
     for data_name in output_path:
         # path to save checkpoints
-        model_path = os.path.join(data_f, "output", data_name, "checkpoints")
+        model_path = os.path.join(data_f, "output/dnt", data_name, "checkpoints")
         checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         print(checkpoint)
-        beam_size = 5
+        beam_size = 2
         # load model
         checkpoint = torch.load(checkpoint, map_location=str(device))
 
