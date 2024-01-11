@@ -2,12 +2,13 @@
 Compute the correct BLEU, CIDEr, ROUGE and METEOR scores for a checkpoint on
 the validation or test sets without Teacher Forcing.
 """
-
+import csv
 import json
+import os
+
 from tqdm import tqdm
 import torch
 import torch.backends.cudnn as cudnn
-import torch.nn.functional as F
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
@@ -16,28 +17,11 @@ from metrics import Metrics
 from config import config
 
 device = torch.device(
-    config.cuda_device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
+    "cuda:0" if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
-# some path
-data_folder = config.dataset_output_path  # folder with data files saved by preprocess.py
-data_name = config.dataset_basename  # base name shared by data files
-
-word_map_file = config.dataset_output_path + 'wordmap' + '.json'  # word map, ensure it's the same the data was encoded with and the model was trained with
-checkpoint = config.model_path + 'best_checkpoint_' + config.model_basename + '.pth.tar'  # model checkpoint
-
-# load model
-checkpoint = torch.load(checkpoint, map_location=str(device))
-
-decoder = checkpoint['decoder']
-decoder = decoder.to(device)
-decoder.eval()
-
-encoder = checkpoint['encoder']
-encoder = encoder.to(device)
-encoder.eval()
-
-caption_model = checkpoint['caption_model']
+# word map, ensure it's the same the data was encoded with and the model was trained with
+word_map_file = config.base_path + "evaluation/" + 'wordmap' + '.json'
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -124,16 +108,69 @@ def evaluate(beam_size: int) -> float:
     return scores
 
 
-if __name__ == '__main__':
-    beam_size = 5
+def generate_report(config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
+    """
+    Method to generate summary of the test results. Made from files in the results directory.
 
-    # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
-    print("Scores for ", data_name)
-    (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(beam_size)
-    print("\nScores @ beam size of %d are:" % beam_size)
-    print("   BLEU-1: %.4f" % bleu1)
-    print("   BLEU-2: %.4f" % bleu2)
-    print("   BLEU-3: %.4f" % bleu3)
-    print("   BLEU-4: %.4f" % bleu4)
-    print("   CIDEr: %.4f" % cider)
-    print("   ROUGE-L: %.4f" % rouge)
+    Parameters
+    ----------
+    results_path: str
+        Path to the results directory
+    Returns
+    -------
+        CSV file with summary of the results.
+
+    """
+    # Names of the evaluation metrics
+    header = ["config_name", "Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4", "ROUGE_L", "CIDEr"]
+
+    temp = dict()
+    temp["config_name"] = config_name
+    temp["Bleu_1"] = bleu1
+    temp["Bleu_2"] = bleu2
+    temp["Bleu_3"] = bleu3
+    temp["Bleu_4"] = bleu4
+    temp["ROUGE_L"] = rouge
+    temp["CIDEr"] = cider
+    # Save final csv file
+
+    with open(os.path.join(config.base_path, "final_results.csv"), 'a') as f:
+        writer = csv.DictWriter(f, fieldnames=header)
+        writer.writerow(temp)
+        f.close()
+
+
+if __name__ == '__main__':
+    # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_512", "DenseNet201_glove300_fte_false_decoder_dim_512",
+    #                "DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256",
+    #                "DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
+    #                "Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512",
+    #                "Resnet101_glove300_fte_true_decoder_dim_256", "Resnet101_glove300_fte_false_decoder_dim_256",
+    #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false"
+    #                ]
+    output_path = [
+        "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false"
+    ]
+    for data_name in output_path:
+        # path to save checkpoints
+        model_path = os.path.join(config.base_path, "data/output", data_name, "checkpoints")
+        checkpoint = model_path + 'best_checkpoint_' + data_name + '.pth.tar'  # model checkpoint
+        print(checkpoint)
+        # beam_size = 2
+        # # load model
+        # checkpoint = torch.load(checkpoint, map_location=str(device))
+        #
+        # decoder = checkpoint['decoder']
+        # decoder = decoder.to(device)
+        # decoder.eval()
+        #
+        # encoder = checkpoint['encoder']
+        # encoder = encoder.to(device)
+        # encoder.eval()
+        #
+        # caption_model = checkpoint['caption_model']
+        #
+        # # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
+        # print("Scores for ", data_name)
+        # (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(beam_size)
+        # generate_report(data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
