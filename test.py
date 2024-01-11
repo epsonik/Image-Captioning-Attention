@@ -21,7 +21,7 @@ device = torch.device(
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
 # word map, ensure it's the same the data was encoded with and the model was trained with
-word_map_file = config.base_path + "evaluation/" + 'wordmap' + '.json'
+word_map_file = os.path.join(config.base_path, "evaluation", 'wordmap' + '.json')
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
