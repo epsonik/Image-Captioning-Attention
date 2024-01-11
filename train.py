@@ -1,60 +1,159 @@
-"""
-Define the hyper parameters here.
-"""
-
 import os
+import json
+import torch
+from torch import nn, optim
+from torch.utils.data import DataLoader
+import torch.backends.cudnn as cudnn
+import torchvision.transforms as transforms
 
-class config:
-    # global parameters
-    cuda_device = "cuda:2"
-    base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
-    caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
-                                    # refer to README.md for more info about each model
-    output_path = "data/output/DenseNet201_glove300_fte_true_decoder_dim_256/"
-    dataset_type = 'coco'
-    # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/home/data/Images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home/data/Images/coco2014/karpathy/dataset_coco.json')
-    dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'DenseNet201_glove300_fte_true_decoder_dim_256'  # any name you want
+import models
+from trainer import Trainer
+from utils import CaptionDataset, load_embeddings, load_checkpoint
+from config import config
 
-    # preprocess parameters
-    captions_per_image = 5
-    min_word_freq = 5  # words with frenquence lower than this value will be mapped to '<UNK>'
-    max_caption_len = 50  # captions with length higher than this value will be ignored,
-                          # with length lower than this value will be padded from right side to fit this length
+cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
+def set_trainer():
+    # data parameters
+    data_folder = config.dataset_output_path
+    data_name = config.dataset_basename
 
-    # word embeddings parameters
-    embed_pretrain = True  # false: initialize embedding weights randomly
-    # true: load pre-trained word embeddings
-    embed_path = os.path.join(base_path,
-                              '/home/data/Images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
-    embed_dim = 512  # dimension of word embeddings
-                     # only makes sense when `embed_pretrain = False`
-    fine_tune_embeddings = True  # fine-tune word embeddings?
+    # GPU / CPU
+    device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
-    # model parameters
-    attention_dim = 128  # dimension of attention network
-                         # you only need to set this when the model includes an attention network
-    decoder_dim = 256  # dimension of decoder's hidden layer
-    dropout = 0.5
-    model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'DenseNet201_glove300_fte_true_decoder_dim_256'  # any name you want
+    # load word2id map
+    word_map_file = os.path.join(data_folder, 'wordmap' + '.json')
+    with open(word_map_file, 'r') as j:
+        word_map = json.load(j)
 
-    # training parameters
-    epochs = 50
-    batch_size = 40
-    pretrained_encoder = 'DenseNet201' #DenseNet201 InceptionV3 Resnet101
-    fine_tune_encoder = True  # fine-tune encoder or not
-    encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
-    decoder_lr = 4e-4  # learning rate of decoder
-    grad_clip = 5.  # gradient threshold in clip gradients
-    checkpoint = os.path.join(base_path, output_path, 'checkpoints/checkpoint_DenseNet201_glove300_fte_true_decoder_dim_256.pth.tar')  # path to load checkpoint, None if none
-    # checkpoint = None
-    workers = 0  # num_workers in dataloader
-    tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
-              # you only need to set this when 'caption_model' is set to 'att2all'
-    # tensorboard
-    tensorboard = True  # enable tensorboard or not?
-    log_dir = os.path.join(base_path, output_path, 'logs/att2all/')  # folder for saving logs for tensorboard
-                                                             # only makes sense when `tensorboard = True`
+    # create id2word map
+    rev_word_map = {v: k for k, v in word_map.items()}
+
+    # initialize encoder-decoder framework
+    if config.checkpoint is None:
+        start_epoch = 0
+        epochs_since_improvement = 0
+        best_bleu4 = 0.
+        caption_model = config.caption_model
+
+        # ------------- word embeddings -------------
+        if config.embed_pretrain == True:
+            # load pre-trained word embeddings for words in the word map
+            embeddings, embed_dim = load_embeddings(
+                emb_file=config.embed_path,
+                word_map=word_map,
+                output_folder=config.dataset_output_path,
+                output_basename=config.dataset_basename
+            )
+        else:
+            # or initialize embedding weights randomly
+            embeddings = None
+            embed_dim = config.embed_dim
+
+        # ----------------- encoder ------------------
+        encoder = models.encoders.make(embed_dim=embed_dim)
+        encoder.CNN.fine_tune(config.fine_tune_encoder)
+        # optimizer for encoder's CNN (if fine-tune)
+        if config.fine_tune_encoder:
+            encoder_optimizer = optim.Adam(
+                params=filter(lambda p: p.requires_grad, encoder.CNN.parameters()),
+                lr=config.encoder_lr
+            )
+        else:
+            encoder_optimizer = None
+
+        # ----------------- decoder ------------------
+        decoder = models.decoders.make(
+            vocab_size=len(word_map),
+            embed_dim=embed_dim,
+            embeddings=embeddings
+        )
+        # optimizer for decoder
+
+        # print(len(list(decoder.parameters())))
+        decoder_params = list(filter(lambda p: p.requires_grad, decoder.parameters()))
+        # print(len(decoder_params))
+        if caption_model == 'adaptive_att' or caption_model == 'spatial_att':
+            decoder_params = decoder_params + list(encoder.global_mapping.parameters()) \
+                             + list(encoder.spatial_mapping.parameters())
+        elif caption_model == 'show_tell':
+            decoder_params = decoder_params + list(encoder.output_layer.parameters())
+
+        decoder_optimizer = optim.Adam(
+            params=decoder_params,
+            lr=config.decoder_lr
+        )
+
+    # or load checkpoint
+    else:
+        encoder, \
+        encoder_optimizer, \
+        decoder, \
+        decoder_optimizer, \
+        start_epoch, \
+        epochs_since_improvement, \
+        best_bleu4, \
+        caption_model = load_checkpoint(config.checkpoint, config.fine_tune_encoder, config.encoder_lr)
+    # move to GPU, if available
+    decoder = decoder.to(device)
+    encoder = encoder.to(device)
+
+    # loss function (cross entropy)
+    loss_function = nn.CrossEntropyLoss().to(device)
+
+    # custom dataloaders
+    # normalizacja za pomoca sredniej i odchylenia standardowego
+    normalize = transforms.Normalize(
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225]
+    )
+    train_loader = DataLoader(
+        CaptionDataset(
+            data_folder, data_name, 'train',
+            transform=transforms.Compose([normalize])
+        ),
+        batch_size=config.batch_size,
+        shuffle=True,
+        num_workers=config.workers,
+        pin_memory=True
+    )
+    # transforms.Compose laczy kilka normalizacji ze soba
+    val_loader = DataLoader(
+        CaptionDataset(
+            data_folder, data_name, 'val',
+            transform=transforms.Compose([normalize])
+        ),
+        batch_size=config.batch_size,
+        shuffle=True,
+        num_workers=config.workers,
+        pin_memory=True
+    )
+
+    trainer = Trainer(
+        caption_model=caption_model,
+        epochs=config.epochs,
+        device=device,
+        word_map=word_map,
+        rev_word_map=rev_word_map,
+        start_epoch=start_epoch,
+        epochs_since_improvement=epochs_since_improvement,
+        best_bleu4=best_bleu4,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        encoder=encoder,
+        decoder=decoder,
+        encoder_optimizer=encoder_optimizer,
+        decoder_optimizer=decoder_optimizer,
+        loss_function=loss_function,
+        grad_clip=config.grad_clip,
+        tau=config.tau,
+        fine_tune_encoder=config.fine_tune_encoder,
+        tensorboard=config.tensorboard,
+        log_dir=config.log_dir
+    )
+
+    return trainer
+
+
+if __name__ == '__main__':
+    trainer = set_trainer()
+    trainer.run_train()
