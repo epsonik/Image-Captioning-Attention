@@ -149,7 +149,7 @@ if __name__ == '__main__':
     #                "Resnet101_glove300_fte_true_decoder_dim_256", "Resnet101_glove300_fte_false_decoder_dim_256",
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false"
     #                ]
-    output_path = ["DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"]
+    output_path = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
     for data_name in output_path:
         # path to save checkpoints
         model_path = os.path.join(data_f, "output/dnt", data_name, "checkpoints")
