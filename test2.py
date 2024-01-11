@@ -17,7 +17,8 @@ from metrics import Metrics
 from config import config
 
 device = torch.device(
-    "cuda:0" if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
+    config.cuda_device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
+
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
@@ -171,4 +172,13 @@ if __name__ == '__main__':
         caption_model = checkpoint['caption_model']
         print("Scores for ", data_name)
         (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, config.caption_model, beam_size)
+
+        print("\nScores @ beam size of %d are:" % beam_size)
+        print("   BLEU-1: %.4f" % bleu1)
+        print("   BLEU-2: %.4f" % bleu2)
+        print("   BLEU-3: %.4f" % bleu3)
+        print("   BLEU-4: %.4f" % bleu4)
+        print("   CIDEr: %.4f" % cider)
+        print("   ROUGE-L: %.4f" % rouge)
+
         generate_report(data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
