@@ -19,9 +19,9 @@ from config import config
 device = torch.device(
     "cuda:0" if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
 cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
-
+data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
-word_map_file = config.base_path + "evaluation/" + 'wordmap' + '.json'
+word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -39,7 +39,7 @@ normalize = transforms.Normalize(
 )
 
 
-def evaluate(beam_size: int) -> float:
+def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     """
     Parameters
     ----------
@@ -54,7 +54,7 @@ def evaluate(beam_size: int) -> float:
     """
     loader = DataLoader(
         CaptionDataset(
-            data_folder, data_name, 'test',
+            os.path.join(data_f, "evaluation"), data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
         # TODO: batched beam search. Therefore, DO NOT use a batch_size greater
@@ -134,7 +134,7 @@ def generate_report(config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
     temp["CIDEr"] = cider
     # Save final csv file
 
-    with open(os.path.join(config.base_path, "final_results.csv"), 'a') as f:
+    with open(os.path.join(data_f, "final_results.csv"), 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writerow(temp)
         f.close()
@@ -153,24 +153,22 @@ if __name__ == '__main__':
     ]
     for data_name in output_path:
         # path to save checkpoints
-        model_path = os.path.join(config.base_path, "data/output", data_name, "checkpoints")
-        checkpoint = model_path + 'best_checkpoint_' + data_name + '.pth.tar'  # model checkpoint
+        model_path = os.path.join(data_f, "output/dnt", data_name, "checkpoints")
+        checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         print(checkpoint)
-        # beam_size = 2
-        # # load model
-        # checkpoint = torch.load(checkpoint, map_location=str(device))
-        #
-        # decoder = checkpoint['decoder']
-        # decoder = decoder.to(device)
-        # decoder.eval()
-        #
-        # encoder = checkpoint['encoder']
-        # encoder = encoder.to(device)
-        # encoder.eval()
-        #
-        # caption_model = checkpoint['caption_model']
-        #
-        # # (bleu1, bleu2, bleu3, bleu4), cider, rouge, meteor = evaluate(beam_size)
-        # print("Scores for ", data_name)
-        # (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(beam_size)
-        # generate_report(data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+        beam_size = 2
+        # load model
+        checkpoint = torch.load(checkpoint, map_location=str(device))
+
+        decoder = checkpoint['decoder']
+        decoder = decoder.to(device)
+        decoder.eval()
+
+        encoder = checkpoint['encoder']
+        encoder = encoder.to(device)
+        encoder.eval()
+
+        caption_model = checkpoint['caption_model']
+        print("Scores for ", data_name)
+        (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, config.caption_model, beam_size)
+        generate_report(data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
