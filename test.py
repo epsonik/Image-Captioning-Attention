@@ -150,14 +150,14 @@ if __name__ == '__main__':
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false"
     #                ]
     output_path = [
-        "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false"
+        "DenseNet201_glove300_fte_true_decoder_dim_512"
     ]
     for data_name in output_path:
         # path to save checkpoints
-        model_path = os.path.join(data_f, "output/dnt", data_name, "checkpoints")
+        model_path = os.path.join(data_f, "output", data_name, "checkpoints")
         checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         print(checkpoint)
-        beam_size = 2
+        beam_size = 5
         # load model
         checkpoint = torch.load(checkpoint, map_location=str(device))
 
