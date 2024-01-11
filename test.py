@@ -54,7 +54,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     """
     loader = DataLoader(
         CaptionDataset(
-            data_f, data_name, 'test',
+            os.path.join(data_f, "evaluation"), data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
         # TODO: batched beam search. Therefore, DO NOT use a batch_size greater
