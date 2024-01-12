@@ -145,13 +145,13 @@ if __name__ == '__main__':
     # 1
     # output_path = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
     # 2
-    # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
-    # 3
-    output_path = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
-                   "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
-                   "DenseNet201_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_256",
-                   "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
-                   ]
+    output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
+    # # 3
+    # output_path = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
+    #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
+    #                "DenseNet201_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_256",
+    #                "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
+    #                ]
     for data_name in output_path:
         # path to save checkpoints
         model_path = os.path.join(data_f, "output/dnt", data_name, "checkpoints")
@@ -188,6 +188,6 @@ if __name__ == '__main__':
 
 
         temp(1, "final_results_k1.csv")
-        temp(2, "final_results_k2.csv")
-        temp(5, "final_results_k5.csv")
-        temp(8, "final_results_k8.csv")
+        # temp(2, "final_results_k2.csv")
+        # temp(5, "final_results_k5.csv")
+        # temp(8, "final_results_k8.csv")
