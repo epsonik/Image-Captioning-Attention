@@ -109,7 +109,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     return scores
 
 
-def generate_report(config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
+def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
     """
     Method to generate summary of the test results. Made from files in the results directory.
 
@@ -135,7 +135,7 @@ def generate_report(config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
     temp["CIDEr"] = cider
     # Save final csv file
 
-    with open(os.path.join(data_f, "final_results_k1.csv"), 'a') as f:
+    with open(os.path.join(data_f, report_name), 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writerow(temp)
         f.close()
@@ -170,15 +170,24 @@ if __name__ == '__main__':
         encoder.eval()
 
         caption_model = checkpoint['caption_model']
-        print("Scores for ", data_name)
-        (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, config.caption_model, beam_size)
 
-        print("\nScores @ beam size of %d are:" % beam_size)
-        print("   BLEU-1: %.4f" % bleu1)
-        print("   BLEU-2: %.4f" % bleu2)
-        print("   BLEU-3: %.4f" % bleu3)
-        print("   BLEU-4: %.4f" % bleu4)
-        print("   CIDEr: %.4f" % cider)
-        print("   ROUGE-L: %.4f" % rouge)
 
-        generate_report(data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+        def temp(beam_size, report_name):
+            print("Scores for ", data_name)
+            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, config.caption_model, beam_size)
+
+            print("\nScores @ beam size of %d are:" % beam_size)
+            print("   BLEU-1: %.4f" % bleu1)
+            print("   BLEU-2: %.4f" % bleu2)
+            print("   BLEU-3: %.4f" % bleu3)
+            print("   BLEU-4: %.4f" % bleu4)
+            print("   CIDEr: %.4f" % cider)
+            print("   ROUGE-L: %.4f" % rouge)
+
+            generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+
+
+        temp(1, "final_results_k1.csv")
+        temp(2, "final_results_k2.csv")
+        temp(5, "final_results_k5.csv")
+        temp(8, "final_results_k8.csv")
