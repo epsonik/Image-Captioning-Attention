@@ -135,7 +135,7 @@ def generate_report(config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
     temp["CIDEr"] = cider
     # Save final csv file
 
-    with open(os.path.join(data_f, "final_results_k2_2.csv"), 'a') as f:
+    with open(os.path.join(data_f, "final_results_k2.csv"), 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writerow(temp)
         f.close()
