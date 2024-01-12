@@ -142,12 +142,12 @@ def generate_report(config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
 
 
 if __name__ == '__main__':
-    # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256",
+    # output_path = [
     #                "DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false"
     #                ]
     # 1
-    output_path = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
+    output_path = ["Resnet101_glove300_fte_false_decoder_dim_512"]
     # 2
     # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
     # 3
