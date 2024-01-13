@@ -20,8 +20,6 @@ def make(embed_dim: int) -> nn.Module:
 
     if model_name == 'show_tell':
         model = EncoderResNet(embed_dim=embed_dim)
-        if pretrained_encoder == 'InceptionV3':
-            model = EncoderInceptionV3()
         if pretrained_encoder == 'DenseNet201':
             model = EncoderDenseNet201()
     elif model_name == 'att2all':
