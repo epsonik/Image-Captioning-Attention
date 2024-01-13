@@ -35,7 +35,6 @@ def make(
             fine_tune=config.fine_tune_embeddings,
             decoder_dim=config.decoder_dim,
             vocab_size=vocab_size,
-            encoder_dim=encoder_dim,
             dropout=config.dropout
         )
     elif model_name == 'att2all':
