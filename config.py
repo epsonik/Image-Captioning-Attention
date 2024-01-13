@@ -8,15 +8,15 @@ class config:
     # global parameters
     cuda_device = "cuda:3"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
-    caption_model = 'show_tell'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
+    caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
                                     # refer to README.md for more info about each model
-    output_path = "data/output/show_tell_DenseNet201_glove300/"
+    output_path = "data/output/DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/home/data/Images/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/home/data/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'show_tell_DenseNet201_glove300'  # any name you want
+    dataset_basename = 'DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -31,7 +31,7 @@ class config:
                               '/home/data/Images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_dim = 512  # dimension of word embeddings
                      # only makes sense when `embed_pretrain = False`
-    fine_tune_embeddings = True  # fine-tune word embeddings?
+    fine_tune_embeddings = False  # fine-tune word embeddings?
 
     # model parameters
     attention_dim = 128  # dimension of attention network
@@ -39,7 +39,7 @@ class config:
     decoder_dim = 128  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'show_tell_DenseNet201_glove300'  # any name you want
+    model_basename = 'DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false'  # any name you want
 
     # training parameters
     epochs = 50
@@ -56,5 +56,5 @@ class config:
               # you only need to set this when 'caption_model' is set to 'att2all'
     # tensorboard
     tensorboard = True  # enable tensorboard or not?
-    log_dir = os.path.join(base_path, output_path, 'logs/show_tell/')  # folder for saving logs for tensorboard
+    log_dir = os.path.join(base_path, output_path, 'logs/att2all/')  # folder for saving logs for tensorboard
                                                              # only makes sense when `tensorboard = True`
