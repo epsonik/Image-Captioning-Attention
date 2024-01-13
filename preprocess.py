@@ -183,8 +183,6 @@ def data_preprocess(
 
 if __name__ == '__main__':
     resized_size = 256
-    if config.pretrained_encoder == 'InceptionV3':
-        resized_size = 342
 
     data_preprocess(
         karpathy_json_path=config.dataset_caption_path,

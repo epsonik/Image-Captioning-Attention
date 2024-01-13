@@ -14,6 +14,7 @@ import torchvision
 import torch.nn.functional as F
 from config import config
 from .decoder import Decoder as BasicDecoder
+
 device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
 
@@ -53,12 +54,12 @@ class Decoder(BasicDecoder):
         dropout: float = 0.5
     ) -> None:
         super(Decoder, self).__init__(
-            embed_dim = embed_dim,
-            embeddings = embeddings,
-            fine_tune = fine_tune,
-            decoder_dim = decoder_dim,
-            vocab_size = vocab_size,
-            dropout = dropout
+            embed_dim=embed_dim,
+            embeddings=embeddings,
+            fine_tune=fine_tune,
+            decoder_dim=decoder_dim,
+            vocab_size=vocab_size,
+            dropout=dropout
         )
 
         self.decode_step = nn.LSTMCell(embed_dim, decoder_dim, bias=True)  # LSTM
@@ -219,25 +220,25 @@ class Decoder(BasicDecoder):
 
         # start decoding
         step = 1
-        h, c = self.init_hidden_state(encoder_out) # (k, decoder_dim)
+        h, c = self.init_hidden_state(encoder_out)  # (k, decoder_dim)
 
         # s is a number less than or equal to k, because sequences are removed from this process once they hit <end>
         while True:
 
             if step == 1:
                 # at the first time step, input is image feature
-                x = encoder_out # (s, embed_dim)
+                x = encoder_out  # (s, embed_dim)
             else:
                 # input embeded captions
                 embeddings = self.embedding(k_prev_words).squeeze(1)  # (s, embed_dim)
-                x = embeddings # (s, embed_dim)
+                x = embeddings  # (s, embed_dim)
 
             # LSTM
-            h, c = self.decode_step(x, (h, c)) # (s, decoder_dim)
+            h, c = self.decode_step(x, (h, c))  # (s, decoder_dim)
 
             # calc word probability over the vocabulary
             scores = self.fc(h)  # (s, vocab_size)
-            scores = F.log_softmax(scores, dim = 1) # (s, vocab_size)
+            scores = F.log_softmax(scores, dim=1)  # (s, vocab_size)
 
             # record score
             # (k, 1) will be expanded to (k, vocab_size), then (k, vocab_size) + (s, vocab_size) --> (s, vocab_size)
@@ -255,7 +256,7 @@ class Decoder(BasicDecoder):
             next_word_inds = top_k_words % vocab_size  # (s)
 
             # add new words to sequences
-            seqs = torch.cat([seqs[prev_word_inds], next_word_inds.unsqueeze(1)], dim = 1)  # (s, step+1)
+            seqs = torch.cat([seqs[prev_word_inds], next_word_inds.unsqueeze(1)], dim=1)  # (s, step+1)
 
             # which sequences are incomplete (didn't reach <end>)?
             incomplete_inds = [ind for ind, next_word in enumerate(next_word_inds) if next_word != word_map['<end>']]
