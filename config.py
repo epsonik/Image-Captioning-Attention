@@ -39,7 +39,7 @@ class config:
     decoder_dim = 128  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'show_tell_DenseNet201_glove300_fte_true'  # any name you want
+    model_basename = 'show_tell_DenseNet201_glove300_fte_true'  # any name you wantrm s
 
     # training parameters
     epochs = 50
@@ -49,7 +49,7 @@ class config:
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
-    checkpoint = os.path.join(base_path, output_path, 'checkpoints/show_tell_DenseNet201_glove300_fte_false.pth.tar')  # path to load checkpoint, None if none
+    checkpoint = os.path.join(base_path, output_path, 'checkpoints/best_checkpoint_show_tell_DenseNet201_glove300_fte_false.pth.tar')  # path to load checkpoint, None if none
     # checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
