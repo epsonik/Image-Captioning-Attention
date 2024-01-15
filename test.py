@@ -146,7 +146,9 @@ if __name__ == '__main__':
     # output_path = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
     # 2
     # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
-    output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256"]
+    # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256"]
+    output_path = ["DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false_cuda_1",
+                   "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true_cuda_1"]
     # # 3
     # output_path = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
@@ -158,7 +160,6 @@ if __name__ == '__main__':
         model_path = os.path.join(data_f, "output", data_name, "checkpoints")
         checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         print(checkpoint)
-        beam_size = 8
         # load model
         checkpoint = torch.load(checkpoint, map_location=str(device))
 
@@ -188,7 +189,7 @@ if __name__ == '__main__':
             generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
-        # temp(1, "final_results_k1.csv")
+        temp(1, "final_results_k1.csv")
         temp(2, "final_results_k2.csv")
-        # temp(5, "final_results_k5.csv")
-        # temp(8, "final_results_k8.csv")
+        temp(5, "final_results_k5.csv")
+        temp(8, "final_results_k8.csv")
