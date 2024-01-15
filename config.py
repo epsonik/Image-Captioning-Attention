@@ -6,11 +6,11 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:0"
+    cuda_device = "cuda:1"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
                                     # refer to README.md for more info about each model
-    output_path = "data/output/Resnet101_glove300_decoder_dim_256_ft_embeddings_false_fine_tune_encoder_true/"
+    output_path = "data/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/home/data/Images/coco2014/')
