@@ -147,8 +147,8 @@ if __name__ == '__main__':
     # 2
     # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
     # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256"]
-    output_path = ["DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false_cuda_1",
-                   "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true_cuda_1"]
+    output_path = ["DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
+                   "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
     # # 3
     # output_path = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
