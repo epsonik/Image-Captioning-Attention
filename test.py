@@ -147,14 +147,16 @@ if __name__ == '__main__':
     # 2
     # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
     # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256"]
-    output_path = ["DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
-                   "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
+    # output_path = ["DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
+    #                "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
     # # 3
     # output_path = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
     #                "DenseNet201_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_256",
     #                "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
     #                ]
+    output_path = ["show_tell_DenseNet201_glove300_fte_false", "show_tell_DenseNet201_glove300_fte_true"]
+
     for data_name in output_path:
         # path to save checkpoints
         model_path = os.path.join(data_f, "output", data_name, "checkpoints")
@@ -176,7 +178,7 @@ if __name__ == '__main__':
 
         def temp(beam_size, report_name):
             print("Scores for ", data_name)
-            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, config.caption_model, beam_size)
+            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, 'show_tell', beam_size)
 
             print("\nScores @ beam size of %d are:" % beam_size)
             print("   BLEU-1: %.4f" % bleu1)
