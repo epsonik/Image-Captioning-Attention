@@ -13,8 +13,8 @@ class config:
     output_path = "data/"
     dataset_type = 'coco'
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/home/data/Images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home/data/Images/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/home/dane/Images/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/home/dane/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
     dataset_basename = 'Regnet32_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false'  # any name you want
 
