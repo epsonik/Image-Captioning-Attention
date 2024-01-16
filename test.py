@@ -12,14 +12,10 @@ import torch.backends.cudnn as cudnn
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
-from utils import CaptionDataset, load_checkpoint
+from utils import CaptionDataset
 from metrics import Metrics
 from config import config
 
-device = torch.device(
-    config.cuda_device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
-
-cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
@@ -142,56 +138,72 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 
 
 if __name__ == '__main__':
+
+    configs = dict()
+    # configs["cuda:1"] = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
+    # configs["cuda:2"] = ["DenseNet201_glove300_fte_true_decoder_dim_256",
+    #                      "DenseNet201_glove300_fte_false_decoder_dim_256"]
+    # configs["cuda:3"] = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
+    #                      "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
+    #                      "DenseNet201_glove300_fte_true_decoder_dim_512",
+    #                      "Resnet101_glove300_fte_false_decoder_dim_256",
+    #                      "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
+    #                      ]
     # 1
     # output_path = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
     # 2
     # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
-    # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256"]
-    # output_path = ["DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
-    #                "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
     # # 3
     # output_path = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
     #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
     #                "DenseNet201_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_256",
     #                "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
     #                ]
-    output_path = ["show_tell_DenseNet201_glove300_fte_false", "show_tell_DenseNet201_glove300_fte_true"]
+    configs["cuda:0"] = ["Resnet101_glove300_decoder_dim_256_ft_embeddings_false_fine_tune_encoder_false",
+                         "Resnet101_glove300_decoder_dim_256_ft_embeddings_false_fine_tune_encoder_true"]
+    configs["cuda:2"] = ["Resnet101_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
+                         "Resnet101_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
+    for device, output_path in configs:
+        device = torch.device(
+            device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
+        cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
-    for data_name in output_path:
-        # path to save checkpoints
-        model_path = os.path.join(data_f, "output", data_name, "checkpoints")
-        checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
-        print(checkpoint)
-        # load model
-        checkpoint = torch.load(checkpoint, map_location=str(device))
+        for data_name in output_path:
+            # path to save checkpoints
+            model_path = os.path.join(data_f, "output", data_name, "checkpoints")
+            checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
+            print(checkpoint)
+            beam_size = 8
+            # load model
+            checkpoint = torch.load(checkpoint, map_location=str(device))
 
-        decoder = checkpoint['decoder']
-        decoder = decoder.to(device)
-        decoder.eval()
+            decoder = checkpoint['decoder']
+            decoder = decoder.to(device)
+            decoder.eval()
 
-        encoder = checkpoint['encoder']
-        encoder = encoder.to(device)
-        encoder.eval()
+            encoder = checkpoint['encoder']
+            encoder = encoder.to(device)
+            encoder.eval()
 
-        caption_model = checkpoint['caption_model']
-
-
-        def temp(beam_size, report_name):
-            print("Scores for ", data_name)
-            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, 'show_tell', beam_size)
-
-            print("\nScores @ beam size of %d are:" % beam_size)
-            print("   BLEU-1: %.4f" % bleu1)
-            print("   BLEU-2: %.4f" % bleu2)
-            print("   BLEU-3: %.4f" % bleu3)
-            print("   BLEU-4: %.4f" % bleu4)
-            print("   CIDEr: %.4f" % cider)
-            print("   ROUGE-L: %.4f" % rouge)
-
-            generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+            caption_model = checkpoint['caption_model']
 
 
-        temp(1, "final_results_k1.csv")
-        temp(2, "final_results_k2.csv")
-        temp(5, "final_results_k5.csv")
-        temp(8, "final_results_k8.csv")
+            def temp(beam_size, report_name):
+                print("Scores for ", data_name)
+                (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, "att2all", beam_size)
+
+                print("\nScores @ beam size of %d are:" % beam_size)
+                print("   BLEU-1: %.4f" % bleu1)
+                print("   BLEU-2: %.4f" % bleu2)
+                print("   BLEU-3: %.4f" % bleu3)
+                print("   BLEU-4: %.4f" % bleu4)
+                print("   CIDEr: %.4f" % cider)
+                print("   ROUGE-L: %.4f" % rouge)
+
+                generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+
+
+            temp(1, "final_results_k1.csv")
+            temp(2, "final_results_k2.csv")
+            temp(5, "final_results_k5.csv")
+            temp(8, "final_results_k8.csv")
