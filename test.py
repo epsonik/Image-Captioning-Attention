@@ -164,6 +164,7 @@ if __name__ == '__main__':
     configs["cuda:2"] = ["Resnet101_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
                          "Resnet101_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
     for device, output_path in configs.items():
+        print(device)
         device = torch.device(
             device if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
         cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
