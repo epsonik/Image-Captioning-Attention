@@ -159,7 +159,7 @@ if __name__ == '__main__':
     #                "DenseNet201_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_256",
     #                "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
     #                ]
-    configs["cuda:2"] = ["Resnet101_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
+    configs["cuda:1"] = ["Resnet101_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false",
                          "Resnet101_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
     for device, output_path in configs.items():
         print(device)
