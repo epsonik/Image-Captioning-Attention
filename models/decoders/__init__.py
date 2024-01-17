@@ -29,6 +29,8 @@ def make(
         encoder_dim = 1920
     if config.pretrained_encoder == 'Regnet32' or config.pretrained_encoder == 'Regnet16':
         encoder_dim = 3712
+    if config.pretrained_encoder == 'Regnet16':
+        encoder_dim = 3024
     if model_name == 'show_tell':
         model = ShowTellDecoder(
             embed_dim=embed_dim,
