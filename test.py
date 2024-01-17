@@ -17,7 +17,7 @@ from metrics import Metrics
 from config import config
 
 device = torch.device(
-    "cuda:1" if torch.cuda.is_available() else "cpu")
+    "cuda:2" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
