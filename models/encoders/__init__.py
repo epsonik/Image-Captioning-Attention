@@ -3,8 +3,8 @@ from torch import nn
 from config import config
 from .resnet import EncoderResNet, AttentionEncoderResNet, AdaptiveAttentionEncoderResNet
 from .densenet import AttentionEncoderDenseNet201, EncoderDenseNet201
-from .regnet import AttentionEncoderRegnet32, EncoderRegnet32
-
+from .regnet32 import AttentionEncoderRegnet32, EncoderRegnet32
+from .regnet16 import AttentionEncoderRegnet16, EncoderRegnet16
 
 def make(embed_dim: int) -> nn.Module:
     """
@@ -28,6 +28,8 @@ def make(embed_dim: int) -> nn.Module:
             model = AttentionEncoderDenseNet201()
         if pretrained_encoder == 'Regnet32':
             model = AttentionEncoderRegnet32()
+        if pretrained_encoder == 'Regnet16':
+            model = AttentionEncoderRegnet16()
     elif model_name == 'adaptive_att' or model_name == 'spatial_att':
         model = AdaptiveAttentionEncoderResNet(
             decoder_dim=config.decoder_dim,

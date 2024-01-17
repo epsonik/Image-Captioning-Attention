@@ -7,17 +7,17 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:3"
+    cuda_device = "cuda:2"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
-    output_path = "data/output/Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false/"
+    output_path = "data/output/Regnet16_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/home/dane/Images/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/home/dane/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false'  # any name you want
+    dataset_basename = 'Regnet16_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -40,19 +40,19 @@ class config:
     decoder_dim = 128  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false'  # any name you want
+    model_basename = 'Regnet16_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false'  # any name you want
 
     # training parameters
     epochs = 30
-    batch_size = 60
-    pretrained_encoder = 'Regnet32'  # DenseNet201 Resnet101 Regnet32
+    batch_size = 100
+    pretrained_encoder = 'Regnet16'  # DenseNet201 Resnet101 Regnet32 Regnet16
     fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
-    checkpoint = os.path.join(base_path, output_path,
-                              'checkpoints/checkpoint_Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false.pth.tar')  # path to load checkpoint, None if none
-    # checkpoint = None
+    # checkpoint = os.path.join(base_path, output_path,
+    #                           'checkpoints/checkpoint_Regnet16_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false.pth.tar')  # path to load checkpoint, None if none
+    checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
     # you only need to set this when 'caption_model' is set to 'att2all'

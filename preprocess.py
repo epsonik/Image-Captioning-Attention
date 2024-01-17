@@ -184,7 +184,7 @@ def data_preprocess(
 if __name__ == '__main__':
     resized_size = 256
     pretrained_encoder = config.pretrained_encoder
-    if pretrained_encoder == 'Regnet32':
+    if pretrained_encoder == 'Regnet32' or pretrained_encoder == 'Regnet16':
         resized_size = 384
     data_preprocess(
         karpathy_json_path=config.dataset_caption_path,
