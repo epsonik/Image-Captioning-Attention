@@ -17,7 +17,7 @@ from metrics import Metrics
 from config import config
 
 device = torch.device(
-    "cuda:2" if torch.cuda.is_available() else "cpu")
+    "cuda:1" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
@@ -170,7 +170,6 @@ if __name__ == '__main__':
         model_path = os.path.join(data_f, "output", data_name, "checkpoints")
         checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         print(checkpoint)
-        beam_size = 8
         # load model
         checkpoint = torch.load(checkpoint, map_location=str(device))
 
