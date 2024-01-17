@@ -27,7 +27,7 @@ class Regnet32(nn.Module):
 
         # we need the feature map of the last conv layer,
         # so we remove the last two layers of resnet (average pool and fc)
-        modules = list(regnet.children())[:-1]
+        modules = list(regnet.children())[:-2]
         self.regnet = nn.Sequential(*modules)
 
         # resize input images with different size to fixed size
@@ -63,7 +63,7 @@ class Regnet32(nn.Module):
         for param in self.regnet.parameters():
             param.requires_grad = False
         # only fine-tune conv block 2-4
-        for module in list(self.regnet.children())[0][4:]:
+        for module in list(self.regnet.children())[1:]:
             for param in module.parameters():
                 param.requires_grad = fine_tune
 
