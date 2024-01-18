@@ -43,7 +43,7 @@ class config:
     model_basename = 'DenseNet201_glove300_decoder_dim_512_attention_dim_512_ft_embeddings_true_fine_tune_encoder_true'  # any name you want
 
     # training parameters
-    epochs = 20
+    epochs = 50
     batch_size = 300
     pretrained_encoder = 'DenseNet201'  # DenseNet201 Resnet101 Regnet32
     fine_tune_encoder = True  # fine-tune encoder or not
