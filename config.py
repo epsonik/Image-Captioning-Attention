@@ -44,7 +44,7 @@ class config:
 
     # training parameters
     validation_measure = 'bleu_4'  # bleu_4 cider
-    epochs = 3
+    epochs = 5
     batch_size = 400
     pretrained_encoder = 'DenseNet201'  # DenseNet201 Resnet101 Regnet32
     fine_tune_encoder = False  # fine-tune encoder or not
