@@ -43,7 +43,7 @@ class config:
     model_basename = 'ResnetTest'  # any name you want
 
     # training parameters
-    validation_measure = 'cider'  # bleu_4 cider
+    validation_measure = 'bleu_4'  # bleu_4 cider
     epochs = 3
     batch_size = 400
     pretrained_encoder = 'DenseNet201'  # DenseNet201 Resnet101 Regnet32
