@@ -8,8 +8,6 @@ from torch.nn.utils.rnn import pack_padded_sequence
 from utils import TensorboardWriter, AverageMeter, save_checkpoint, accuracy, \
     clip_gradient, adjust_learning_rate
 from metrics import Metrics
-from config import config
-
 
 class Trainer:
     """
@@ -88,7 +86,6 @@ class Trainer:
         start_epoch: int,
         epochs_since_improvement: int,
         best_bleu4: float,
-        best_cider: float,
         train_loader: DataLoader,
         val_loader: DataLoader,
         encoder: nn.Module,
@@ -112,7 +109,6 @@ class Trainer:
         self.start_epoch = start_epoch
         self.epochs_since_improvement = epochs_since_improvement
         self.best_bleu4 = best_bleu4
-        self.best_cider = best_cider
 
         self.train_loader = train_loader
         self.val_loader = val_loader
@@ -230,7 +226,7 @@ class Trainer:
                     )
                 )
 
-    def validate(self) -> Tuple[float, float]:
+    def validate(self) -> float:
         """
         Validate an epoch.
 
@@ -350,7 +346,7 @@ class Trainer:
                 )
             )
 
-        return bleu4, cider
+        return bleu4
 
     def run_train(self) -> None:
         print("Currently used device: ", torch.cuda.current_device())
@@ -370,14 +366,11 @@ class Trainer:
             self.train(epoch=epoch)
 
             # validate an epoch
-            recent_bleu4, recent_cider = self.validate()
+            recent_bleu4 = self.validate()
 
             # epochs num since last improvement
             is_best = recent_bleu4 > self.best_bleu4
             self.best_bleu4 = max(recent_bleu4, self.best_bleu4)
-            if config.validation_measure == 'cider':
-                is_best = recent_cider > self.best_cider
-                self.best_cider = max(recent_bleu4, self.best_cider)
             if not is_best:
                 self.epochs_since_improvement += 1
                 print("\nEpochs since last improvement: %d\n" % (self.epochs_since_improvement,))
@@ -394,6 +387,5 @@ class Trainer:
                 decoder_optimizer=self.decoder_optimizer,
                 caption_model=self.caption_model,
                 bleu4=recent_bleu4,
-                cider=recent_cider,
                 is_best=is_best
             )

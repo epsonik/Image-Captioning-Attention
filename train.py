@@ -35,7 +35,6 @@ def set_trainer():
         start_epoch = 0
         epochs_since_improvement = 0
         best_bleu4 = 0.
-        best_cider = 0.
         caption_model = config.caption_model
 
         # ------------- word embeddings -------------
@@ -95,7 +94,6 @@ def set_trainer():
         start_epoch, \
         epochs_since_improvement, \
         best_bleu4, \
-        best_cider, \
         caption_model = load_checkpoint(config.checkpoint, config.fine_tune_encoder, config.encoder_lr)
     # move to GPU, if available
     decoder = decoder.to(device)
@@ -141,7 +139,6 @@ def set_trainer():
         start_epoch=start_epoch,
         epochs_since_improvement=epochs_since_improvement,
         best_bleu4=best_bleu4,
-        best_cider=best_cider,
         train_loader=train_loader,
         val_loader=val_loader,
         encoder=encoder,

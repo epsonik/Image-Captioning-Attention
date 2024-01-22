@@ -14,7 +14,6 @@ def save_checkpoint(
     decoder_optimizer: optim.Optimizer,
     caption_model: str,
     bleu4: float,
-    cider: float,
     is_best: bool
 ) -> None:
     """
@@ -45,8 +44,6 @@ def save_checkpoint(
 
     bleu4 : float
         Validation BLEU-4 score for this epoch
-    cider : float
-    Validation CIDER score for this epoch
 
     is_best : bool
         Is this checkpoint the best so far?
@@ -55,7 +52,6 @@ def save_checkpoint(
         'epoch': epoch,
         'epochs_since_improvement': epochs_since_improvement,
         'bleu-4': bleu4,
-        'cider': cider,
         'encoder': encoder,
         'decoder': decoder,
         'encoder_optimizer': encoder_optimizer,
@@ -72,7 +68,7 @@ def save_checkpoint(
 
 def load_checkpoint(
     checkpoint_path: str, fine_tune_encoder: bool, encoder_lr: float
-) -> Tuple[nn.Module, nn.Module, optim.Optimizer, optim.Optimizer, int, int, float, float, str]:
+) -> Tuple[nn.Module, nn.Module, optim.Optimizer, optim.Optimizer, int, int, float, str]:
     """
     Load a checkpoint, so that we can continue to train on it.
 
@@ -110,8 +106,6 @@ def load_checkpoint(
 
     best_bleu4 : float
         BLEU-4 score of checkpoint
-    best_cider : float
-        CIDER score of checkpoint
     caption_model : str
         Type of the caption model
     """
@@ -120,9 +114,6 @@ def load_checkpoint(
     start_epoch = checkpoint['epoch'] + 1
     epochs_since_improvement = checkpoint['epochs_since_improvement']
     best_bleu4 = checkpoint['bleu-4']
-    best_cider = 0.
-    if 'cider' in checkpoint:
-        best_cider = checkpoint['cider']
 
     decoder = checkpoint['decoder']
     decoder_optimizer = checkpoint['decoder_optimizer']
@@ -130,7 +121,6 @@ def load_checkpoint(
     encoder = checkpoint['encoder']
     encoder_optimizer = checkpoint['encoder_optimizer']
     if config.fine_tune_encoder is True and encoder_optimizer is None:
-
         encoder.CNN.fine_tune(fine_tune_encoder)
         encoder_optimizer = optim.Adam(params=filter(lambda p: p.requires_grad, encoder.CNN.parameters()),
                                        lr=encoder_lr)
@@ -138,7 +128,7 @@ def load_checkpoint(
     caption_model = checkpoint['caption_model']
 
     return encoder, encoder_optimizer, decoder, decoder_optimizer, \
-           start_epoch, epochs_since_improvement, best_bleu4, best_cider, caption_model
+           start_epoch, epochs_since_improvement, best_bleu4, caption_model
 
 
 class AverageMeter:
