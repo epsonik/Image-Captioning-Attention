@@ -3,7 +3,7 @@ from torch import nn
 from config import config
 from .resnet import EncoderResNet, AttentionEncoderResNet, AdaptiveAttentionEncoderResNet
 from .densenet import AttentionEncoderDenseNet201, EncoderDenseNet201
-from .regnet32 import AttentionEncoderRegnet32, EncoderRegnet32
+from .regnet import AttentionEncoderRegnet32, EncoderRegnet32
 from .regnet16 import AttentionEncoderRegnet16, EncoderRegnet16
 
 def make(embed_dim: int) -> nn.Module:

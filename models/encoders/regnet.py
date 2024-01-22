@@ -5,8 +5,6 @@ Implementation of some encoders using ResNet-101 as backbone.
 import torch
 from torch import nn
 import torchvision
-from typing import Tuple
-
 
 class Regnet32(nn.Module):
     """
