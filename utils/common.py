@@ -121,7 +121,7 @@ def load_checkpoint(
     epochs_since_improvement = checkpoint['epochs_since_improvement']
     best_bleu4 = checkpoint['bleu-4']
     best_cider = 0.
-    if checkpoint['cider']:
+    if 'cider' in checkpoint:
         best_cider = checkpoint['cider']
 
     decoder = checkpoint['decoder']
