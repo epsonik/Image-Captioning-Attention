@@ -161,7 +161,7 @@ if __name__ == '__main__':
     #                "DenseNet201_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_256",
     #                "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
     #                ]
-    output_path = ["Regnet16_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false",
+    output_path = [
                    "Regnet16_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_true_fine_tune_encoder_true",
                    "Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_true_fine_tune_encoder_true",
                    "Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false"]
