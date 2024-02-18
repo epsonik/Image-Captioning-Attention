@@ -2,7 +2,10 @@ from torch import nn
 
 from config import config
 from .resnet import EncoderResNet, AttentionEncoderResNet, AdaptiveAttentionEncoderResNet
+from .resnet152 import EncoderResNet152, AttentionEncoderResNet152, AdaptiveAttentionEncoderResNet152
 from .densenet import AttentionEncoderDenseNet201, EncoderDenseNet201
+from .densenet121 import AttentionEncoderDenseNet121, EncoderDenseNet121
+from .densenet161 import AttentionEncoderDenseNet161, EncoderDenseNet161
 from .regnet import AttentionEncoderRegnet32, EncoderRegnet32
 from .regnet16 import AttentionEncoderRegnet16, EncoderRegnet16
 
@@ -22,10 +25,22 @@ def make(embed_dim: int) -> nn.Module:
         model = EncoderResNet(embed_dim=embed_dim)
         if pretrained_encoder == 'DenseNet201':
             model = EncoderDenseNet201(embed_dim=embed_dim)
+        if pretrained_encoder == 'DenseNet121':
+            model = EncoderDenseNet121(embed_dim=embed_dim)
+        if pretrained_encoder == 'DenseNet161':
+            model = EncoderDenseNet161(embed_dim=embed_dim)
+        if pretrained_encoder == 'Resnet152':
+            model = EncoderResNet152(embed_dim=embed_dim)
     elif model_name == 'att2all':
         model = AttentionEncoderResNet()
+        if pretrained_encoder == 'Resnet152':
+            model = AttentionEncoderResNet152()
         if pretrained_encoder == 'DenseNet201':
             model = AttentionEncoderDenseNet201()
+        if pretrained_encoder == 'DenseNet121':
+            model = AttentionEncoderDenseNet121()
+        if pretrained_encoder == 'DenseNet161':
+            model = AttentionEncoderDenseNet161()
         if pretrained_encoder == 'Regnet32':
             model = AttentionEncoderRegnet32()
         if pretrained_encoder == 'Regnet16':
