@@ -44,7 +44,7 @@ class config:
 
     # training parameters
     epochs = 5
-    batch_size = 5
+    batch_size = 200
     pretrained_encoder = 'DenseNet121'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
     fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
