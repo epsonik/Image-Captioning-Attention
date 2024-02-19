@@ -141,7 +141,7 @@ class EncoderDenseNet121(nn.Module):
         )
         self.output_layer = nn.Sequential(
             # nn.Dropout(0.5),
-            nn.Linear(1920, embed_dim),
+            nn.Linear(1024, embed_dim),
             nn.ReLU(),
             nn.BatchNorm1d(embed_dim, momentum=0.01)
         )
