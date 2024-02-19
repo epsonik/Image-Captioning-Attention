@@ -25,7 +25,7 @@ def make(
     """
     model_name = config.caption_model
     encoder_dim = 2048
-    if config.pretrained_encoder == 'DenseNet201':
+    if config.pretrained_encoder == 'DenseNet201' or config.pretrained_encoder == "DenseNet121":
         encoder_dim = 1920
     if config.pretrained_encoder == 'Regnet32' or config.pretrained_encoder == 'Regnet16':
         encoder_dim = 3712
