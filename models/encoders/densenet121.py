@@ -163,3 +163,86 @@ class EncoderDenseNet121(nn.Module):
         out = self.avg_pool(feature_map).view(batch_size, -1)  # (batch_size, 2048)
         out = self.output_layer(out)  # (batch_size, embed_dim = 512)
         return out
+class AdaptiveAttentionEncoderDenseNet121(nn.Module):
+    """
+    Implementation of the encoder proposed in paper [1].
+
+    Parameters
+    ----------
+    encoded_image_size : int
+        Size of resized feature map
+
+    decoder_dim : int
+        Dimention of spatial image feature (same as dimension of decoder's
+        hidden layer)
+
+    embed_dim : int
+        Dimention of global image feature (same as dimension of word embeddings)
+
+    References
+    ----------
+    1. "`Knowing When to Look: Adaptive Attention via A Visual Sentinel for Image \
+        Captioning. <https://arxiv.org/abs/1612.01887>`_" Jiasen Lu, et al. CVPR 2017.
+    """
+
+    def __init__(
+        self,
+        encoded_image_size: int = 7,
+        decoder_dim: int = 512,
+        embed_dim: int = 512
+    ) -> None:
+        super(AdaptiveAttentionEncoderDenseNet121, self).__init__()
+        self.CNN = DenseNet121(encoded_image_size)
+        self.avg_pool = nn.AvgPool2d(
+            kernel_size = encoded_image_size,
+            stride = encoded_image_size
+        )
+        self.global_mapping = nn.Sequential(
+            # nn.Dropout(0.5),
+            nn.Linear(1024, embed_dim),
+            nn.ReLU(),
+            # nn.BatchNorm1d(embed_dim, momentum=0.01)
+        )
+        self.spatial_mapping = nn.Sequential(
+            # nn.Dropout(0.5),
+            nn.Linear(1024, decoder_dim),
+            nn.ReLU(),
+            # nn.BatchNorm1d(embed_dim, momentum=0.01)
+        )
+
+    def forward(self, images: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Parameters
+        ----------
+        images : torch.Tensor
+            Input image (batch_size, 3, image_size=256, image_size=256)
+
+        Returns
+        -------
+        spatial_feature : torch.Tensor (batch_size, num_pixels, decoder_dim)
+            Spatial image feature
+
+        global_feature : torch.Tensor (batch_size, embed_dim)
+            Global image feature
+        """
+
+        feature_map = self.CNN(images)  # (batch_size, 2048, encoded_image_size = 7, encoded_image_size = 7)
+
+        batch_size = feature_map.shape[0]
+        encoder_dim = feature_map.shape[1]  # 2048
+        num_pixels = feature_map.shape[2] * feature_map.shape[3]  # encoded_image_size * encoded_image_size = 49
+
+        global_feature = self.avg_pool(feature_map).view(batch_size, -1)  # a^g: (batch_size, 2048)
+        # global image feature, eq.16: v^g = ReLU(W_b * a^g)
+        global_feature = self.global_mapping(global_feature)  # (batch_size, embed_dim = 512)
+
+        feature_map = feature_map.permute(0, 2, 3, 1)  # (batch_size, encoded_image_size = 7, encoded_image_size = 7, 2048)
+        # A = [ a_1, a_2, ..., a_num_pixels ]
+        feature_map = feature_map.view(batch_size, num_pixels, encoder_dim)  # (batch_size, num_pixels = 49, 2048)
+
+        # spatial image feature: V = [ v_1, v_2, ..., v_num_pixels ]
+        # eq.15: v_i = ReLU(W_a * a_i)
+        spatial_feature = self.spatial_mapping(feature_map)  # (batch_size, num_pixels = 49, decoder_dim = 512)
+
+        # return feature_map, spatial_feature, global_feature
+        return spatial_feature, global_feature
