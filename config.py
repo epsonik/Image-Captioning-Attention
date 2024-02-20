@@ -15,7 +15,7 @@ class config:
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/home2/data/images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home2/dats/images/coco2014/karpathy/dataset_coco.json')
+    dataset_caption_path = os.path.join(base_path, '/home2/data/images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
     dataset_basename = 'Resnet152'  # any name you want
 
