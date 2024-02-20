@@ -27,6 +27,8 @@ def make(
     encoder_dim = 2048
     if config.pretrained_encoder == 'DenseNet201':
         encoder_dim = 1920
+    if config.pretrained_encoder == 'DenseNet161':
+        encoder_dim = 2208
     if config.pretrained_encoder == "DenseNet121":
         encoder_dim = 1024
     if config.pretrained_encoder == 'Regnet32' or config.pretrained_encoder == 'Regnet16':
