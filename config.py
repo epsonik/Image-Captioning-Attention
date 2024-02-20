@@ -44,15 +44,15 @@ class config:
 
     # training parameters
     epochs = 5
-    batch_size = 200
+    batch_size = 400
     pretrained_encoder = 'DenseNet121'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
     fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
-    # checkpoint = os.path.join(base_path, output_path,
-    #                           'checkpoints/checkpoint_Regnet32_glove300_decoder_dim_512_attention_dim_128_ft_embeddings_true_fine_tune_encoder_false_2.pth.tar')  # path to load checkpoint, None if none
-    checkpoint = None
+    checkpoint = os.path.join(base_path, output_path,
+                              'checkpoints/checkpoint_DenseNet121.pth.tar')  # path to load checkpoint, None if none
+    # checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
     # you only need to set this when 'caption_model' is set to 'att2all'
