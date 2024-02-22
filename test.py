@@ -20,7 +20,7 @@ device = torch.device(
     "cuda:2" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
-word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
+word_map_file = os.path.join(data_f, "evaluation/regnet", 'wordmap' + '.json')
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -142,29 +142,7 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 if __name__ == '__main__':
 
     configs = dict()
-    # configs["cuda:1"] = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
-    # configs["cuda:2"] = ["DenseNet201_glove300_fte_true_decoder_dim_256",
-    #                      "DenseNet201_glove300_fte_false_decoder_dim_256"]
-    # configs["cuda:3"] = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
-    #                      "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
-    #                      "DenseNet201_glove300_fte_true_decoder_dim_512",
-    #                      "Resnet101_glove300_fte_false_decoder_dim_256",
-    #                      "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
-    #                      ]
-    # 1
-    # output_path = ["Resnet101_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_512"]
-    # 2
-    # output_path = ["DenseNet201_glove300_fte_true_decoder_dim_256", "DenseNet201_glove300_fte_false_decoder_dim_256"]
-    # # 3
-    # output_path = ["DenseNet201_glove300_fte_true", "DenseNet201_glove300_fte_false",
-    #                "Resnet101_glove300_fte_true", "Resnet101_glove300_fte_false",
-    #                "DenseNet201_glove300_fte_true_decoder_dim_512", "Resnet101_glove300_fte_false_decoder_dim_256",
-    #                "DenseNet201_glove300_fte_false_decoder_dim_512", "Resnet101_glove300_fte_true_decoder_dim_256"
-    #                ]
-    output_path = [
-                   "Regnet16_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_true_fine_tune_encoder_true",
-                   "Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_true_fine_tune_encoder_true",
-                   "Regnet32_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_false"]
+    output_path = ["Regnet32_glove300_decoder_dim_512_attention_dim_128_ft_embeddings_true_fine_tune_encoder_false_2"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
