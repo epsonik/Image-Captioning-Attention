@@ -14,7 +14,8 @@ def save_checkpoint(
     decoder_optimizer: optim.Optimizer,
     caption_model: str,
     bleu4: float,
-    is_best: bool
+    is_best: bool,
+    loss: float
 ) -> None:
     """
     Save a model checkpoint
@@ -58,7 +59,7 @@ def save_checkpoint(
         'decoder_optimizer': decoder_optimizer,
         'caption_model': caption_model
     }
-    filename = 'checkpoint_' + config.model_basename + '.pth.tar'
+    filename = 'checkpoint_' + config.model_basename + '-epoch-' + str(epoch) + '.pth.tar'
     torch.save(state, config.model_path + filename)
 
     # If this checkpoint is the best so far, store a copy so it doesn't get overwritten by a worse checkpoint
