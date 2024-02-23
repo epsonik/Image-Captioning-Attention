@@ -9,6 +9,7 @@ from utils import TensorboardWriter, AverageMeter, save_checkpoint, accuracy, \
     clip_gradient, adjust_learning_rate
 from metrics import Metrics
 
+
 class Trainer:
     """
     Encoder-decoder pipeline. Tearcher Forcing is used during training and validation.
@@ -387,5 +388,4 @@ class Trainer:
                 decoder_optimizer=self.decoder_optimizer,
                 caption_model=self.caption_model,
                 bleu4=recent_bleu4,
-                is_best=is_best
-            )
+                is_best=is_best)

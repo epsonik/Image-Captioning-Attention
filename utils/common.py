@@ -14,8 +14,7 @@ def save_checkpoint(
     decoder_optimizer: optim.Optimizer,
     caption_model: str,
     bleu4: float,
-    is_best: bool,
-    loss: float
+    is_best: bool
 ) -> None:
     """
     Save a model checkpoint
