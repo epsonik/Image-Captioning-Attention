@@ -20,7 +20,7 @@ device = torch.device(
     "cuda:2" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
-word_map_file = os.path.join(data_f, "evaluation/regnet", 'wordmap' + '.json')
+word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -142,13 +142,43 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 if __name__ == '__main__':
 
     configs = dict()
-    output_path = ["Regnet32_glove300_decoder_dim_512_attention_dim_128_ft_embeddings_true_fine_tune_encoder_false_2"]
+    output_path = ["checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-0.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-1.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-2.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-3.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-4.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-5.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-6.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-7.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-8.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-9.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-10.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-11.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-12.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-13.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-14.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-15.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-16.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-17.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-18.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-19.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-20.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-21.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-22.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-23.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-24.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-25.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-26.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-27.pth.tar"
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-28.pth.tar",
+                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-29.pth.tar"
+                   ]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
         # path to save checkpoints
         model_path = os.path.join(data_f, "output", data_name, "checkpoints")
-        checkpoint = os.path.join(model_path, 'best_checkpoint_' + data_name + '.pth.tar')  # model checkpoint
+        checkpoint = os.path.join(model_path, 'checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         print(checkpoint)
         # load model
         checkpoint = torch.load(checkpoint, map_location=str(device))
