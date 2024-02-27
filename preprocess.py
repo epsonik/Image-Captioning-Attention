@@ -180,6 +180,9 @@ def data_preprocess(
             with open(os.path.join(output_folder, split + '_caplength' + '.json'), 'w') as j:
                 json.dump(caplens, j)
 
+            with open(os.path.join(output_folder, split + '_img_paths' + '.json'), 'w') as j:
+                json.dump(impaths, j)
+
 
 if __name__ == '__main__':
     resized_size = 256
