@@ -169,7 +169,7 @@ if __name__ == '__main__':
                     "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-24.pth.tar",
                     "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-25.pth.tar",
                     "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-26.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-27.pth.tar"
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-27.pth.tar",
                     "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-28.pth.tar",
                     "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-29.pth.tar"
                     ]
