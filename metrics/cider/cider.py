@@ -53,9 +53,6 @@ class Cider:
         for i, hypo in enumerate(hypothesis):
             hypo = hypo
             ref = reference[i]
-            print(hypo)
-            print(ref)
-            print("/n")
             # sanity check
             assert(type(hypo) is list)
             assert(len(hypo) >= 1)
@@ -65,6 +62,7 @@ class Cider:
             cider_scorer += (hypo[0], ref)
 
         score, scores = cider_scorer.compute_score()
+        print(len(scores))
         print(scores+"")
         return score, scores
 
