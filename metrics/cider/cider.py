@@ -63,7 +63,9 @@ class Cider:
 
         score, scores = cider_scorer.compute_score()
         print(len(scores))
-        json.dumps({'nums': scores.tolist()})
+        kk = json.dumps({'nums': scores.tolist()})
+        with open('scores' + '.json', 'w') as j:
+            json.dump(kk, j)
         return score, scores
 
     def method(self) -> str:
