@@ -100,6 +100,19 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         prediction.append(pred)
         assert len(ground_truth) == len(prediction)
 
+    gt_file = os.path.join(data_f, "evaluation", 'gt' + '.json')
+    pd_file = os.path.join(data_f, "evaluation", 'pd' + '.json')
+    with open(gt_file, 'w') as j:
+        json.dump(ground_truth, j)
+
+    with open(pd_file, 'w') as j:
+        json.dump(prediction, j)
+
+    # with open(gt_file, 'r') as j:
+    #     self.caplens = json.load(j)
+    #
+    # with open(os.path.join(data_folder, self.split + '_img_paths' + '.json'), 'r') as j:
+    #     self.img_paths = json.load(j)
     # calculate metrics
     metrics = Metrics(ground_truth, prediction, rev_word_map)
     scores = metrics.all_metrics
