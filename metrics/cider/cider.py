@@ -63,7 +63,7 @@ class Cider:
 
         score, scores = cider_scorer.compute_score()
         print(len(scores))
-        print(scores+"")
+        print(str(scores))
         return score, scores
 
     def method(self) -> str:
