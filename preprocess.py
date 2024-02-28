@@ -94,7 +94,9 @@ def data_preprocess(
     assert len(train_image_paths) == len(train_image_captions)
     assert len(val_image_paths) == len(val_image_captions)
     assert len(test_image_paths) == len(test_image_captions)
-
+    print(len(train_image_paths))
+    print(len(val_image_paths))
+    print(len(test_image_paths))
     # create word map (word2id)
     words = [w for w in word_freq.keys() if word_freq[w] > min_word_freq]
     word_map = {k: v + 1 for v, k in enumerate(words)}
@@ -172,7 +174,9 @@ def data_preprocess(
             # sanity check
             # images.shape[0] = len(impaths)
             assert images.shape[0] * captions_per_image == len(enc_captions) == len(caplens)
-
+            print(len(enc_captions))
+            print(len(caplens))
+            print(len(impaths))
             # save encoded captions and their lengths to JSON files
             with open(os.path.join(output_folder, split + '_captions' + '.json'), 'w') as j:
                 json.dump(enc_captions, j)
