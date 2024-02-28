@@ -12,7 +12,7 @@ import numpy as np
 import pdb
 
 from .cider_scorer import CiderScorer
-
+import json
 class Cider:
     """Compute CIDEr score for a set of candidate sentences."""
 
@@ -63,7 +63,8 @@ class Cider:
 
         score, scores = cider_scorer.compute_score()
         print(len(scores))
-        print(str(scores))
+        with open('scores' + '.json', 'w') as j:
+            json.dump(scores, j)
         return score, scores
 
     def method(self) -> str:
