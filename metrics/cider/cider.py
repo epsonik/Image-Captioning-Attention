@@ -52,7 +52,9 @@ class Cider:
 
         for i, hypo in enumerate(hypothesis):
             hypo = hypo
+            print(hypo)
             ref = reference[i]
+            print(ref)
             # sanity check
             assert(type(hypo) is list)
             assert(len(hypo) >= 1)
