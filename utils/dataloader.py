@@ -72,7 +72,7 @@ class CaptionDataset(Dataset):
         caption = torch.LongTensor(self.captions[i])
 
         caplen = torch.LongTensor([self.caplens[i]])
-        print(self.img_paths)
+        print(len(self.img_paths))
         img_path = self.img_paths[i]
         if self.split is 'train':
             return img, caption, caplen
