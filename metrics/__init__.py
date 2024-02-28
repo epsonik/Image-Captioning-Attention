@@ -40,6 +40,8 @@ class Metrics:
 
     @property
     def cider(self) -> np.float64:
+        print(len(self.ref_sentence))
+        print(len(self.hypo_sentence))
         cider_score = Cider().compute_score(self.ref_sentence, self.hypo_sentence)
         # return cider_score[0], cider_score[1]
         return cider_score[0]
