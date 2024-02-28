@@ -35,17 +35,17 @@ class Metrics:
     @property
     def belu(self) -> Tuple[float, float, float, float]:
         bleu_score = Bleu().compute_score(self.ref_sentence, self.hypo_sentence)
-        return bleu_score[0][0], bleu_score[0][0], bleu_score[0][2], bleu_score[0][3]
+        return bleu_score[0][0], bleu_score[0][0], bleu_score[0][2], bleu_score[0][3], bleu_score[1][0], bleu_score[1][0], bleu_score[1][2], bleu_score[1][3]
 
     @property
     def cider(self) -> np.float64:
         cider_score = Cider().compute_score(self.ref_sentence, self.hypo_sentence)
-        return cider_score[0]
+        return cider_score[0], cider_score[1]
 
     @property
     def rouge(self) -> np.float64:
         rouge_score = Rouge().compute_score(self.ref_sentence, self.hypo_sentence)
-        return rouge_score[0]
+        return rouge_score[0], rouge_score[1]
 
     @property
     def all_metrics(self) -> Tuple[Union[float, np.float64, Tuple[float]]]:
@@ -73,5 +73,6 @@ def setup_corpus(
         # predictions
         sentence = [rev_word_map[ix] for ix in candidates[cnt]]
         hypo_sentence.append([' '.join(sentence)])
-
+    print(ref_sentence)
+    print(hypo_sentence)
     return ref_sentence, hypo_sentence

@@ -98,8 +98,6 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
 
         pred = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
         prediction.append(pred)
-        print(prediction)
-        print(ground_truth)
         assert len(ground_truth) == len(prediction)
 
     # calculate metrics
