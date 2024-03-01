@@ -6,6 +6,7 @@ from .bleu import Bleu
 from .cider import Cider
 from .rouge import Rouge
 
+
 class Metrics:
     """
     Compute metrics on given reference and candidate sentences set. Now supports
@@ -27,34 +28,74 @@ class Metrics:
         self,
         references: List[List[List[int]]],
         candidates: List[List[int]],
-        rev_word_map: Dict[int, str]
+        rev_word_map: Dict[int, str],
+        img_paths: List[str]
     ) -> None:
+        self.eval = {}
         corpus = setup_corpus(references, candidates, rev_word_map)
         self.ref_sentence = corpus[0]
         self.hypo_sentence = corpus[1]
+        self.img_paths = img_paths
+        self.imgToEval = {}
+
 
     @property
-    def belu(self) -> Tuple[float, float, float, float]:
+    def bleu(self) -> Tuple[List[float], List[List[float]]]:
         bleu_score = Bleu().compute_score(self.ref_sentence, self.hypo_sentence)
-        # return bleu_score[0][0], bleu_score[0][0], bleu_score[0][2], bleu_score[0][3], bleu_score[1][0], bleu_score[1][0], bleu_score[1][2], bleu_score[1][3]
-        return bleu_score[0][0], bleu_score[0][0], bleu_score[0][2], bleu_score[0][3]
+        return bleu_score
 
     @property
-    def cider(self) -> np.float64:
+    def cider(self) -> Tuple[np.float64, np.ndarray]:
         cider_score = Cider().compute_score(self.ref_sentence, self.hypo_sentence)
-        # return cider_score[0], cider_score[1]
-        return cider_score[0]
+        return cider_score
 
     @property
-    def rouge(self) -> np.float64:
+    def rouge(self) -> Tuple[np.float64, np.ndarray]:
         rouge_score = Rouge().compute_score(self.ref_sentence, self.hypo_sentence)
-        # return rouge_score[0], rouge_score[1]
-        return rouge_score[0]
+        return rouge_score
 
     @property
-    def all_metrics(self) -> Tuple[Union[float, np.float64, Tuple[float]]]:
+    def all_metrics(self) -> Tuple[Tuple[float, float, float, float], np.float64, np.float64]:
         """Return all metrics"""
-        return self.belu, self.cider, self.rouge
+        return (self.bleu[0][0], self.bleu[0][0], self.bleu[0][2], self.bleu[0][3]), self.cider[0], self.rouge[0]
+
+    @property
+    def img_to_eval(self):
+        scorers = [
+            (Bleu(), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
+            (Cider(), "CIDEr"),
+            (Rouge(), "ROUGE_L"),
+        ]
+
+        # =================================================
+        # Compute scores
+        # =================================================
+        for scorer, method in scorers:
+            print('computing %s score...' % (scorer.method()))
+            score, scores = scorer.compute_score(self.ref_sentence, self.hypo_sentence)
+            if type(method) == list:
+                for sc, scs, method_name in zip(score, scores, method):
+                    self.setEval(sc, method_name)
+                    self.setImgToEvalImgs(scs, self.img_paths, method_name)
+                    print("%s: %0.3f" % (method_name, sc))
+            else:
+                self.setEval(score, method)
+                self.setImgToEvalImgs(scores, self.img_paths, method)
+                print("%s: %0.3f" % (method, score))
+        self.setEvalImgs()
+
+    def setEvalImgs(self):
+        self.evalImgs = [eval for imgId, eval in list(self.imgToEval.items())]
+
+    def setEval(self, score, method):
+        self.eval[method] = score
+
+    def setImgToEvalImgs(self, scores, imgIds, method):
+        for imgId, score in zip(imgIds, scores):
+            if not imgId in self.imgToEval:
+                self.imgToEval[imgId] = {}
+                self.imgToEval[imgId]["image_id"] = imgId
+            self.imgToEval[imgId][method] = score
 
 
 def setup_corpus(

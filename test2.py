@@ -102,7 +102,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         prediction.append(pred)
         assert len(ground_truth) == len(prediction)
     # calculate metrics
-    metrics = Metrics(ground_truth, prediction, rev_word_map)
+    metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
     scores = metrics.all_metrics
 
     return scores
