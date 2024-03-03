@@ -110,7 +110,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
     scores = metrics.imgToEval
     print(scores)
-    return scores
+    return metrics.all_metrics
 
 
 def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
