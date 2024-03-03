@@ -68,7 +68,6 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     # for n images, each of them has one prediction and multiple ground truths (a, b, c...):
     # prediction = [ [pred1], [pred2], ..., [predn] ]
     # ground_truth = [ [ [gt1a], [gt1b], [gt1c] ], ..., [ [gtna], [gtnb] ] ]
-
     # ground_truth = list()
     # prediction = list()
     # img_paths = list()
@@ -100,6 +99,9 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     #     pred = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
     #     prediction.append(pred)
     #     assert len(ground_truth) == len(prediction)
+
+
+
     with open('img_paths.json', 'r') as j:
         img_paths = json.load(j)
     with open('prediction.json', 'r') as j:
@@ -108,8 +110,9 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         ground_truth = json.load(j)
     # calculate metrics
     metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
-    metrics.img_to_eval()
-    print(metrics.imgToEval)
+    scores = metrics.img_to_eval()
+    with open(os.path.join('results.json'), 'w') as j:
+        json.dump(scores, j)
     return metrics.all_metrics
 
 
