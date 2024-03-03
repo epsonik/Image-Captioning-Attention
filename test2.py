@@ -99,14 +99,12 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         pred = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
         prediction.append(pred)
         assert len(ground_truth) == len(prediction)
-    with open(os.path.join('ground_truth.json'), 'w') as j:
-        json.dump(ground_truth, j)
-
-    with open(os.path.join('prediction.json'), 'w') as j:
-        json.dump(prediction, j)
-
-    with open(os.path.join('img_paths.json'), 'w') as j:
-        json.dump(img_paths, j)
+    with open('img_paths.json', 'r') as j:
+        img_paths = json.load(j)
+    with open('prediction.json', 'r') as j:
+        prediction = json.load(j)
+    with open('ground_truth.json', 'r') as j:
+        ground_truth = json.load(j)
     # calculate metrics
     metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
     scores = metrics.imgToEval
