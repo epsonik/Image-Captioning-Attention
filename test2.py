@@ -108,8 +108,8 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         ground_truth = json.load(j)
     # calculate metrics
     metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
-    scores = metrics.imgToEval
-    print(scores)
+    metrics.img_to_eval()
+    print(metrics.imgToEval)
     return metrics.all_metrics
 
 

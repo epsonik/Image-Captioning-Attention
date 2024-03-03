@@ -59,7 +59,6 @@ class Metrics:
         """Return all metrics"""
         return (self.bleu[0][0], self.bleu[0][0], self.bleu[0][2], self.bleu[0][3]), self.cider[0], self.rouge[0]
 
-    @property
     def img_to_eval(self):
         scorers = [
             (Bleu(), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
@@ -83,7 +82,6 @@ class Metrics:
                 self.setImgToEvalImgs(scores, self.img_paths, method)
                 print("%s: %0.3f" % (method, score))
         self.setEvalImgs()
-        return self.imgToEval
 
     def setEvalImgs(self):
         self.evalImgs = [eval for imgId, eval in list(self.imgToEval.items())]
