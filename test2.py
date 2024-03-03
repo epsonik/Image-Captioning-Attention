@@ -68,37 +68,38 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     # for n images, each of them has one prediction and multiple ground truths (a, b, c...):
     # prediction = [ [pred1], [pred2], ..., [predn] ]
     # ground_truth = [ [ [gt1a], [gt1b], [gt1c] ], ..., [ [gtna], [gtnb] ] ]
-    ground_truth = list()
-    prediction = list()
-    img_paths = list()
 
-    # for each image
-    for i, (image, caps, caplens, allcaps, img_path) in enumerate(
-        tqdm(loader, desc="Evaluating at beam size " + str(beam_size))):
-        # move to GPU device, if available
-        image = image.to(device)  # (1, 3, 256, 256)
-
-        # forward encoder
-        encoder_out = encoder(image)
-
-        # ground_truth
-        img_caps = allcaps[0].tolist()
-        img_captions = list(
-            map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
-                img_caps))  # remove <start> and pads
-        ground_truth.append(img_captions)
-        img_paths.append(img_path)
-        # prediction (beam search)
-        if caption_model == 'show_tell':
-            seq = decoder.beam_search(encoder_out, beam_size, word_map)
-        elif caption_model == 'att2all' or caption_model == 'spatial_att':
-            seq, _ = decoder.beam_search(encoder_out, beam_size, word_map)
-        elif caption_model == 'adaptive_att':
-            seq, _, _ = decoder.beam_search(encoder_out, beam_size, word_map)
-
-        pred = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
-        prediction.append(pred)
-        assert len(ground_truth) == len(prediction)
+    # ground_truth = list()
+    # prediction = list()
+    # img_paths = list()
+    #
+    # # for each image
+    # for i, (image, caps, caplens, allcaps, img_path) in enumerate(
+    #     tqdm(loader, desc="Evaluating at beam size " + str(beam_size))):
+    #     # move to GPU device, if available
+    #     image = image.to(device)  # (1, 3, 256, 256)
+    #
+    #     # forward encoder
+    #     encoder_out = encoder(image)
+    #
+    #     # ground_truth
+    #     img_caps = allcaps[0].tolist()
+    #     img_captions = list(
+    #         map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
+    #             img_caps))  # remove <start> and pads
+    #     ground_truth.append(img_captions)
+    #     img_paths.append(img_path)
+    #     # prediction (beam search)
+    #     if caption_model == 'show_tell':
+    #         seq = decoder.beam_search(encoder_out, beam_size, word_map)
+    #     elif caption_model == 'att2all' or caption_model == 'spatial_att':
+    #         seq, _ = decoder.beam_search(encoder_out, beam_size, word_map)
+    #     elif caption_model == 'adaptive_att':
+    #         seq, _, _ = decoder.beam_search(encoder_out, beam_size, word_map)
+    #
+    #     pred = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
+    #     prediction.append(pred)
+    #     assert len(ground_truth) == len(prediction)
     with open('img_paths.json', 'r') as j:
         img_paths = json.load(j)
     with open('prediction.json', 'r') as j:
