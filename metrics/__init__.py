@@ -83,6 +83,7 @@ class Metrics:
                 self.setImgToEvalImgs(scores, self.img_paths, method)
                 print("%s: %0.3f" % (method, score))
         self.setEvalImgs()
+        return self.imgToEval
 
     def setEvalImgs(self):
         self.evalImgs = [eval for imgId, eval in list(self.imgToEval.items())]
