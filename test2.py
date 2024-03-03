@@ -109,11 +109,23 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     with open('ground_truth.json', 'r') as j:
         ground_truth = json.load(j)
     # calculate metrics
-    metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
-    scores = metrics.img_to_eval()
-    with open(os.path.join('results.json'), 'w') as j:
-        json.dump(scores, j)
-    return metrics.all_metrics
+    cocoEvalObj = Metrics(ground_truth, prediction, rev_word_map, img_paths)
+    cocoEvalObj.img_to_eval()
+
+    calculated_metrics = {}
+    # Store metrics  values in dictionary by metrics names
+    for metric, score in cocoEvalObj.eval.items():
+        calculated_metrics[metric] = score
+
+    print("Calculating final results")
+    imgToEval = cocoEvalObj.imgToEval
+
+    with open("result.json", 'w') as outfile:
+        json.dump(
+            {'overall': calculated_metrics, 'imgToEval': imgToEval},
+            outfile)
+
+    return cocoEvalObj.all_metrics
 
 
 def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):

@@ -89,11 +89,13 @@ class Metrics:
         self.eval[method] = score
 
     def setImgToEvalImgs(self, scores, imgIds, method):
-        for imgId, score in zip(imgIds, scores):
+        for imgId, score, ref_sentence, hypo_sentence in zip(imgIds, scores, self.ref_sentence, self.hypo_sentence):
             imgId = imgId[0]
             if not imgId in self.imgToEval:
                 self.imgToEval[imgId] = {}
                 self.imgToEval[imgId]["image_id"] = imgId
+                self.imgToEval[imgId]["ground_truth_captions"] = ref_sentence
+                self.imgToEval[imgId]["captions"] = hypo_sentence
             self.imgToEval[imgId][method] = score
 
 
