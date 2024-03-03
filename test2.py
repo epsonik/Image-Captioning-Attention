@@ -89,7 +89,6 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
                 img_caps))  # remove <start> and pads
         ground_truth.append(img_captions)
         img_paths.append(img_path)
-        print(img_path)
         # prediction (beam search)
         if caption_model == 'show_tell':
             seq = decoder.beam_search(encoder_out, beam_size, word_map)
@@ -103,8 +102,8 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         assert len(ground_truth) == len(prediction)
     # calculate metrics
     metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
-    scores = metrics.all_metrics
-
+    scores = metrics.imgToEval
+    print(scores)
     return scores
 
 
