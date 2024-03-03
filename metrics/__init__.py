@@ -38,7 +38,6 @@ class Metrics:
         self.img_paths = img_paths
         self.imgToEval = {}
 
-
     @property
     def bleu(self) -> Tuple[List[float], List[List[float]]]:
         bleu_score = Bleu().compute_score(self.ref_sentence, self.hypo_sentence)
@@ -91,6 +90,7 @@ class Metrics:
 
     def setImgToEvalImgs(self, scores, imgIds, method):
         for imgId, score in zip(imgIds, scores):
+            imgId = imgId[0]
             if not imgId in self.imgToEval:
                 self.imgToEval[imgId] = {}
                 self.imgToEval[imgId]["image_id"] = imgId
