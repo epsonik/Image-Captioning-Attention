@@ -69,44 +69,38 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     # for n images, each of them has one prediction and multiple ground truths (a, b, c...):
     # prediction = [ [pred1], [pred2], ..., [predn] ]
     # ground_truth = [ [ [gt1a], [gt1b], [gt1c] ], ..., [ [gtna], [gtnb] ] ]
-    # ground_truth = list()
-    # prediction = list()
-    # img_paths = list()
-    #
-    # # for each image
-    # for i, (image, caps, caplens, allcaps, img_path) in enumerate(
-    #     tqdm(loader, desc="Evaluating at beam size " + str(beam_size))):
-    #     # move to GPU device, if available
-    #     image = image.to(device)  # (1, 3, 256, 256)
-    #
-    #     # forward encoder
-    #     encoder_out = encoder(image)
-    #
-    #     # ground_truth
-    #     img_caps = allcaps[0].tolist()
-    #     img_captions = list(
-    #         map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
-    #             img_caps))  # remove <start> and pads
-    #     ground_truth.append(img_captions)
-    #     img_paths.append(img_path)
-    #     # prediction (beam search)
-    #     if caption_model == 'show_tell':
-    #         seq = decoder.beam_search(encoder_out, beam_size, word_map)
-    #     elif caption_model == 'att2all' or caption_model == 'spatial_att':
-    #         seq, _ = decoder.beam_search(encoder_out, beam_size, word_map)
-    #     elif caption_model == 'adaptive_att':
-    #         seq, _, _ = decoder.beam_search(encoder_out, beam_size, word_map)
-    #
-    #     pred = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
-    #     prediction.append(pred)
-    #     assert len(ground_truth) == len(prediction)
+    ground_truth = list()
+    prediction = list()
+    img_paths = list()
 
-    with open('img_paths.json', 'r') as j:
-        img_paths = json.load(j)
-    with open('prediction.json', 'r') as j:
-        prediction = json.load(j)
-    with open('ground_truth.json', 'r') as j:
-        ground_truth = json.load(j)
+    # for each image
+    for i, (image, caps, caplens, allcaps, img_path) in enumerate(
+        tqdm(loader, desc="Evaluating at beam size " + str(beam_size))):
+        # move to GPU device, if available
+        image = image.to(device)  # (1, 3, 256, 256)
+
+        # forward encoder
+        encoder_out = encoder(image)
+
+        # ground_truth
+        img_caps = allcaps[0].tolist()
+        img_captions = list(
+            map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
+                img_caps))  # remove <start> and pads
+        ground_truth.append(img_captions)
+        img_paths.append(img_path)
+        # prediction (beam search)
+        if caption_model == 'show_tell':
+            seq = decoder.beam_search(encoder_out, beam_size, word_map)
+        elif caption_model == 'att2all' or caption_model == 'spatial_att':
+            seq, _ = decoder.beam_search(encoder_out, beam_size, word_map)
+        elif caption_model == 'adaptive_att':
+            seq, _, _ = decoder.beam_search(encoder_out, beam_size, word_map)
+
+        pred = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
+        prediction.append(pred)
+        assert len(ground_truth) == len(prediction)
+
     # calculate metrics
     cocoEvalObj = Metrics(ground_truth, prediction, rev_word_map, img_paths)
     cocoEvalObj.img_to_eval()
@@ -167,7 +161,36 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = ["checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-29.pth.tar"]
+    output_path2 = ["checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-29.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-28.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-27.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-26.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-25.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-24.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-23.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-22.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-21.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-20.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-19.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-18.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-17.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-16.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-15.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-14.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-13.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-12.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-11.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-10.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-9.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-8.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-7.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-6.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-5.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-4.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-3.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-2.pth.tar",
+                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-1.pth.tar"
+                    ]
     output_path = ["DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
@@ -208,7 +231,7 @@ if __name__ == '__main__':
                 generate_report(report_name, model_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
-            temp(1, "final_results_k1_b.csv")
-            temp(2, "final_results_k2_b.csv")
-            temp(5, "final_results_k5_b.csv")
-            temp(8, "final_results_k8_b.csv")
+            temp(1, "final_results_k1_c.csv")
+            temp(2, "final_results_k2_c.csv")
+            temp(5, "final_results_k5_c.csv")
+            temp(8, "final_results_k8_c.csv")
