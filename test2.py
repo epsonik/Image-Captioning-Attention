@@ -15,6 +15,7 @@ from torch.utils.data import DataLoader
 from utils import CaptionDataset
 from metrics import Metrics
 from config import config
+import pathlib
 
 device = torch.device(
     "cuda:1" if torch.cuda.is_available() else "cpu")
@@ -100,8 +101,6 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     #     prediction.append(pred)
     #     assert len(ground_truth) == len(prediction)
 
-
-
     with open('img_paths.json', 'r') as j:
         img_paths = json.load(j)
     with open('prediction.json', 'r') as j:
@@ -120,7 +119,12 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     print("Calculating final results")
     imgToEval = cocoEvalObj.imgToEval
 
-    with open("result.json", 'w') as outfile:
+    model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
+    pathlib.Path(model_path).mkdir(parents=True, exist_ok=True)
+
+    evaluation_results_save_path = os.path.join(model_path,
+                                                model_name.replace(".pth.tat", '-k-' + str(beam_size)) + '.json')
+    with open(evaluation_results_save_path, 'w') as outfile:
         json.dump(
             {'overall': calculated_metrics, 'imgToEval': imgToEval},
             outfile)
