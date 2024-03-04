@@ -123,7 +123,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     pathlib.Path(model_path).mkdir(parents=True, exist_ok=True)
 
     evaluation_results_save_path = os.path.join(model_path,
-                                                model_name.replace(".pth.tat", '-k-' + str(beam_size)) + '.json')
+                                                model_name.replace(".pth.tar", '-k-' + str(beam_size)) + '.json')
     with open(evaluation_results_save_path, 'w') as outfile:
         json.dump(
             {'overall': calculated_metrics, 'imgToEval': imgToEval},
