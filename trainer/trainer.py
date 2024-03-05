@@ -253,7 +253,7 @@ class Trainer:
         # solves the issue #57
         with torch.no_grad():
             # Batches
-            for i, (imgs, caps, caplens, allcaps) in enumerate(self.val_loader):
+            for i, (imgs, caps, caplens, allcaps, _) in enumerate(self.val_loader):
 
                 # move to device, if available
                 imgs = imgs.to(self.device)
