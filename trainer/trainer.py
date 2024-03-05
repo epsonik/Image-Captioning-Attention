@@ -336,8 +336,8 @@ class Trainer:
 
             # calc BLEU-4 and CIDEr score
             metrics = Metrics(ground_truth, prediction, self.rev_word_map, img_paths)
-            bleu4 = metrics.belu[3]  # BLEU-4
-            cider = metrics.cider  # CIDEr
+            bleu4 = metrics.bleu[0][3]  # BLEU-4
+            cider = metrics.cider[0]  # CIDEr
 
             print(
                 '\n * LOSS - {loss.avg:.3f}, TOP-5 ACCURACY - {top5.avg:.3f}, BLEU-4 - {bleu}, CIDEr - {cider}\n'.format(
