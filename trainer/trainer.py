@@ -248,12 +248,13 @@ class Trainer:
 
         ground_truth = list()  # ground_truth (true captions) for calculating BLEU-4 score
         prediction = list()  # prediction (predicted captions)
+        img_paths = list()
 
         # explicitly disable gradient calculation to avoid CUDA memory error
         # solves the issue #57
         with torch.no_grad():
             # Batches
-            for i, (imgs, caps, caplens, allcaps, _) in enumerate(self.val_loader):
+            for i, (imgs, caps, caplens, allcaps, img_path) in enumerate(self.val_loader):
 
                 # move to device, if available
                 imgs = imgs.to(self.device)
@@ -272,7 +273,7 @@ class Trainer:
 
                 # since we decoded starting with <start>, the targets are all words after <start>, up to <end>
                 targets = caps_sorted[:, 1:]
-
+                img_paths.append(img_path)
                 # remove timesteps that we didn't decode at, or are pads
                 # pack_padded_sequence is an easy trick to do this
                 scores_copy = scores.clone()
@@ -334,7 +335,7 @@ class Trainer:
                 assert len(ground_truth) == len(prediction)
 
             # calc BLEU-4 and CIDEr score
-            metrics = Metrics(ground_truth, prediction, self.rev_word_map)
+            metrics = Metrics(ground_truth, prediction, self.rev_word_map, img_paths)
             bleu4 = metrics.belu[3]  # BLEU-4
             cider = metrics.cider  # CIDEr
 
