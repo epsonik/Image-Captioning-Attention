@@ -43,7 +43,7 @@ class config:
     model_basename = 'Resnet152_decoder_dim_512_fine_tune_embeddings_true'  # any name you want
 
     # training parameters
-    epochs = 20
+    epochs = 50
     batch_size = 300
     pretrained_encoder = 'Resnet152'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
     fine_tune_encoder = True  # fine-tune encoder or not
