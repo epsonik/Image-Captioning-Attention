@@ -185,7 +185,7 @@ if __name__ == '__main__':
                 generate_report(report_name, model_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
-            temp(1, "final_results_k1_a.csv")
-            temp(2, "final_results_k2_a.csv")
-            temp(5, "final_results_k5_a.csv")
-            temp(8, "final_results_k8_a.csv")
+            temp(1, "final_results_k1_d.csv")
+            temp(2, "final_results_k2_d.csv")
+            temp(5, "final_results_k5_d.csv")
+            temp(8, "final_results_k8_d.csv")
