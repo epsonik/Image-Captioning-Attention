@@ -142,7 +142,7 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = ["best_checkpoint_Resnet152_decoder_dim_512_fine_tune_embeddings_false-epoch-18.pth.tar"
+    output_path2 = ["best_checkpoint_Resnet152_decoder_dim_512_fine_tune_embeddings_false-epoch-18.pth.tar",
                     "best_checkpoint_Resnet152_decoder_dim_512_fine_tune_embeddings_true-epoch-40.pth.tar"
                     ]
     output_path = ["Resnet152_decoder_dim_512_fine_tune_embeddings_true"]
