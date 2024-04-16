@@ -34,6 +34,10 @@ class ResNet101(nn.Module):
         # r"""Applies a 2D adaptive average pooling over an input signal composed of several input planes.
         self.adaptive_pool = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
 
+
+
+
+
         self.fine_tune()
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:

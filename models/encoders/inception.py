@@ -28,19 +28,10 @@ class Inceptionv3(nn.Module):
         self.inception.fc = torch.nn.Linear(self.inception.fc.in_features, len(dataset.classes))
         self.inception.aux_logits = False
         self.inception.AuxLogits = None
-        num_ftrs = self.inception.AuxLogits.fc.in_features
-        self.inception.AuxLogits.fc = nn.Linear(num_ftrs, 300)
-        # Handle the primary net
-        num_ftrs = self.inception.fc.in_features
-        self.inception.fc = nn.Linear(num_ftrs, 300)
 
-        # we need the feature map of the last conv layer,
-        # so we remove the last two layers of resnet (average pool and fc)
-        # modules = list(inception.children())[:-1]
-        # self.inception = nn.Sequential(*modules)
 
-        # resize input images with different size to fixed size
-        # r"""Applies a 2D adaptive average pooling over an input signal composed of several input planes.
+
+
         self.fine_tune()
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:

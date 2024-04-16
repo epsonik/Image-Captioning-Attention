@@ -5,7 +5,6 @@ import numpy as np
 from collections import Counter
 from random import seed, choice, sample
 from tqdm import tqdm
-# from scipy.misc import imread, imresize
 from imageio import imread
 from PIL import Image
 
