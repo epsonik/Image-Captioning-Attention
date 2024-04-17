@@ -1,8 +1,11 @@
 import torchinfo
+from torch import nn
 import torchvision
 print("inception")
 inception=torchvision.models.inception_v3(pretrained=True)
-print(torchinfo.summary(inception, (3, 224, 224), batch_dim=0,
+modules = list(inception.children())[:-3]
+modules = nn.Sequential(*modules)
+print(torchinfo.summary(modules, (3, 224, 224), batch_dim=0,
                         col_names=("input_size", "output_size", "num_params", "kernel_size", "mult_adds"), verbose=0))
 
 print("resnet")
