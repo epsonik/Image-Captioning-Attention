@@ -23,9 +23,11 @@ class Inceptionv3(nn.Module):
         self.enc_image_size = encoded_image_size  # size of resized feature map
 
         # pretrained ResNet-101 model (on ImageNet)
-        self.inception = torchvision.models.inception_v3(pretrained=True)
+        inception = torchvision.models.inception_v3(pretrained=True)
+        modules = list(inception.children())[:-3]
+        self.resnet = nn.Sequential(*modules)
 
-        self.inception.fc = torch.nn.Linear(self.inception.fc.in_features, len(dataset.classes))
+        self.adaptive_pool = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
         self.inception.aux_logits = False
         self.inception.AuxLogits = None
 
