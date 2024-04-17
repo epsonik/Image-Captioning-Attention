@@ -23,7 +23,7 @@ class Inceptionv3(nn.Module):
         self.enc_image_size = encoded_image_size  # size of resized feature map
 
         # pretrained ResNet-101 model (on ImageNet)
-        inception = torchvision.models.inception_v3(pretrained=True, aux_logits=False)
+        inception = torchvision.models.inception_v3(pretrained=True)
         inception.aux_logits = False
         inception.AuxLogits = None
         modules = list(inception.children())[:-3]
@@ -50,7 +50,8 @@ class Inceptionv3(nn.Module):
             Feature map after resized
         """
         feature_map = self.inception(images)  # (batch_size, 2048, image_size/32, image_size/32)
-        return feature_map[0]
+        feature_map = self.adaptive_pool(feature_map)  #(batch_size,2048,encoded_image_size = 7,encoded_image_size = 7)
+        return feature_map
 
     def fine_tune(self, fine_tune: bool = True) -> None:
         """
