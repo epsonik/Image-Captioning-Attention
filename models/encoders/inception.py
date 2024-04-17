@@ -62,7 +62,7 @@ class Inceptionv3(nn.Module):
         for param in self.inception.parameters():
             param.requires_grad = False
         # only fine-tune conv block 2-4
-        for module in list(self.inception.children())[5:]:
+        for module in list(self.inception.children()):
             for param in module.parameters():
                 param.requires_grad = fine_tune
 
