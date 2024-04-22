@@ -32,7 +32,7 @@ class config:
                               '/home2/data/images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_dim = 512  # dimension of word embeddings
     # only makes sense when `embed_pretrain = False`
-    fine_tune_embeddings = False  # fine-tune word embeddings?
+    fine_tune_embeddings = True  # fine-tune word embeddings?
 
     # model parameters
     attention_dim = 128  # dimension of attention network
