@@ -43,7 +43,7 @@ class config:
     model_basename = 'InceptionV3_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'  # any name you want
 
     # training parameters
-    epochs = 50
+    epochs = 30
     batch_size = 200
     pretrained_encoder = 'InceptionV3'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
     fine_tune_encoder = False  # fine-tune encoder or not
