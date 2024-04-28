@@ -17,7 +17,7 @@ from metrics import Metrics
 import pathlib
 
 device = torch.device(
-    "cuda:0" if torch.cuda.is_available() else "cpu")
+    "cuda:1" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f,
