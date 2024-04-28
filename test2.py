@@ -20,7 +20,8 @@ device = torch.device(
     "cuda:0" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
-word_map_file = os.path.join(data_f, "output/InceptionV3_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true/wordmap.json")
+word_map_file = os.path.join(data_f,
+                             "output/InceptionV3_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true/wordmap.json")
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -53,7 +54,8 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     """
     loader = DataLoader(
         CaptionDataset(
-            os.path.join(data_f, "evaluation", "resized_size_256"), data_name, 'test',
+            os.path.join(data_f, 'output/InceptionV3_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true'),
+            data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
         # TODO: batched beam search. Therefore, DO NOT use a batch_size greater
