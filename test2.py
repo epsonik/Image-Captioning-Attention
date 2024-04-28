@@ -173,7 +173,6 @@ if __name__ == '__main__':
         model_path = os.path.join(data_f, "output", data_name, "checkpoints")
         # checkpoint = os.path.join(model_path, 'checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         for model_name in output_path2:
-            model_path = os.path.join(model_name)
             checkpoint = os.path.join(model_path, model_name)  # model checkpoint
             print(checkpoint)
             # load model
