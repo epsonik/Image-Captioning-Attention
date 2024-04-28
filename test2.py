@@ -14,14 +14,13 @@ from torch.utils.data import DataLoader
 
 from utils import CaptionDataset
 from metrics import Metrics
-from config import config
 import pathlib
 
 device = torch.device(
-    "cuda:2" if torch.cuda.is_available() else "cpu")
-data_f = os.path.join(config.base_path, "data")
+    "cuda:0" if torch.cuda.is_available() else "cpu")
+data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
-word_map_file = os.path.join(data_f, "evaluation", "resized_size_256", 'wordmap' + '.json')
+word_map_file = os.path.join(data_f, "output/InceptionV3_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true/wordmap.json")
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -164,28 +163,9 @@ def generate_report(report_name, config_name, beam_size, bleu1, bleu2, bleu3, bl
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = ["checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-30.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-31.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-32.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-33.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-34.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-35.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-36.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-37.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-38.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-39.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-40.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-41.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-42.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-43.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-44.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-45.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-46.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-47.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-48.pth.tar",
-                    "checkpoint_DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512-epoch-49.pth.tar",
-                    ]
-    output_path = ["DenseNet201_glove300_fine_tune_encoder_true_decoder_dim_512"]
+    output_path2 = [
+        "best_checkpoint_InceptionV3_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false-epoch-33.pth.tar"]
+    output_path = ["InceptionV3_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
@@ -193,6 +173,7 @@ if __name__ == '__main__':
         model_path = os.path.join(data_f, "output", data_name, "checkpoints")
         # checkpoint = os.path.join(model_path, 'checkpoint_' + data_name + '.pth.tar')  # model checkpoint
         for model_name in output_path2:
+            model_path = os.path.join(model_name)
             checkpoint = os.path.join(model_path, model_name)  # model checkpoint
             print(checkpoint)
             # load model
