@@ -11,13 +11,13 @@ class config:
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'show_tell'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
-    output_path = "data/output/InceptionV3_decoder_dim_1024_fine_tune_encoder_false_fine_tune_embeddings_false/"
+    output_path = "data/output/show_tell_InceptionV3_decoder_dim_1024_fine_tune_encoder_false_fine_tune_embeddings_false/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/home2/data/images/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/home2/data/images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'InceptionV3_decoder_dim_1024_fine_tune_encoder_false_fine_tune_embeddings_false'  # any name you want
+    dataset_basename = 'show_tell_InceptionV3_decoder_dim_1024_fine_tune_encoder_false_fine_tune_embeddings_false'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -40,7 +40,7 @@ class config:
     decoder_dim = 1024  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'InceptionV3_decoder_dim_1024_fine_tune_encoder_false_fine_tune_embeddings_false'  # any name you want
+    model_basename = 'show_tell_InceptionV3_decoder_dim_1024_fine_tune_encoder_false_fine_tune_embeddings_false'  # any name you want
 
     # training parameters
     epochs = 50
