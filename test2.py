@@ -54,7 +54,8 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     """
     loader = DataLoader(
         CaptionDataset(
-            os.path.join(data_f, 'output/show_tell_InceptionV3_decoder_dim_256_fine_tune_encoder_true_fine_tune_embeddings_true'),
+            os.path.join(data_f,
+                         'output/show_tell_InceptionV3_decoder_dim_256_fine_tune_encoder_true_fine_tune_embeddings_true'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -160,6 +161,46 @@ def generate_report(report_name, config_name, beam_size, bleu1, bleu2, bleu3, bl
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writerow(temp)
         f.close()
+
+
+def generate_report_for_all_models(results_path):
+    """
+    Method to generate summary of the test results. Made from files in the results directory.
+
+    Parameters
+    ----------
+    results_path: str
+        Path to the results directory
+    Returns
+    -------
+        CSV file with summary of the results.
+
+    """
+    # Names of the evaluation metrics
+    header = ["config_name", "loss", "epoch", "Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4", "METEOR", "ROUGE_L", "CIDEr",
+              "SPICE", "WMD"]
+    print(f'\n Final results saved to final_results.csv')
+    all_results = []
+    # iterate over all files in results directory
+    for x in os.listdir(results_path):
+        # use just .json files
+        if x.endswith(".json"):
+            # Load data from file with results particular for configuaration
+            results_for_report = json.load(open(os.path.join(results_path, x), 'r'))
+            # Add column with the configuration name to name the specific results.
+            config_name = x.replace(".json", '')
+            b = config_name.split("-")
+            results_for_report["overall"]["config_name"] = config_name
+            results_for_report["overall"]["loss"] = b[2]
+            results_for_report["overall"]["epoch"] = b[1]
+            # Save the results to the table to save it in the next step
+            all_results.append(results_for_report["overall"])
+    # Save final csv file
+
+    with open(results_path + "/final_results.csv", 'w') as f:
+        writer = csv.DictWriter(f, fieldnames=header)
+        writer.writeheader()
+        writer.writerows(all_results)
 
 
 if __name__ == '__main__':
