@@ -210,7 +210,7 @@ if __name__ == '__main__':
         "best_checkpoint_InceptionV3_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-64.pth.tar",
         "best_checkpoint_show_tell_InceptionV3_decoder_dim_256_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-44.pth.tar",
         "best_checkpoint_show_tell_InceptionV3_decoder_dim_1024_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-59.pth.tar"]
-    output_path = ["show_tell_InceptionV3_decoder_dim_1024_fine_tune_encoder_false_fine_tune_embeddings_false"]
+    output_path = ["show_tell_InceptionV3_decoder_dim_1024_fine_tune_encoder_true_fine_tune_embeddings_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
