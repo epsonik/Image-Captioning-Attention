@@ -51,7 +51,7 @@ class config:
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
     checkpoint = os.path.join(base_path, output_path,
-                              'checkpoints/checkpoint_adaptive_DenseNet121_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-26.pth.tar')  # path to load checkpoint, None if none
+                              'checkpoints/checkpoint_adaptive_DenseNet121_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-25.pth.tar')  # path to load checkpoint, None if none
     # checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
