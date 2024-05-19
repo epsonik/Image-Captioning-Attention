@@ -11,13 +11,13 @@ class config:
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'adaptive_att'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
-    output_path = "data/output/adaptive_DenseNet121_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false/"
+    output_path = "data/output/adaptive_Resnet152_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false/"
     dataset_type = 'coco'
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/home2/data/images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home2/data/images/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/home/dane/Images/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/home/dane/Images/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'adaptive_DenseNet121_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'  # any name you want
+    dataset_basename = 'adaptive_Resnet152_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -29,7 +29,7 @@ class config:
     embed_pretrain = True  # false: initialize embedding weights randomly
     # true: load pre-trained word embeddings
     embed_path = os.path.join(base_path,
-                              '/home2/data/images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
+                              '/home/dane/Images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_dim = 512  # dimension of word embeddings
     # only makes sense when `embed_pretrain = False`
     fine_tune_embeddings = False  # fine-tune word embeddings?
@@ -44,8 +44,8 @@ class config:
 
     # training parameters
     epochs = 30
-    batch_size = 100
-    pretrained_encoder = 'DenseNet121'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
+    batch_size = 450
+    pretrained_encoder = 'Resnet152'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
     fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
