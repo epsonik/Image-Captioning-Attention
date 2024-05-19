@@ -163,6 +163,8 @@ class EncoderDenseNet121(nn.Module):
         out = self.avg_pool(feature_map).view(batch_size, -1)  # (batch_size, 2048)
         out = self.output_layer(out)  # (batch_size, embed_dim = 512)
         return out
+
+
 class AdaptiveAttentionEncoderDenseNet121(nn.Module):
     """
     Implementation of the encoder proposed in paper [1].
@@ -194,8 +196,8 @@ class AdaptiveAttentionEncoderDenseNet121(nn.Module):
         super(AdaptiveAttentionEncoderDenseNet121, self).__init__()
         self.CNN = DenseNet121(encoded_image_size)
         self.avg_pool = nn.AvgPool2d(
-            kernel_size = encoded_image_size,
-            stride = encoded_image_size
+            kernel_size=encoded_image_size,
+            stride=encoded_image_size
         )
         self.global_mapping = nn.Sequential(
             # nn.Dropout(0.5),
@@ -236,7 +238,8 @@ class AdaptiveAttentionEncoderDenseNet121(nn.Module):
         # global image feature, eq.16: v^g = ReLU(W_b * a^g)
         global_feature = self.global_mapping(global_feature)  # (batch_size, embed_dim = 512)
 
-        feature_map = feature_map.permute(0, 2, 3, 1)  # (batch_size, encoded_image_size = 7, encoded_image_size = 7, 2048)
+        feature_map = feature_map.permute(0, 2, 3,
+                                          1)  # (batch_size, encoded_image_size = 7, encoded_image_size = 7, 2048)
         # A = [ a_1, a_2, ..., a_num_pixels ]
         feature_map = feature_map.view(batch_size, num_pixels, encoder_dim)  # (batch_size, num_pixels = 49, 2048)
 

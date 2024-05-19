@@ -34,10 +34,6 @@ class ResNet101(nn.Module):
         # r"""Applies a 2D adaptive average pooling over an input signal composed of several input planes.
         self.adaptive_pool = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
 
-
-
-
-
         self.fine_tune()
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
@@ -53,7 +49,7 @@ class ResNet101(nn.Module):
             Feature map after resized
         """
         feature_map = self.resnet(images)  # (batch_size, 2048, image_size/32, image_size/32)
-        feature_map = self.adaptive_pool(feature_map)  #(batch_size,2048,encoded_image_size = 7,encoded_image_size = 7)
+        feature_map = self.adaptive_pool(feature_map)  # (batch_size,2048,encoded_image_size = 7,encoded_image_size = 7)
         return feature_map
 
     def fine_tune(self, fine_tune: bool = True) -> None:
