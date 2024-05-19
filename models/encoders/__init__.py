@@ -4,11 +4,12 @@ from config import config
 from .inception import EncoderInceptionV3, AttentionEncoderInceptionV3
 from .resnet import EncoderResNet, AttentionEncoderResNet, AdaptiveAttentionEncoderResNet
 from .resnet152 import EncoderResNet152, AttentionEncoderResNet152, AdaptiveAttentionEncoderResNet152
-from .densenet import AttentionEncoderDenseNet201, EncoderDenseNet201
-from .densenet121 import AttentionEncoderDenseNet121, EncoderDenseNet121
-from .densenet161 import AttentionEncoderDenseNet161, EncoderDenseNet161
-from .regnet import AttentionEncoderRegnet32, EncoderRegnet32
-from .regnet16 import AttentionEncoderRegnet16, EncoderRegnet16
+from .densenet import AttentionEncoderDenseNet201, EncoderDenseNet201, AdaptiveAttentionEncoderDenseNet201
+from .densenet121 import AttentionEncoderDenseNet121, EncoderDenseNet121, AdaptiveAttentionEncoderDenseNet121
+from .densenet161 import AttentionEncoderDenseNet161, EncoderDenseNet161, AdaptiveAttentionEncoderDenseNet161
+from .regnet import AttentionEncoderRegnet32, EncoderRegnet32, AdaptiveAttentionEncoderRegNet32
+from .regnet16 import AttentionEncoderRegnet16, EncoderRegnet16, AdaptiveAttentionEncoderRegnet16
+
 
 def make(embed_dim: int) -> nn.Module:
     """
@@ -53,6 +54,43 @@ def make(embed_dim: int) -> nn.Module:
             decoder_dim=config.decoder_dim,
             embed_dim=embed_dim
         )
+        if pretrained_encoder == 'Resnet101':
+            model = AdaptiveAttentionEncoderResNet(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+        if pretrained_encoder == 'Resnet152':
+            model = AdaptiveAttentionEncoderResNet152(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+        if pretrained_encoder == 'DenseNet201':
+            model = AdaptiveAttentionEncoderDenseNet201(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+        if pretrained_encoder == 'DenseNet121':
+            model = AdaptiveAttentionEncoderDenseNet121(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+        if pretrained_encoder == 'DenseNet161':
+            model = AdaptiveAttentionEncoderDenseNet161(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+        if pretrained_encoder == 'Regnet32':
+            model = AdaptiveAttentionEncoderRegNet32(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+        if pretrained_encoder == 'Regnet16':
+            model = AdaptiveAttentionEncoderRegnet16(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+
+
     else:
         raise Exception("Model not supported: ", model_name)
 
