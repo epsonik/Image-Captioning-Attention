@@ -50,10 +50,6 @@ def make(embed_dim: int) -> nn.Module:
         if pretrained_encoder == 'Regnet16':
             model = AttentionEncoderRegnet16()
     elif model_name == 'adaptive_att' or model_name == 'spatial_att':
-        model = AdaptiveAttentionEncoderResNet(
-            decoder_dim=config.decoder_dim,
-            embed_dim=embed_dim
-        )
         if pretrained_encoder == 'Resnet101':
             model = AdaptiveAttentionEncoderResNet(
                 decoder_dim=config.decoder_dim,
