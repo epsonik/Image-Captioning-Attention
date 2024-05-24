@@ -1,7 +1,7 @@
 from torch import nn
 
 from config import config
-from .inception import EncoderInceptionV3, AttentionEncoderInceptionV3
+from .inception import EncoderInceptionV3, AttentionEncoderInceptionV3, AdaptiveAttentionEncoderInceptionV3
 from .resnet import EncoderResNet, AttentionEncoderResNet, AdaptiveAttentionEncoderResNet
 from .resnet152 import EncoderResNet152, AttentionEncoderResNet152, AdaptiveAttentionEncoderResNet152
 from .densenet import AttentionEncoderDenseNet201, EncoderDenseNet201, AdaptiveAttentionEncoderDenseNet201
@@ -45,6 +45,8 @@ def make(embed_dim: int) -> nn.Module:
             model = AttentionEncoderDenseNet121()
         if pretrained_encoder == 'DenseNet161':
             model = AttentionEncoderDenseNet161()
+        if pretrained_encoder == 'InceptionV3':
+            model = AttentionEncoderInceptionV3()
         if pretrained_encoder == 'Regnet32':
             model = AttentionEncoderRegnet32()
         if pretrained_encoder == 'Regnet16':
@@ -72,6 +74,11 @@ def make(embed_dim: int) -> nn.Module:
             )
         if pretrained_encoder == 'DenseNet161':
             model = AdaptiveAttentionEncoderDenseNet161(
+                decoder_dim=config.decoder_dim,
+                embed_dim=embed_dim
+            )
+        if pretrained_encoder == 'InceptionV3':
+            model = AdaptiveAttentionEncoderInceptionV3(
                 decoder_dim=config.decoder_dim,
                 embed_dim=embed_dim
             )
