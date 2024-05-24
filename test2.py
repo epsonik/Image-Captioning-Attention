@@ -249,8 +249,8 @@ if __name__ == '__main__':
                 generate_report(report_name, model_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
-            # temp(1, "final_results_k1.csv")
-            # temp(2, "final_results_k2.csv")
+            temp(1, "final_results_k1.csv")
+            temp(2, "final_results_k2.csv")
             temp(3, "final_results_k3.csv")
             temp(5, "final_results_k5.csv")
             temp(8, "final_results_k8.csv")
