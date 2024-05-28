@@ -211,6 +211,7 @@ class AdaptiveAttention(nn.Module):
 
         # --------------- Adaptive Attention ---------------
         if self.caption_model == 'adaptive_att':
+            print("adaptive_att used")
             # [W_v * V; W_s * s_t]
             extended = torch.cat([visual_att, sentinel_att.unsqueeze(1)], dim=1)  # (batch_size, num_pixels + 1, attention_dim)
             #   [z_t; w_h * tanh(W_s * s_t + W_g * h_t)]
@@ -237,6 +238,7 @@ class AdaptiveAttention(nn.Module):
 
         # --------------- Spatial Attention ---------------
         elif self.caption_model == 'spatial_att':
+            print("spatial_att used")
             # tanh(W_v * V + W_g * h_t * 1^T)
             att = self.tanh(visual_att + hidden_att)  # (batch_size, num_pixels, attention_dim)
             # eq.6: z_t = w_h * att
