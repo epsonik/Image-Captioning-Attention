@@ -156,7 +156,9 @@ class AdaptiveAttention(nn.Module):
         caption_model: str = 'adaptive_att'
     ) -> None:
         super(AdaptiveAttention, self).__init__()
-
+        print("caption model AdaptiveAttention")
+        print(caption_model)
+        print(self.caption_model)
         assert caption_model in ['adaptive_att', 'spatial_att']
         self.caption_model = caption_model
 
