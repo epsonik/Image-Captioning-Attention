@@ -312,6 +312,8 @@ class Decoder(BasicDecoder):
         # Input is word embedding concatenated with global image feature,
         # so the size of input should be embed_dim * 2 ([ w_t; v^g ] => embed_dim * 2)
         self.decode_step = AdaptiveLSTMCell(embed_dim * 2, decoder_dim)  # LSTM with visual sentinel
+        print("caption model")
+        print(caption_model)
         self.adaptive_attention = AdaptiveAttention(attention_dim, decoder_dim, caption_model)
 
     def init_hidden_state(self, spatial_feature: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
