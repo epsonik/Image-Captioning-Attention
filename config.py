@@ -9,7 +9,7 @@ class config:
     # global parameters
     cuda_device = "cuda:0"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
-    caption_model = 'adaptive_att'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
+    caption_model = 'spatial_att'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
     output_path = "data/output/spatial_DenseNet121_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false/"
     dataset_type = 'coco'
