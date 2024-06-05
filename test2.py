@@ -21,7 +21,7 @@ device = torch.device(
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f,
-                             "output/spatial_Resnet152_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false/wordmap.json")
+                             "output/spatial_Resnet152_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true/wordmap.json")
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         'output/spatial_Resnet152_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'),
+                         'output/spatial_Resnet152_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     configs = dict()
     output_path2 = [
         "best_checkpoint_spatial_Resnet152_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false-epoch-9.pth.tar"]
-    output_path = ["spatial_Resnet152_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"]
+    output_path = ["spatial_Resnet152_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
