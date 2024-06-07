@@ -32,7 +32,7 @@ class config:
                               '/home2/data/images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_dim = 512  # dimension of word embeddings
     # only makes sense when `embed_pretrain = False`
-    fine_tune_embeddings = False  # fine-tune word embeddings?
+    fine_tune_embeddings = True  # fine-tune word embeddings?
 
     # model parameters
     attention_dim = 128  # dimension of attention network
@@ -46,7 +46,7 @@ class config:
     epochs = 50
     batch_size = 350
     pretrained_encoder = 'Resnet101'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152 InceptionV3
-    fine_tune_encoder = False  # fine-tune encoder or not
+    fine_tune_encoder = True  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients
