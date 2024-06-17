@@ -1,6 +1,6 @@
 import torchvision
 import torchinfo
-import numpy as nn
+from torch import nn
 print("inception")
 inception = torchvision.models.inception_v3(pretrained=True)
 modules = list(inception.children())[:-3]
