@@ -1,8 +1,7 @@
-import torchinfo
-from torch import nn
 import torchvision
+
 print("inception")
-inception=torchvision.models.inception_v3(pretrained=True)
+inception = torchvision.models.inception_v3(pretrained=True)
 modules = list(inception.children())[:-3]
 print(modules)
 # modules = nn.Sequential(*modules)
