@@ -4,7 +4,7 @@ Implementation of the decoder proposed in paper [1].
 References
 ----------
 1. "`Show and Tell: A Neural Image Caption Generator. \
-    <https://arxiv.org/abs/1411.4555>`_" Oriol Vinyals, et al. CVPR 2015.
+        <https://arxiv.org/abs/1411.4555>`_" Oriol Vinyals, et al. CVPR 2015.
 """
 
 from typing import Tuple, Dict
