@@ -207,8 +207,10 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-    "best_checkpoint_adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_false_embeddings_false-epoch-11.pth.tar"]
-    output_path = ["adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true"]
+        "best_checkpoint_adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_false_embeddings_false-epoch-11.pth.tar",
+        "best_checkpoint_adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true-epoch-33.pth.tar"]
+    output_path = [
+        "adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
