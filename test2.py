@@ -21,7 +21,7 @@ device = torch.device(
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f,
-                             "output/adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true/wordmap.json")
+                             "output/spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true/wordmap.json")
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         'output/adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true'),
+                         'output/spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -207,10 +207,10 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-        "best_checkpoint_adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_false_embeddings_false-epoch-11.pth.tar",
-        "best_checkpoint_adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true-epoch-33.pth.tar"]
+        "best_checkpoint_spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_false_embeddings_false-epoch-8.pth.tar",
+        "best_checkpoint_spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true-epoch-37.pth.tar"]
     output_path = [
-        "adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true"]
+        "spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
