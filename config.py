@@ -7,15 +7,15 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:1"
+    cuda_device = "cuda:0"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
     output_path = "data/output/att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb/"
     dataset_type = 'coco'
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/home2/data/images/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/home2/data/images/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/mnt/dysk2/dane/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/mnt/dysk2/dane/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
     dataset_basename = 'att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb'  # any name you want
 
@@ -29,7 +29,7 @@ class config:
     embed_pretrain = False  # false: initialize embedding weights randomly
     # true: load pre-trained word embeddings
     embed_path = os.path.join(base_path,
-                              '/home2/data/images/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
+                              '/mnt/dysk2/dane/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_dim = 300  # dimension of word embeddings
     # only makes sense when `embed_pretrain = False`
     fine_tune_embeddings = False  # fine-tune word embeddings?
@@ -58,5 +58,5 @@ class config:
     # you only need to set this when 'caption_model' is set to 'att2all'
     # tensorboard
     tensorboard = True  # enable tensorboard or not?
-    log_dir = os.path.join(base_path, output_path, 'logs/adaptive/')  # folder for saving logs for tensorboard
+    log_dir = os.path.join(base_path, output_path, 'logs/att2all/')  # folder for saving logs for tensorboard
     # only makes sense when `tensorboard = True`
