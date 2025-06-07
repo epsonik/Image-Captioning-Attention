@@ -21,11 +21,14 @@ def parse_file(filenames):
                          "line": line})
                     lines.append(line)
                     index += 1
-    header = ["index", "loss", "accuracy", "bleu_4", "cider", "line"]
-    with open("final_results_dense.csv", 'a') as f:
-        writer = csv.DictWriter(f, fieldnames=header)
-        writer.writeheader()
-        writer.writerows(lines_dict)
+        header = ["index", "loss", "accuracy", "bleu_4", "cider", "line"]
+        with open(filename.replace("txt", "csv"), 'a') as f:
+            writer = csv.DictWriter(f, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(lines_dict)
+        lines_dict = []
+        lines = []
+        index = 0
     return lines_dict
 
 
@@ -33,9 +36,8 @@ def parse_file(filenames):
 
 if __name__ == '__main__':
     lines = parse_file(
-        ["DenseNet201_glove300_fte_false_decoder_dim_512.txt",
-         "DenseNet201_glove300_fte_false_decoder_dim_512_cuda_3.txt",
-         "DenseNet201_glove300_fte_true_decoder_dim_512_cuda_3.txt",
-         "DenseNet201_glove300_fte_true_decoder_dim_512_cuda_3_2.txt"])
+        ["DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512.txt",
+         "DenseNet201_glove300_decoder_dim_512_attention_dim_512_ft_embeddings_false_fine_tune_encoder_false.txt"]
+    )
     for line in lines:
         print(line)
