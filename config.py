@@ -35,7 +35,7 @@ class config:
     fine_tune_embeddings = False  # fine-tune word embeddings?
 
     # model parameters
-    attention_dim = 512  # dimension of attention network
+    attention_dim = 128  # dimension of attention network
     # you only need to set this when the model includes an attention network
     decoder_dim = 512  # dimension of decoder's hidden layer
     dropout = 0.5
@@ -44,7 +44,7 @@ class config:
 
     # training parameters
     epochs = 50
-    batch_size = 50
+    batch_size = 40
     pretrained_encoder = 'DenseNet201'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
     fine_tune_encoder = True  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
