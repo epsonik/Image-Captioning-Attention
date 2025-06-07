@@ -187,5 +187,6 @@ if __name__ == '__main__':
 
             temp(1, "final_results_k1_d.csv")
             temp(2, "final_results_k2_d.csv")
+            temp(3, "final_results_k3_d.csv")
             temp(5, "final_results_k5_d.csv")
             temp(8, "final_results_k8_d.csv")
