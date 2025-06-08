@@ -96,7 +96,7 @@ def visualize_att_beta(
         plt.imshow(alpha, alpha=0.6)
         plt.set_cmap('jet')
 
-        plt.axis('off')
+
 
     head, tail = os.path.split(image_path)
     plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
