@@ -84,7 +84,7 @@ def visualize_att_beta(
         # images
         plt.imshow(image)
         # words of sentence
-        plt.text(0, 100, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10,
+        plt.title('%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10,
                  horizontalalignment='center', verticalalignment='center')
 
         # alphas
