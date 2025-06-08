@@ -15,7 +15,7 @@ from config import config
 device = torch.device(config.cuda_device if torch.cuda.is_available() else "cpu")
 
 device = torch.device(
-    "cuda:2" if torch.cuda.is_available() else "cpu")
+    "cuda:0" if torch.cuda.is_available() else "cpu")
 
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
@@ -99,44 +99,17 @@ def generate_caption(
 
 
 if __name__ == '__main__':
-    output_path = "DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512"
-    model_names = ["checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-0.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-1.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-2.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-3.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-4.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-5.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-6.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-7.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-8.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-9.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-10.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-11.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-12.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-13.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-14.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-15.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-16.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-17.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-18.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-19.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-20.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-21.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-22.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-23.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-24.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-25.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-26.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-27.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-28.pth.tar",
-                   "checkpoint_DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512-epoch-29.pth.tar"
-                   ]
+    output_path = "adaptive_Resnet152_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"
+    img = "./assets/IMG_4276.JPG"
+    model_names = [
+        "best_checkpoint_adaptive_Resnet152_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-2.pth.tar"
+    ]
 
     model_path = os.path.join(data_f, "output", output_path, "checkpoints")
 
     for model_name in model_names:
         checkpoint_path = os.path.join(model_path, model_name)  # model checkpoint
-        beam_size = 5
+        beam_size = 3
         ifsmooth = False
 
         # load model
