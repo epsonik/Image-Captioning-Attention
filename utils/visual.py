@@ -83,7 +83,7 @@ def visualize_att_beta(
         plt.subplot(grid[fig_height - 1, img_size + t - 1])
 
         # images
-        plt.imshow(image)
+        # plt.imshow(image)
 
         # words of sentence
         plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10)
