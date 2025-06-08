@@ -107,7 +107,7 @@ if __name__ == '__main__':
     for model_name in model_names:
         checkpoint_path = os.path.join(model_path, model_name)  # model checkpoint
         beam_size = 3
-        ifsmooth = False
+        ifsmooth = True
 
         # load model
         checkpoint = torch.load(checkpoint_path, map_location=str(device))
