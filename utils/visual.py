@@ -64,17 +64,17 @@ def visualize_att_beta(
     plt.axis('off')
 
     # betas' curve
-    if betas is not None:
-        plt.subplot(grid[0: fig_height - 1, img_size: fig_width])
-
-        x = range(1, len(words), 1)
-        y = [(1 - betas[t].item()) for t in range(1, len(words))]
-
-        for a, b in zip(x, y):
-            plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
-
-        plt.axis('off')
-        plt.plot(x, y)
+    # if betas is not None:
+    #     plt.subplot(grid[0: fig_height - 1, img_size: fig_width])
+    #
+    #     x = range(1, len(words), 1)
+    #     y = [(1 - betas[t].item()) for t in range(1, len(words))]
+    #
+    #     for a, b in zip(x, y):
+    #         plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
+    #
+    #     plt.axis('off')
+    #     plt.plot(x, y)
 
     for t in range(1, len(words)):
         if t > 50:
