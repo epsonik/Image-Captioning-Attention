@@ -81,11 +81,10 @@ def visualize_att_beta(
             break
 
         plt.subplot(grid[fig_height - 1, img_size + t - 1])
-        plt.xlabel("sddsdssd")
         # images
         plt.imshow(image)
         # words of sentence
-        plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10,
+        plt.text(0, 100, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10,
                  horizontalalignment='center', verticalalignment='center')
 
         # alphas
