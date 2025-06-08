@@ -84,7 +84,8 @@ def visualize_att_beta(
 
         # images
         plt.imshow(image)
-        plt.xlabel(words[t], color='black')
+        plt.xlabel(words[t], color='black', backgroundcolor='white', fontsize=10,
+                   horizontalalignment='center', verticalalignment='center')
         # words of sentence
         plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10,
                  horizontalalignment='center', verticalalignment='center')
