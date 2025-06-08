@@ -1,9 +1,11 @@
+import os
 from typing import Dict
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import skimage.transform
 from PIL import Image
 import numpy as np
+
 
 def visualize_att_beta(
     image_path: str,
@@ -57,16 +59,16 @@ def visualize_att_beta(
     grid = plt.GridSpec(fig_height, fig_width)
 
     # big image
-    plt.subplot(grid[0 : img_size, 0 : img_size])
+    plt.subplot(grid[0: img_size, 0: img_size])
     plt.imshow(image)
     plt.axis('off')
 
     # betas' curve
     if betas is not None:
-        plt.subplot(grid[0 : fig_height - 1, img_size : fig_width])
+        plt.subplot(grid[0: fig_height - 1, img_size: fig_width])
 
         x = range(1, len(words), 1)
-        y = [ (1 - betas[t].item()) for t in range(1, len(words)) ]
+        y = [(1 - betas[t].item()) for t in range(1, len(words))]
 
         for a, b in zip(x, y):
             plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
@@ -96,8 +98,9 @@ def visualize_att_beta(
         plt.set_cmap('jet')
 
         plt.axis('off')
+    head, tail = os.path.split(image_path)
+    plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
 
-    plt.show()
 
 def visualize_att(
     image_path: str,
@@ -166,5 +169,5 @@ def visualize_att(
 
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
-
-    plt.show()
+    head, tail = os.path.split(image_path)
+    plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
