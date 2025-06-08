@@ -83,10 +83,11 @@ def visualize_att_beta(
         plt.subplot(grid[fig_height - 1, img_size + t - 1])
 
         # images
-        # plt.imshow(image)
-
+        plt.imshow(image)
+        plt.xlabel(words[t], color='black')
         # words of sentence
-        plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10)
+        plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10,
+                 horizontalalignment='center', verticalalignment='center')
 
         # alphas
         current_alpha = alphas[t, :]
@@ -98,7 +99,6 @@ def visualize_att_beta(
         plt.set_cmap('jet')
 
         plt.axis('off')
-
 
     head, tail = os.path.split(image_path)
     plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
