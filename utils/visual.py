@@ -52,7 +52,7 @@ def visualize_att_beta(
     fig = plt.figure(dpi=100)
     fig.set_size_inches(subplot_size * num_col, subplot_size * num_row)
 
-    img_size = 4
+    img_size = 2
     fig_height = img_size
     fig_width = num_col + img_size
 
@@ -98,6 +98,8 @@ def visualize_att_beta(
         plt.set_cmap('jet')
 
         plt.axis('off')
+
+
     head, tail = os.path.split(image_path)
     plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
 
