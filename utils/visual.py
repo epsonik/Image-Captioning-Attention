@@ -52,7 +52,7 @@ def visualize_att_beta(
     fig = plt.figure(dpi=100)
     fig.set_size_inches(subplot_size * num_col, subplot_size * num_row)
 
-    img_size = 2
+    img_size = 1
     fig_height = img_size
     fig_width = num_col + img_size
 
