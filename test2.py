@@ -39,7 +39,7 @@ normalize = transforms.Normalize(
 )
 
 
-def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
+def evaluate(encoder, decoder, caption_model, beam_size: int, checkpoint) -> float:
     """
     Parameters
     ----------
@@ -117,7 +117,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
 
     model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
     pathlib.Path(model_path).mkdir(parents=True, exist_ok=True)
-    final_model_name = model_name.replace(".pth.tar", '-k-' + str(beam_size))
+    final_model_name = checkpoint.replace(".pth.tar", '-k-' + str(beam_size))
 
     evaluation_results_save_path = os.path.join(model_path,
                                                 final_model_name + '.json')
@@ -207,12 +207,13 @@ if __name__ == '__main__':
 
     configs = dict()
     path_f = "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"
-    files = [x for x in os.listdir(os.path.join(data_f, "output", path_f, "checkpoints")) if x.endswith(".pth.tar")]
+    chc = os.path.join(data_f, "output", path_f, "checkpoints")
+    files = [x for x in os.listdir(chc) if x.endswith(".pth.tar")]
     cudnn.benchmark = True
 
     for data_name in files:
         # path to save checkpoints
-        checkpoint = os.path.join(data_f, "output", data_name, "checkpoints")
+        checkpoint = os.path.join(chc, data_name)
 
         print(checkpoint)
         # load model
@@ -231,7 +232,8 @@ if __name__ == '__main__':
 
         def temp(beam_size, report_name):
             print("Scores for ", data_name)
-            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, caption_model, beam_size)
+            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, caption_model, beam_size,
+                                                                  checkpoint)
 
             print("\nScores @ beam size of %d are:" % beam_size)
             print("   BLEU-1: %.4f" % bleu1)
