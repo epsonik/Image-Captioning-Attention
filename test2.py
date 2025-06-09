@@ -21,7 +21,7 @@ device = torch.device(
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f,
-                             "output/spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false/wordmap.json")
+                             "output/att2all_Regnet16_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false/wordmap.json")
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         'output/spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'),
+                         'output/att2all_Regnet16_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
