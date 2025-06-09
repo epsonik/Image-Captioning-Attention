@@ -206,7 +206,7 @@ def generate_report_for_all_models(results_path):
 if __name__ == '__main__':
 
     configs = dict()
-    path_f = "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"
+    path_f = "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"
     chc = os.path.join(data_f, "output", path_f, "checkpoints")
     files = [x for x in os.listdir(chc) if x.endswith(".pth.tar")]
     cudnn.benchmark = True
