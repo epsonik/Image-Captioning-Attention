@@ -154,7 +154,7 @@ def generate_report(report_name, config_name, beam_size, bleu1, bleu2, bleu3, bl
     temp["CIDEr"] = cider
     # Save final csv file
 
-    model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
+    model_path = os.path.join(data_f, "results", config_name, 'k-' + str(beam_size))
     evaluation_results_save_path = os.path.join(model_path, report_name)
     with open(evaluation_results_save_path, 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
