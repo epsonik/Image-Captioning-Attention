@@ -142,10 +142,9 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = ["best_checkpoint_Resnet152_decoder_dim_512_fine_tune_embeddings_false-epoch-18.pth.tar",
-                    "best_checkpoint_Resnet152_decoder_dim_512_fine_tune_embeddings_true-epoch-40.pth.tar"
+    output_path2 = ["best_checkpoint_att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb-epoch-8.pth.tar"
                     ]
-    output_path = ["Resnet152_decoder_dim_512_fine_tune_embeddings_true"]
+    output_path = ["att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_no_emb"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
