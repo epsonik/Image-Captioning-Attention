@@ -243,7 +243,7 @@ if __name__ == '__main__':
             print("   ROUGE-L: %.4f" % rouge)
 
             # generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
-            generate_report(report_name, path_f, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+            generate_report(report_name, model_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
         temp(1, "final_results_k1.csv")
