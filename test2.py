@@ -207,8 +207,8 @@ if __name__ == '__main__':
 
     configs = dict()
     path_f = "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"
-    files = [x for x in os.listdir(path_f) if x.endswith(".pth.tar")]
-    cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
+    files = [x for x in os.listdir(os.path.join(data_f, "output", path_f, "checkpoints")) if x.endswith(".pth.tar")]
+    cudnn.benchmark = True
 
     for data_name in files:
         # path to save checkpoints
