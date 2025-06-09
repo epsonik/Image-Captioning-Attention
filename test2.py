@@ -206,51 +206,47 @@ def generate_report_for_all_models(results_path):
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = [
-        "best_checkpoint_att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb-epoch-8.pth.tar"]
-    output_path = [
-        "att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_no_emb"]
+    path_f = "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"
+    files = [x for x in os.listdir(path_f) if x.endswith(".pth.tar")]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
-    for data_name in output_path:
+    for data_name in files:
         # path to save checkpoints
-        model_path = os.path.join(data_f, "output", data_name, "checkpoints")
-        # checkpoint = os.path.join(model_path, 'checkpoint_' + data_name + '.pth.tar')  # model checkpoint
-        for model_name in output_path2:
-            checkpoint = os.path.join(model_path, model_name)  # model checkpoint
-            print(checkpoint)
-            # load model
-            checkpoint = torch.load(checkpoint, map_location=str(device))
+        checkpoint = os.path.join(data_f, "output", data_name, "checkpoints")
 
-            decoder = checkpoint['decoder']
-            decoder = decoder.to(device)
-            decoder.eval()
+        print(checkpoint)
+        # load model
+        checkpoint = torch.load(checkpoint, map_location=str(device))
 
-            encoder = checkpoint['encoder']
-            encoder = encoder.to(device)
-            encoder.eval()
+        decoder = checkpoint['decoder']
+        decoder = decoder.to(device)
+        decoder.eval()
 
-            caption_model = checkpoint['caption_model']
+        encoder = checkpoint['encoder']
+        encoder = encoder.to(device)
+        encoder.eval()
+
+        caption_model = checkpoint['caption_model']
 
 
-            def temp(beam_size, report_name):
-                print("Scores for ", data_name)
-                (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, caption_model, beam_size)
+        def temp(beam_size, report_name):
+            print("Scores for ", data_name)
+            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, caption_model, beam_size)
 
-                print("\nScores @ beam size of %d are:" % beam_size)
-                print("   BLEU-1: %.4f" % bleu1)
-                print("   BLEU-2: %.4f" % bleu2)
-                print("   BLEU-3: %.4f" % bleu3)
-                print("   BLEU-4: %.4f" % bleu4)
-                print("   CIDEr: %.4f" % cider)
-                print("   ROUGE-L: %.4f" % rouge)
+            print("\nScores @ beam size of %d are:" % beam_size)
+            print("   BLEU-1: %.4f" % bleu1)
+            print("   BLEU-2: %.4f" % bleu2)
+            print("   BLEU-3: %.4f" % bleu3)
+            print("   BLEU-4: %.4f" % bleu4)
+            print("   CIDEr: %.4f" % cider)
+            print("   ROUGE-L: %.4f" % rouge)
 
-                # generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
-                generate_report(report_name, model_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+            # generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+            generate_report(report_name, path_f, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
-            temp(1, "final_results_k1.csv")
-            temp(2, "final_results_k2.csv")
-            temp(3, "final_results_k3.csv")
-            temp(5, "final_results_k5.csv")
-            temp(8, "final_results_k8.csv")
+        temp(1, "final_results_k1.csv")
+        temp(2, "final_results_k2.csv")
+        temp(3, "final_results_k3.csv")
+        temp(5, "final_results_k5.csv")
+        temp(8, "final_results_k8.csv")
