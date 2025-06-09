@@ -43,10 +43,10 @@ class config:
     model_basename = 'att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb'  # any name you want
 
     # training parameters
-    epochs = 50
-    batch_size = 40
+    epochs = 30
+    batch_size = 50
     pretrained_encoder = 'DenseNet201'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
-    fine_tune_encoder = True  # fine-tune encoder or not
+    fine_tune_encoder = False  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
     grad_clip = 5.  # gradient threshold in clip gradients

@@ -1,4 +1,5 @@
 import csv
+import os
 
 
 def parse_file(filenames):
@@ -35,9 +36,7 @@ def parse_file(filenames):
 # * LOSS - {loss.avg:.3f}, TOP-5 ACCURACY - {top5.avg:.3f}, BLEU-4 - {bleu}, CIDEr - {cider}
 
 if __name__ == '__main__':
-    lines = parse_file(
-        ["DenseNet201_glove300_fine_tune_encoder_false_decoder_dim_512.txt",
-         "DenseNet201_glove300_decoder_dim_512_attention_dim_512_ft_embeddings_false_fine_tune_encoder_false.txt"]
-    )
+    lines = parse_file([os.path.join("assets", "att2all_densenet201_no_emb.txt")]
+                       )
     for line in lines:
         print(line)
