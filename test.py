@@ -102,10 +102,29 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         assert len(ground_truth) == len(prediction)
 
     # calculate metrics
-    metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
-    scores = metrics.all_metrics
+    cocoEvalObj = Metrics(ground_truth, prediction, rev_word_map, img_paths)
+    cocoEvalObj.img_to_eval()
 
-    return scores
+    calculated_metrics = {}
+    # Store metrics  values in dictionary by metrics names
+    for metric, score in cocoEvalObj.eval.items():
+        calculated_metrics[metric] = score
+
+    print("Calculating final results")
+    imgToEval = cocoEvalObj.imgToEval
+
+    model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
+    pathlib.Path(model_path).mkdir(parents=True, exist_ok=True)
+    final_model_name = model_name.replace(".pth.tar", '-k-' + str(beam_size))
+
+    evaluation_results_save_path = os.path.join(model_path,
+                                                final_model_name + '.json')
+    with open(evaluation_results_save_path, 'w') as outfile:
+        json.dump(
+            {'overall': calculated_metrics, 'dataset_name': final_model_name, 'imgToEval': imgToEval},
+            outfile)
+
+    return cocoEvalObj.all_metrics
 
 
 def generate_report(report_name, config_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge):
