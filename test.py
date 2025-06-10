@@ -15,6 +15,7 @@ from torch.utils.data import DataLoader
 from utils import CaptionDataset
 from metrics import Metrics
 from config import config
+import pathlib
 
 device = torch.device(
     "cuda:1" if torch.cuda.is_available() else "cpu")
@@ -133,6 +134,7 @@ def generate_report(report_name, config_name, beam_size, bleu1, bleu2, bleu3, bl
     temp["CIDEr"] = cider
     # Save final csv file
     model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
+    pathlib.Path(model_path).mkdir(parents=True, exist_ok=True)
     with open(os.path.join(model_path, report_name), 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writerow(temp)
@@ -185,7 +187,7 @@ if __name__ == '__main__':
                 generate_report(report_name, model_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
-            temp(1, "final_results_k1_d.csv")
+            # temp(1, "final_results_k1_d.csv")
             temp(2, "final_results_k2_d.csv")
             temp(3, "final_results_k3_d.csv")
             temp(5, "final_results_k5_d.csv")
