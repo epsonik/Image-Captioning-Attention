@@ -70,9 +70,9 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     # ground_truth = [ [ [gt1a], [gt1b], [gt1c] ], ..., [ [gtna], [gtnb] ] ]
     ground_truth = list()
     prediction = list()
-
+    img_paths = list()
     # for each image
-    for i, (image, caps, caplens, allcaps, _) in enumerate(
+    for i, (image, caps, caplens, allcaps, img_path) in enumerate(
         tqdm(loader, desc="Evaluating at beam size " + str(beam_size))):
         # move to GPU device, if available
         image = image.to(device)  # (1, 3, 256, 256)
@@ -86,7 +86,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
             map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
                 img_caps))  # remove <start> and pads
         ground_truth.append(img_captions)
-
+        img_paths.append(img_path)
         # prediction (beam search)
         if caption_model == 'show_tell':
             seq = decoder.beam_search(encoder_out, beam_size, word_map)
@@ -101,13 +101,13 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
         assert len(ground_truth) == len(prediction)
 
     # calculate metrics
-    metrics = Metrics(ground_truth, prediction, rev_word_map)
+    metrics = Metrics(ground_truth, prediction, rev_word_map, img_paths)
     scores = metrics.all_metrics
 
     return scores
 
 
-def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider, rouge):
+def generate_report(report_name, config_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge):
     """
     Method to generate summary of the test results. Made from files in the results directory.
 
@@ -132,8 +132,8 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
     temp["ROUGE_L"] = rouge
     temp["CIDEr"] = cider
     # Save final csv file
-
-    with open(os.path.join(data_f, report_name), 'a') as f:
+    model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
+    with open(model_path, 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
         writer.writerow(temp)
         f.close()
@@ -142,8 +142,9 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = ["best_checkpoint_att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb-epoch-7.pth.tar"
-                    ]
+    output_path2 = [
+        "best_checkpoint_att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb-epoch-7.pth.tar"
+    ]
     output_path = ["att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
@@ -181,7 +182,7 @@ if __name__ == '__main__':
                 print("   ROUGE-L: %.4f" % rouge)
 
                 # generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
-                generate_report(report_name, model_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+                generate_report(report_name, model_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
 
 
             temp(1, "final_results_k1_d.csv")

@@ -36,7 +36,7 @@ def parse_file(filenames):
 # * LOSS - {loss.avg:.3f}, TOP-5 ACCURACY - {top5.avg:.3f}, BLEU-4 - {bleu}, CIDEr - {cider}
 
 if __name__ == '__main__':
-    lines = parse_file([os.path.join("assets", "att2all_densenet201_no_emb.txt")]
+    lines = parse_file([os.path.join("assets", "att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb.txt")]
                        )
     for line in lines:
         print(line)

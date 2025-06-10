@@ -17,11 +17,11 @@ from metrics import Metrics
 import pathlib
 
 device = torch.device(
-    "cuda:1" if torch.cuda.is_available() else "cpu")
+    "cuda:0" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f,
-                             "output/att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb/wordmap.json")
+                             "evaluation/wordmap.json")
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -39,7 +39,7 @@ normalize = transforms.Normalize(
 )
 
 
-def evaluate(encoder, decoder, caption_model, beam_size: int, checkpoint_path, model_name) -> float:
+def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     """
     Parameters
     ----------
@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int, checkpoint_path, m
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         'output/att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb'),
+                         'output/att2all_Regnet16_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -115,11 +115,12 @@ def evaluate(encoder, decoder, caption_model, beam_size: int, checkpoint_path, m
     print("Calculating final results")
     imgToEval = cocoEvalObj.imgToEval
 
-    model_path = os.path.join(data_f, "results", model_name, 'k-' + str(beam_size))
+    model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
     pathlib.Path(model_path).mkdir(parents=True, exist_ok=True)
-    final_model_name = checkpoint_path.replace(".pth.tar", '-k-' + str(beam_size))
+    final_model_name = model_name.replace(".pth.tar", '-k-' + str(beam_size))
 
-    evaluation_results_save_path = os.path.join(final_model_name + '.json')
+    evaluation_results_save_path = os.path.join(model_path,
+                                                final_model_name + '.json')
     with open(evaluation_results_save_path, 'w') as outfile:
         json.dump(
             {'overall': calculated_metrics, 'dataset_name': final_model_name, 'imgToEval': imgToEval},
@@ -154,7 +155,7 @@ def generate_report(report_name, config_name, beam_size, bleu1, bleu2, bleu3, bl
     temp["CIDEr"] = cider
     # Save final csv file
 
-    model_path = os.path.join(data_f, "results", config_name, 'k-' + str(beam_size))
+    model_path = os.path.join(data_f, "results", data_name, 'k-' + str(beam_size))
     evaluation_results_save_path = os.path.join(model_path, report_name)
     with open(evaluation_results_save_path, 'a') as f:
         writer = csv.DictWriter(f, fieldnames=header)
@@ -205,49 +206,52 @@ def generate_report_for_all_models(results_path):
 if __name__ == '__main__':
 
     configs = dict()
-    model_name = "att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb"
-    chc = os.path.join(data_f, "output", model_name, "checkpoints")
-    files = [x for x in os.listdir(chc) if x.endswith(".pth.tar")]
-    cudnn.benchmark = True
+    output_path2 = [
+        "best_checkpoint_spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_false_embeddings_false-epoch-8.pth.tar",
+        "best_checkpoint_spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true-epoch-37.pth.tar"]
+    output_path = [
+        "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"]
+    cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
-    for data_name in files:
+    for data_name in output_path:
         # path to save checkpoints
-        checkpoint_path = os.path.join(chc, data_name)
+        model_path = os.path.join(data_f, "output", data_name, "checkpoints")
+        # checkpoint = os.path.join(model_path, 'checkpoint_' + data_name + '.pth.tar')  # model checkpoint
+        for model_name in output_path2:
+            checkpoint = os.path.join(model_path, model_name)  # model checkpoint
+            print(checkpoint)
+            # load model
+            checkpoint = torch.load(checkpoint, map_location=str(device))
 
-        print(checkpoint_path)
-        # load model
-        checkpoint = torch.load(checkpoint_path, map_location=str(device))
+            decoder = checkpoint['decoder']
+            decoder = decoder.to(device)
+            decoder.eval()
 
-        decoder = checkpoint['decoder']
-        decoder = decoder.to(device)
-        decoder.eval()
+            encoder = checkpoint['encoder']
+            encoder = encoder.to(device)
+            encoder.eval()
 
-        encoder = checkpoint['encoder']
-        encoder = encoder.to(device)
-        encoder.eval()
-
-        caption_model = checkpoint['caption_model']
-
-
-        def temp(beam_size, report_name):
-            print("Scores for ", data_name)
-            (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, caption_model, beam_size,
-                                                                  checkpoint_path, model_name)
-
-            print("\nScores @ beam size of %d are:" % beam_size)
-            print("   BLEU-1: %.4f" % bleu1)
-            print("   BLEU-2: %.4f" % bleu2)
-            print("   BLEU-3: %.4f" % bleu3)
-            print("   BLEU-4: %.4f" % bleu4)
-            print("   CIDEr: %.4f" % cider)
-            print("   ROUGE-L: %.4f" % rouge)
-
-            # generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
-            generate_report(report_name, model_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+            caption_model = checkpoint['caption_model']
 
 
-        temp(1, "final_results_k1.csv")
-        temp(2, "final_results_k2.csv")
-        temp(3, "final_results_k3.csv")
-        temp(5, "final_results_k5.csv")
-        temp(8, "final_results_k8.csv")
+            def temp(beam_size, report_name):
+                print("Scores for ", data_name)
+                (bleu1, bleu2, bleu3, bleu4), cider, rouge = evaluate(encoder, decoder, caption_model, beam_size)
+
+                print("\nScores @ beam size of %d are:" % beam_size)
+                print("   BLEU-1: %.4f" % bleu1)
+                print("   BLEU-2: %.4f" % bleu2)
+                print("   BLEU-3: %.4f" % bleu3)
+                print("   BLEU-4: %.4f" % bleu4)
+                print("   CIDEr: %.4f" % cider)
+                print("   ROUGE-L: %.4f" % rouge)
+
+                # generate_report(report_name, data_name, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+                generate_report(report_name, model_name, beam_size, bleu1, bleu2, bleu3, bleu4, cider, rouge)
+
+
+            temp(1, "final_results_k1.csv")
+            temp(2, "final_results_k2.csv")
+            temp(3, "final_results_k3.csv")
+            temp(5, "final_results_k5.csv")
+            temp(8, "final_results_k8.csv")
