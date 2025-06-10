@@ -17,7 +17,7 @@ from metrics import Metrics
 from config import config
 
 device = torch.device(
-    "cuda:2" if torch.cuda.is_available() else "cpu")
+    "cuda:0" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
@@ -142,9 +142,9 @@ def generate_report(report_name, config_name, bleu1, bleu2, bleu3, bleu4, cider,
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = ["best_checkpoint_att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb-epoch-8.pth.tar"
+    output_path2 = ["best_checkpoint_att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb-epoch-7.pth.tar"
                     ]
-    output_path = ["att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_no_emb"]
+    output_path = ["att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:

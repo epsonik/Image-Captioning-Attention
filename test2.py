@@ -21,7 +21,7 @@ device = torch.device(
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f,
-                             "output/att2all_Regnet16_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false/wordmap.json")
+                             "output/att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb/wordmap.json")
 
 # load word map (word2ix)
 with open(word_map_file, 'r') as j:
@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int, checkpoint_path, m
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         'output/att2all_Regnet16_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'),
+                         'output/att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -205,7 +205,7 @@ def generate_report_for_all_models(results_path):
 if __name__ == '__main__':
 
     configs = dict()
-    model_name = "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"
+    model_name = "att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb"
     chc = os.path.join(data_f, "output", model_name, "checkpoints")
     files = [x for x in os.listdir(chc) if x.endswith(".pth.tar")]
     cudnn.benchmark = True
