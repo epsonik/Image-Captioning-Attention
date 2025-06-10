@@ -7,7 +7,7 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:1"
+    cuda_device = "cuda:0"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'att2all'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
@@ -52,7 +52,7 @@ class config:
     grad_clip = 5.  # gradient threshold in clip gradients
     checkpoint = os.path.join(base_path, output_path,
                               'checkpoints/best_checkpoint_att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_no_emb-epoch-7.pth.tar')  # path to load checkpoint, None if none
-    checkpoint = None
+    # checkpoint = None
     workers = 0  # num_workers in dataloader
     tau = 1.  # penalty term τ for doubly stochastic attention in paper: show, attend and tell
     # you only need to set this when 'caption_model' is set to 'att2all'
