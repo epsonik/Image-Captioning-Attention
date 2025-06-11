@@ -206,17 +206,14 @@ def generate_report_for_all_models(results_path):
 if __name__ == '__main__':
 
     configs = dict()
-    output_path2 = [
-        "best_checkpoint_spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_false_fine_false_embeddings_false-epoch-8.pth.tar",
-        "best_checkpoint_spatial_att_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true-epoch-37.pth.tar"]
-    output_path = [
-        "spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"]
+    output_path = ["spatial_Regnet16_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
         # path to save checkpoints
         model_path = os.path.join(data_f, "output", data_name, "checkpoints")
         # checkpoint = os.path.join(model_path, 'checkpoint_' + data_name + '.pth.tar')  # model checkpoint
+        output_path2 = [x for x in os.listdir(model_path) if x.endswith(".pth.tar")]
         for model_name in output_path2:
             checkpoint = os.path.join(model_path, model_name)  # model checkpoint
             print(checkpoint)
