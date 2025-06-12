@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         'output/adaptive_DenseNet201_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'),
+                         'output/att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_no_emb_all_stages'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
