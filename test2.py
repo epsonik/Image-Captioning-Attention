@@ -206,7 +206,7 @@ def generate_report_for_all_models(results_path):
 if __name__ == '__main__':
 
     configs = dict()
-    output_path = ["adaptive_DenseNet201_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"]
+    output_path = ["adaptive_DenseNet161_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
