@@ -11,13 +11,13 @@ class config:
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
     caption_model = 'adaptive_att'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
-    output_path = "data/output/InceptionV3_p/"
+    output_path = "data/output/Resnet101_p/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/mnt/dysk2/dane/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/mnt/dysk2/dane/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'InceptionV3_p'  # any name you want
+    dataset_basename = 'Resnet101_p'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -40,12 +40,12 @@ class config:
     decoder_dim = 512  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'InceptionV3_p'  # any name you want
+    model_basename = 'Resnet101_p'  # any name you want
 
     # training parameters
     epochs = 50
     batch_size = 10
-    pretrained_encoder = 'InceptionV3'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
+    pretrained_encoder = 'Resnet101'  # DenseNet201 Resnet101 Regnet32 DenseNet121 DenseNet161 Resnet152
     fine_tune_encoder = True  # fine-tune encoder or not
     encoder_lr = 1e-4  # learning rate of encoder (if fine-tune)
     decoder_lr = 4e-4  # learning rate of decoder
