@@ -17,7 +17,7 @@ from metrics import Metrics
 import pathlib
 
 device = torch.device(
-    "cuda:1" if torch.cuda.is_available() else "cpu")
+    "cuda:0" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f,
@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         'output/att2all_DenseNet201_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_no_emb_all_stages'),
+                         'output/adaptive_DenseNet161_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false'),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -206,7 +206,7 @@ def generate_report_for_all_models(results_path):
 if __name__ == '__main__':
 
     configs = dict()
-    output_path = ["adaptive_DenseNet161_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false"]
+    output_path = ["adaptive_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
