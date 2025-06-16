@@ -54,7 +54,7 @@ def load_embeddings(
     if not os.path.isfile(cache_path):
         # find embedding dimension
         with open(emb_file, 'r') as f:
-            embed_dim = len(f.readline().split(' '))
+            embed_dim = len(f.readline().rstrip().rsplit(' '))
             num_lines = len(f.readlines())
 
         vocab = set(word_map.keys())
@@ -66,7 +66,7 @@ def load_embeddings(
 
         # read embedding file
         for line in tqdm(open(emb_file, 'r'), total = num_lines, desc = 'Loading embeddings'):
-            line = line.split(' ')
+            line = line.rstrip().rsplit(' ')
             emb_word = line[0]
             embedding = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
             print(len(embedding))
