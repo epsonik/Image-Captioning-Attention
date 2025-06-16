@@ -54,9 +54,9 @@ def load_embeddings(
     if not os.path.isfile(cache_path):
         # find embedding dimension
         with open(emb_file, 'r') as f:
-            embed_dim = 300
+            embed_dim = 299
             num_lines = len(f.readlines())
-            print(embed_dim)
+
         vocab = set(word_map.keys())
 
         # create tensor to hold embeddings, initialize
