@@ -61,6 +61,7 @@ def load_embeddings(
 
         # create tensor to hold embeddings, initialize
         embeddings = torch.FloatTensor(len(vocab), embed_dim)
+        print(len(embeddings))
         init_embeddings(embeddings)
 
         # read embedding file
@@ -68,13 +69,10 @@ def load_embeddings(
             line = line.split(' ')
             emb_word = line[0]
             embedding = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
-            print(embedding.__sizeof__())
             print(len(embedding))
             # ignore word if not in train_vocab
             if emb_word not in vocab:
                 continue
-            print(len(emb_word))
-            print(len(word_map))
             embeddings[word_map[emb_word]] = torch.FloatTensor(embedding)
 
         # create cache file so we can load it quicker the next time
