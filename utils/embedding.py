@@ -68,6 +68,7 @@ def load_embeddings(
             line = line.rstrip().rsplit(' ')
             print(line)
             emb_word = line[0]
+            print(emb_word)
             embedding = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
 
             # ignore word if not in train_vocab
