@@ -28,10 +28,10 @@ class config:
     # word embeddings parameters
     embed_pretrain = True  # false: initialize embedding weights randomly
     # true: load pre-trained word embeddings
-    # embed_path = os.path.join(base_path,
-    #                           '/mnt/dysk2/dane/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     embed_path = os.path.join(base_path,
-                              '/mnt/dysk2/dane/fastText/wiki-news-300d-1M-subword.vec')  # only makes sense when `embed_pretrain = True`
+                              '/mnt/dysk2/dane/glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
+    # embed_path = os.path.join(base_path,
+    #                           '/mnt/dysk2/dane/fastText/wiki-news-300d-1M-subword.vec')  # only makes sense when `embed_pretrain = True`
     embed_dim = 300  # dimension of word embeddings
     # only makes sense when `embed_pretrain = False`
     fine_tune_embeddings = False  # fine-tune word embeddings?
