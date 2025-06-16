@@ -71,7 +71,7 @@ def load_embeddings(
             embedding = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
 
             # ignore word if not in train_vocab
-            if emb_word not in vocab:
+            if (emb_word not in vocab) and len(emb_word) <= 0:
                 continue
 
             embeddings[word_map[emb_word]] = torch.FloatTensor(embedding)
