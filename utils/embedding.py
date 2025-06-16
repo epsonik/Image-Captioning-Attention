@@ -70,7 +70,7 @@ def load_embeddings(
             emb_word = line[0]
             print(emb_word)
             embedding = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
-
+            print(embedding)
             # ignore word if not in train_vocab
             if emb_word not in vocab:
                 continue
