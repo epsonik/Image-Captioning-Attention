@@ -73,7 +73,9 @@ def load_embeddings(
             # ignore word if not in train_vocab
             if (emb_word not in vocab) and len(emb_word) <= 0:
                 continue
-
+            print(embedding)
+            print(word_map[emb_word])
+            print(emb_word)
             embeddings[word_map[emb_word]] = torch.FloatTensor(embedding)
 
         # create cache file so we can load it quicker the next time
