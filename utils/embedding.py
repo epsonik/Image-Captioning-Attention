@@ -54,7 +54,7 @@ def load_embeddings(
     if not os.path.isfile(cache_path):
         # find embedding dimension
         with open(emb_file, 'r') as f:
-            embed_dim = len(f.readline().split(' ')) - 1
+            embed_dim = 300
             num_lines = len(f.readlines())
             print(embed_dim)
         vocab = set(word_map.keys())
