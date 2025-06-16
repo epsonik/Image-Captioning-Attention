@@ -54,7 +54,7 @@ def load_embeddings(
     if not os.path.isfile(cache_path):
         # find embedding dimension
         with open(emb_file, 'r') as f:
-            embed_dim = len(f.readline().split(' ')) - 1
+            embed_dim = len(f.readline().split(' '))
             num_lines = len(f.readlines())
 
         vocab = set(word_map.keys())
@@ -71,7 +71,7 @@ def load_embeddings(
             embedding = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
 
             # ignore word if not in train_vocab
-            if (emb_word not in vocab) and len(emb_word) <= 0:
+            if (emb_word not in vocab):
                 continue
 
             embeddings[word_map[emb_word]] = torch.FloatTensor(embedding)
