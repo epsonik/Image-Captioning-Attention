@@ -36,10 +36,8 @@ def parse_file(filenames):
 # * LOSS - {loss.avg:.3f}, TOP-5 ACCURACY - {top5.avg:.3f}, BLEU-4 - {bleu}, CIDEr - {cider}
 
 if __name__ == '__main__':
-    lines = parse_file([os.path.join("assets", "cnn",
-                                     "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_false_cuda_1.txt"),
-                        os.path.join("assets", "cnn",
-                                     "DenseNet201_glove300_decoder_dim_128_ft_embeddings_false_fine_tune_encoder_true_cuda_1.txt")]
+    lines = parse_file([os.path.join("assets",
+                                     "DenseNet201_glove300_fte_true.txt")]
                        )
     for line in lines:
         print(line)
