@@ -166,9 +166,9 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-        "best_checkpoint_DenseNet201_glove300_decoder_dim_512_attention_dim_128_ft_embeddings_true_fine_tune_encoder_false-epoch-49.pth.tar"
+        "best_checkpoint_DenseNet201_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_true-epoch-18.pth.tar"
     ]
-    output_path = ["DenseNet201_glove300_decoder_dim_512_attention_dim_128_ft_embeddings_true_fine_tune_encoder_false"]
+    output_path = ["DenseNet201_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
