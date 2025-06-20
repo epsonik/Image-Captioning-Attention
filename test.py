@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         "output/DenseNet201_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_true"),
+                         "output/adaptive_DenseNet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true_fastText"),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -166,9 +166,9 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-        "best_checkpoint_DenseNet201_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_true-epoch-18.pth.tar"
+        "best_checkpoint_adaptive_DenseNet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true_fastText-epoch-32.pth.tar"
     ]
-    output_path = ["DenseNet201_glove300_decoder_dim_128_attention_dim_128_ft_embeddings_false_fine_tune_encoder_true"]
+    output_path = ["adaptive_DenseNet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true_fastText"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
