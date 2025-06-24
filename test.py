@@ -18,7 +18,7 @@ from config import config
 import pathlib
 
 device = torch.device(
-    "cuda:1" if torch.cuda.is_available() else "cpu")
+    "cuda:0" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
@@ -166,9 +166,9 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-        "best_checkpoint_spatial_DenseNet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages-epoch-11.pth.tar"
+        "best_checkpoint_adaptive_DenseNet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_false_no_emb_all_stages-epoch-11.pth.tar"
     ]
-    output_path = ["spatial_DenseNet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages"]
+    output_path = ["adaptive_DenseNet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_false_no_emb_all_stages"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
