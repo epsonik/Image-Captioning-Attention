@@ -7,17 +7,17 @@ import os
 
 class config:
     # global parameters
-    cuda_device = "cuda:0"
+    cuda_device = "cuda:1"
     base_path = os.path.abspath(os.path.dirname(__file__))  # path to this project
-    caption_model = 'adaptive_att'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
+    caption_model = 'spatial_att'  # 'show_tell', 'att2all', 'adaptive_att', 'spatial_att'
     # refer to README.md for more info about each model
-    output_path = "data/output/adaptive_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages/"
+    output_path = "data/output/spatial_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages/"
     dataset_type = 'coco'
     # dataset parameters
     dataset_image_path = os.path.join(base_path, '/mnt/dysk2/dane/coco2014/')
     dataset_caption_path = os.path.join(base_path, '/mnt/dysk2/dane/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
-    dataset_basename = 'adaptive_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages'  # any name you want
+    dataset_basename = 'spatial_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages'  # any name you want
 
     # preprocess parameters
     captions_per_image = 5
@@ -42,7 +42,7 @@ class config:
     decoder_dim = 512  # dimension of decoder's hidden layer
     dropout = 0.5
     model_path = os.path.join(base_path, output_path, 'checkpoints/')  # path to save checkpoints
-    model_basename = 'adaptive_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages'  # any name you want
+    model_basename = 'spatial_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages'  # any name you want
 
     # training parameters
     epochs = 50
