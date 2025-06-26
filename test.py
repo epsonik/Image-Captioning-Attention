@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         "output/att2all_50_DenseNet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_fine_tune_embeddings_true"),
+                         "output/att2all_50_Resnet101_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages"),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -166,9 +166,9 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-        "best_checkpoint_att2all_50_DenseNet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-9.pth.tar"
+        "best_checkpoint_att2all_50_Resnet101_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages-epoch-9.pth.tar"
     ]
-    output_path = ["att2all_50_DenseNet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_fine_tune_embeddings_true"]
+    output_path = ["att2all_50_Resnet101_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
@@ -209,8 +209,8 @@ if __name__ == '__main__':
 
 
             # temp(1, "final_results_k1_d.csv")
+            temp(3, "final_results_k3_d.csv")
             temp(1, "final_results_k1_d.csv")
             temp(2, "final_results_k2_d.csv")
-            temp(3, "final_results_k3_d.csv")
             temp(5, "final_results_k5_d.csv")
             temp(8, "final_results_k8_d.csv")
