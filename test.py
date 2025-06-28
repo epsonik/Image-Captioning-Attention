@@ -18,7 +18,7 @@ from config import config
 import pathlib
 
 device = torch.device(
-    "cuda:0" if torch.cuda.is_available() else "cpu")
+    "cuda:1" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
@@ -209,7 +209,7 @@ if __name__ == '__main__':
 
 
             # temp(1, "final_results_k1_d.csv")
-            temp(3, "final_results_k3_d.csv")
+            # temp(3, "final_results_k3_d.csv")
             temp(1, "final_results_k1_d.csv")
             temp(2, "final_results_k2_d.csv")
             temp(5, "final_results_k5_d.csv")
