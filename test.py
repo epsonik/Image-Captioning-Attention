@@ -18,7 +18,7 @@ from config import config
 import pathlib
 
 device = torch.device(
-    "cuda:1" if torch.cuda.is_available() else "cpu")
+    "cuda:0" if torch.cuda.is_available() else "cpu")
 data_f = os.path.join(config.base_path, "data")
 # word map, ensure it's the same the data was encoded with and the model was trained with
 word_map_file = os.path.join(data_f, "evaluation", 'wordmap' + '.json')
@@ -55,7 +55,7 @@ def evaluate(encoder, decoder, caption_model, beam_size: int) -> float:
     loader = DataLoader(
         CaptionDataset(
             os.path.join(data_f,
-                         "output/spatial_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages"),
+                         "output/adaptive_50_Densenet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"),
             data_name, 'test',
             transform=transforms.Compose([normalize])
         ),
@@ -166,9 +166,9 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-        "best_checkpoint_spatial_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages-epoch-7.pth.tar"
+        "best_checkpoint_adaptive_50_Densenet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-6.pth.tar"
     ]
-    output_path = ["spatial_att_50_Densenet201_decoder_dim_512_attention_dim_128_fine_tune_encoder_true_no_emb_all_stages"]
+    output_path = ["adaptive_50_Densenet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
