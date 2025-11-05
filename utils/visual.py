@@ -138,7 +138,7 @@ def visualize_att(
 
     # subplot settings
     num_col = 5
-    num_row = np.ceil(len(words) / float(num_col))
+    num_row = int(np.ceil(len(words) / float(num_col)))
     subplot_size = 4
 
     # graph settings
