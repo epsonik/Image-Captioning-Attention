@@ -96,10 +96,10 @@ def generate_caption(
 
 
 if __name__ == '__main__':
-    output_path = "adaptive_Resnet152_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"
+    output_path = "att2all_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"
     img = "./assets/IMG_4276.JPG"
     model_names = [
-        "best_checkpoint_adaptive_Resnet152_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-2.pth.tar"
+        "checkpoint_att2all_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-30.pth.tar"
     ]
 
     model_path = os.path.join(data_f, "output", output_path, "checkpoints")
