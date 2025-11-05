@@ -14,8 +14,8 @@ class config:
     output_path = "data/att2all_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true/"
     dataset_type = 'coco'
     # dataset parameters
-    dataset_image_path = os.path.join(base_path, '/bartosiewicz/mateusz/dane/coco2014/')
-    dataset_caption_path = os.path.join(base_path, '/bartosiewicz/mateusz/dane/coco2014/karpathy/dataset_coco.json')
+    dataset_image_path = os.path.join(base_path, '/home/bartosiewicz/mateusz/dane/coco2014/')
+    dataset_caption_path = os.path.join(base_path, '/home/bartosiewicz/mateusz/dane/coco2014/karpathy/dataset_coco.json')
     dataset_output_path = os.path.join(base_path, output_path)  # folder with data files saved by preprocess.py
     dataset_basename = 'att2all_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true'  # any name you want
 
@@ -29,7 +29,7 @@ class config:
     embed_pretrain = True  # false: initialize embedding weights randomly
     # true: load pre-trained word embeddings
     embed_path = os.path.join(base_path,
-                              '/bartosiewicz/mateusz//glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
+                              '/home/bartosiewicz/mateusz//glove/glove.6B.300d.txt')  # only makes sense when `embed_pretrain = True`
     # embed_path = os.path.join(base_path,
     #                           '/mnt/dysk2/dane/fastText/wiki-news-300d-1M-subword.vec')  # only makes sense when `embed_pretrain = True`
     embed_dim = 300  # dimension of word embeddings
