@@ -139,6 +139,7 @@ if __name__ == '__main__':
                 seq=seq,
                 rev_word_map=rev_word_map,
                 alphas=alphas,
+                model_name=model_name,
                 smooth=ifsmooth
             )
 
@@ -151,5 +152,6 @@ if __name__ == '__main__':
                 rev_word_map=rev_word_map,
                 alphas=alphas,
                 betas=betas,
+                model_name=model_name,
                 smooth=ifsmooth
             )
