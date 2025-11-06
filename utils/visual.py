@@ -76,7 +76,7 @@ def visualize_att_beta(
     head, tail = os.path.split(image_path)
     # build cleaned model name
     if model_name:
-        cleaned = model_name.replace('best_checkpoint_', '').replace('.tar.tgz', '')
+        cleaned = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '')
         out_name = f"{cleaned}_{tail}"
     else:
         out_name = tail
