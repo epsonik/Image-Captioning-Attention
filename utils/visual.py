@@ -15,36 +15,13 @@ def visualize_att_beta(
     betas: list,
     smooth: bool = True
 ) -> None:
-    """
-    Visualize caption with weights and betas at every word.
-
-    Parameters
-    ----------
-    image_path : str
-        Path to image that has been captioned
-
-    seq : list
-        Generated caption on the above mentioned image using beam search
-
-    alphas : list
-        Attention weights at each time step
-
-    betas : list
-        Sentinel gate at each time step (only in 'adaptive_att' mode)
-
-    rev_word_map : Dict[int, str]
-        Reverse word mapping, i.e. ix2word
-
-    smooth : bool, optional, default=True
-        Smooth weights or not?
-    """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
 
     # subplot settings
-    num_col = len(words) - 1
+    num_col = max(1, len(words) - 1)
     num_row = 1
     subplot_size = 4
 
@@ -59,33 +36,18 @@ def visualize_att_beta(
     grid = plt.GridSpec(fig_height, fig_width)
 
     # big image
-    plt.subplot(grid[0: img_size, 0: img_size])
-    plt.imshow(image)
-    plt.axis('off')
-
-    # betas' curve
-    # if betas is not None:
-    #     plt.subplot(grid[0: fig_height - 1, img_size: fig_width])
-    #
-    #     x = range(1, len(words), 1)
-    #     y = [(1 - betas[t].item()) for t in range(1, len(words))]
-    #
-    #     for a, b in zip(x, y):
-    #         plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
-    #
-    #     plt.axis('off')
-    #     plt.plot(x, y)
+    ax_img = plt.subplot(grid[0: img_size, 0: img_size])
+    ax_img.imshow(image)
+    ax_img.axis('off')
 
     for t in range(1, len(words)):
         if t > 50:
             break
 
-        plt.subplot(grid[fig_height - 1, img_size + t - 1])
-        # images
-        plt.imshow(image)
-        # words of sentence
-        plt.title('%s' % (words[t]), color='black', fontsize=10,
-                 horizontalalignment='center', verticalalignment='center')
+        ax = plt.subplot(grid[fig_height - 1, img_size + t - 1])
+        # image background
+        ax.imshow(image)
+        ax.axis('off')
 
         # alphas
         current_alpha = alphas[t, :]
@@ -93,14 +55,19 @@ def visualize_att_beta(
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
-        plt.imshow(alpha, alpha=0.6)
-        plt.set_cmap('jet')
 
-        plt.axis('off')
+        ax.imshow(alpha, alpha=0.6, cmap='jet')
+
+        # place the word below the image using axis-relative coordinates
+        ax.text(
+            0.5, -0.12, words[t],
+            transform=ax.transAxes,
+            ha='center', va='top',
+            color='black', backgroundcolor='white', fontsize=10
+        )
 
     head, tail = os.path.split(image_path)
     plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
-
 
 def visualize_att(
     image_path: str,
@@ -109,28 +76,6 @@ def visualize_att(
     rev_word_map: Dict[int, str],
     smooth: bool = True
 ) -> None:
-    """
-    Visualize caption with weights at every word.
-
-    Adapted from: https://github.com/kelvinxu/arctic-captions/blob/master/alpha_visualization.ipynb
-
-    Parameters
-    ----------
-    image_path : str
-        Path to image that has been captioned
-
-    seq : list
-        Generated caption on the above mentioned image using beam search
-
-    alphas : list
-        Attention weights at each time step
-
-    rev_word_map : Dict[int, str]
-        Reverse word mapping, i.e. ix2word
-
-    smooth : bool, optional, default=True
-        Smooth weights or not?
-    """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
@@ -149,9 +94,7 @@ def visualize_att(
         if t > 50:
             break
 
-        plt.subplot(num_row, num_col, t + 1)
-
-        plt.text(0, 1, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=12)
+        ax = plt.subplot(num_row, num_col, t + 1)
 
         plt.imshow(image)
 
@@ -169,5 +112,14 @@ def visualize_att(
 
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
+
+        # place the word below the image using axis-relative coordinates
+        ax.text(
+            0.5, -0.12, words[t],
+            transform=ax.transAxes,
+            ha='center', va='top',
+            color='black', backgroundcolor='white', fontsize=12
+        )
+
     head, tail = os.path.split(image_path)
     plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
