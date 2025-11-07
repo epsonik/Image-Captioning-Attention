@@ -61,9 +61,9 @@ def visualize_att_beta(
         if t > 50:
             break
 
-        # Don't create a large figure, just one for each word
-        fig = plt.figure()
-        plt.imshow(image)
+        # Create a new figure and axes for each word
+        fig, ax = plt.subplots()
+        ax.imshow(image)
 
         # alphas
         current_alpha = alphas[t, :]
@@ -71,18 +71,20 @@ def visualize_att_beta(
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
-        plt.imshow(alpha, alpha=0.6)
-        plt.set_cmap('jet')
+        ax.imshow(alpha, alpha=0.6, cmap='jet')
 
-        plt.axis('off')
+        ax.axis('off')
+        # Remove padding and margins
+        fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
 
         # Save the figure for the current word
         word = words[t]
         # Sanitize word for filename
         sanitized_word = "".join(c if c.isalnum() else "_" for c in word)
         filename = f"{t}_{sanitized_word}.png"
-        plt.savefig(os.path.join(output_dir, filename), bbox_inches='tight', pad_inches=0)
+        plt.savefig(os.path.join(output_dir, filename))
         plt.close(fig)
+
 
 def visualize_att(
     image_path: str,
