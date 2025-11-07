@@ -1,10 +1,9 @@
-from typing import Dict, Optional
+from typing import Dict
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import skimage.transform
 from PIL import Image
 import numpy as np
-import os
 
 def visualize_att_beta(
     image_path: str,
@@ -12,8 +11,7 @@ def visualize_att_beta(
     alphas: list,
     rev_word_map: Dict[int, str],
     betas: list,
-    smooth: bool = True,
-    model_name: str = ''
+    smooth: bool = True
 ) -> None:
     """
     Visualize caption with weights and betas at every word.
@@ -99,20 +97,14 @@ def visualize_att_beta(
 
         plt.axis('off')
 
-    output_dir = os.path.dirname(image_path)
-    cleaned_model_name = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '').replace('checkpoint_', '')
-    image_basename = os.path.splitext(os.path.basename(image_path))[0]
-    save_path = os.path.join(output_dir, f"{cleaned_model_name}_{image_basename}.png")
-    plt.savefig(save_path)
-    plt.close(fig)
+    plt.show()
 
 def visualize_att(
     image_path: str,
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
-    smooth: bool = True,
-    model_name: str = ''
+    smooth: bool = True
 ) -> None:
     """
     Visualize caption with weights at every word.
@@ -175,9 +167,4 @@ def visualize_att(
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
 
-    output_dir = os.path.dirname(image_path)
-    cleaned_model_name = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '').replace('checkpoint_', '')
-    image_basename = os.path.splitext(os.path.basename(image_path))[0]
-    save_path = os.path.join(output_dir, f"{cleaned_model_name}_{image_basename}.png")
-    plt.savefig(save_path)
-    plt.close(fig)
+    plt.show()
