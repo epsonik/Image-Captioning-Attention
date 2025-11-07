@@ -13,8 +13,8 @@ def visualize_att_beta(
     alphas: list,
     rev_word_map: Dict[int, str],
     betas: list,
+    model_name: str = "",
     smooth: bool = True,
-    model_name: str = ""
 ) -> None:
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
@@ -90,8 +90,8 @@ def visualize_att(
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
+    model_name: str = "",
     smooth: bool = True,
-    model_name: str = ""
 ) -> None:
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
