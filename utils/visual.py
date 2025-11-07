@@ -13,8 +13,8 @@ def visualize_att_beta(
     alphas: list,
     rev_word_map: Dict[int, str],
     betas: list,
-    model_name: str,
-    smooth: bool = True
+    smooth: bool = True,
+    model_name: str = ''
 ) -> None:
     """
     Visualize caption with weights and betas at every word.
@@ -36,68 +36,71 @@ def visualize_att_beta(
     rev_word_map : Dict[int, str]
         Reverse word mapping, i.e. ix2word
 
-    model_name : str
-        Name of the model, used for creating the output directory
-
     smooth : bool, optional, default=True
         Smooth weights or not?
     """
     image = Image.open(image_path)
-    image_size = 14 * 24
-    image = image.resize([image_size, image_size], Image.LANCZOS)
-    img_np = np.array(image)
+    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
 
-    # Create output directory
-    head, tail = os.path.split(image_path)
-    img_name = tail.split('.')[0]
-    output_dir = os.path.join(head, f"{model_name}_{img_name}")
-    os.makedirs(output_dir, exist_ok=True)
+    # subplot settings
+    num_col = len(words) - 1
+    num_row = 1
+    subplot_size = 4
 
-    # Save original image
-    image.save(os.path.join(output_dir, tail))
+    # graph settings
+    fig = plt.figure(dpi=100)
+    fig.set_size_inches(subplot_size * num_col, subplot_size * num_row)
 
-    # Get the 'jet' colormap
-    cmap = cm.get_cmap('jet')
+    img_size = 1
+    fig_height = img_size
+    fig_width = num_col + img_size
+
+    grid = plt.GridSpec(fig_height, fig_width)
+
+    # big image
+    plt.subplot(grid[0: img_size, 0: img_size])
+    plt.imshow(image)
+    plt.axis('off')
+
+    # betas' curve
+    # if betas is not None:
+    #     plt.subplot(grid[0: fig_height - 1, img_size: fig_width])
+    #
+    #     x = range(1, len(words), 1)
+    #     y = [(1 - betas[t].item()) for t in range(1, len(words))]
+    #
+    #     for a, b in zip(x, y):
+    #         plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
+    #
+    #     plt.axis('off')
+    #     plt.plot(x, y)
 
     for t in range(1, len(words)):
         if t > 50:
             break
 
-        # Alphas
+        plt.subplot(grid[fig_height - 1, img_size + t - 1])
+        # images
+        plt.imshow(image)
+        # words of sentence
+        plt.title('%s' % (words[t]), color='black', fontsize=10,
+                 horizontalalignment='center', verticalalignment='center')
+
+        # alphas
         current_alpha = alphas[t, :]
-        # Reshape to 2D, assuming 7x7 feature map
-        alpha_reshaped = current_alpha.numpy().reshape(7, 7)
-
         if smooth:
-            # Upscale to match image size (336x336)
-            upscale_factor = image_size // 7
-            alpha = skimage.transform.pyramid_expand(alpha_reshaped, upscale=upscale_factor, sigma=8)
+            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
-            alpha = skimage.transform.resize(alpha_reshaped, [image_size, image_size])
+            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+        plt.imshow(alpha, alpha=0.6)
+        plt.set_cmap('jet')
 
-        # Use colormap to convert alpha to a 4-channel RGBA image
-        # The colormap returns values in [0, 1], so we multiply by 255
-        heatmap = (cmap(alpha) * 255).astype(np.uint8)
+        plt.axis('off')
 
-        # Blend the original image with the heatmap
-        # Here, we use a fixed blending factor of 0.6 for the heatmap
-        blended_img_np = (
-            (img_np.astype(float) * 0.4) + (heatmap[:, :, :3].astype(float) * 0.6)
-        ).astype(np.uint8)
-
-        # Create a PIL image from the blended numpy array
-        blended_img = Image.fromarray(blended_img_np)
-
-        # Save the figure for the current word
-        word = words[t]
-        # Sanitize word for filename
-        sanitized_word = "".join(c if c.isalnum() else "_" for c in word)
-        filename = f"{t}_{sanitized_word}.png"
-        blended_img.save(os.path.join(output_dir, filename))
-
-
+    head, tail = os.path.split(image_path)
+    plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
 
 
 def visualize_att(
@@ -105,7 +108,8 @@ def visualize_att(
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
-    smooth: bool = True
+    smooth: bool = True,
+    model_name: str = ''
 ) -> None:
     """
     Visualize caption with weights at every word.
