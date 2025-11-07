@@ -108,7 +108,6 @@ if __name__ == '__main__':
 
     # use that folder as the model_path (replaces previous model_path assignment)
     model_path = model_dir
-    model_path = os.path.join(data_f, "output")
     beam_size = 3
     ifsmooth = True
 
