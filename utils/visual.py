@@ -43,7 +43,8 @@ def visualize_att_beta(
         Smooth weights or not?
     """
     image = Image.open(image_path)
-    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
+    image_size = 14 * 24
+    image = image.resize([image_size, image_size], Image.LANCZOS)
     img_np = np.array(image)
 
     words = [rev_word_map[ind] for ind in seq]
@@ -66,13 +67,15 @@ def visualize_att_beta(
 
         # Alphas
         current_alpha = alphas[t, :]
-        # Reshape to 2D
-        alpha_reshaped = current_alpha.numpy().reshape(14, 14)
+        # Reshape to 2D, assuming 7x7 feature map
+        alpha_reshaped = current_alpha.numpy().reshape(7, 7)
 
         if smooth:
-            alpha = skimage.transform.pyramid_expand(alpha_reshaped, upscale=24, sigma=8)
+            # Upscale to match image size (336x336)
+            upscale_factor = image_size // 7
+            alpha = skimage.transform.pyramid_expand(alpha_reshaped, upscale=upscale_factor, sigma=8)
         else:
-            alpha = skimage.transform.resize(alpha_reshaped, [14 * 24, 14 * 24])
+            alpha = skimage.transform.resize(alpha_reshaped, [image_size, image_size])
 
         # Use colormap to convert alpha to a 4-channel RGBA image
         # The colormap returns values in [0, 1], so we multiply by 255
@@ -93,6 +96,7 @@ def visualize_att_beta(
         sanitized_word = "".join(c if c.isalnum() else "_" for c in word)
         filename = f"{t}_{sanitized_word}.png"
         blended_img.save(os.path.join(output_dir, filename))
+
 
 
 
