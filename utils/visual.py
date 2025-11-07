@@ -1,4 +1,3 @@
-import os
 from typing import Dict
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -6,15 +5,13 @@ import skimage.transform
 from PIL import Image
 import numpy as np
 
-
 def visualize_att_beta(
     image_path: str,
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
     betas: list,
-    smooth: bool = True,
-    model_name: str = ''
+    smooth: bool = True
 ) -> None:
     """
     Visualize caption with weights and betas at every word.
@@ -53,40 +50,41 @@ def visualize_att_beta(
     fig = plt.figure(dpi=100)
     fig.set_size_inches(subplot_size * num_col, subplot_size * num_row)
 
-    img_size = 1
+    img_size = 4
     fig_height = img_size
     fig_width = num_col + img_size
 
     grid = plt.GridSpec(fig_height, fig_width)
 
     # big image
-    plt.subplot(grid[0: img_size, 0: img_size])
+    plt.subplot(grid[0 : img_size, 0 : img_size])
     plt.imshow(image)
     plt.axis('off')
 
     # betas' curve
-    # if betas is not None:
-    #     plt.subplot(grid[0: fig_height - 1, img_size: fig_width])
-    #
-    #     x = range(1, len(words), 1)
-    #     y = [(1 - betas[t].item()) for t in range(1, len(words))]
-    #
-    #     for a, b in zip(x, y):
-    #         plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
-    #
-    #     plt.axis('off')
-    #     plt.plot(x, y)
+    if betas is not None:
+        plt.subplot(grid[0 : fig_height - 1, img_size : fig_width])
+
+        x = range(1, len(words), 1)
+        y = [ (1 - betas[t].item()) for t in range(1, len(words)) ]
+
+        for a, b in zip(x, y):
+            plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
+
+        plt.axis('off')
+        plt.plot(x, y)
 
     for t in range(1, len(words)):
         if t > 50:
             break
 
         plt.subplot(grid[fig_height - 1, img_size + t - 1])
+
         # images
         plt.imshow(image)
+
         # words of sentence
-        plt.title('%s' % (words[t]), color='black', fontsize=10,
-                 horizontalalignment='center', verticalalignment='center')
+        plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10)
 
         # alphas
         current_alpha = alphas[t, :]
@@ -99,17 +97,14 @@ def visualize_att_beta(
 
         plt.axis('off')
 
-    head, tail = os.path.split(image_path)
-    plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
-
+    plt.show()
 
 def visualize_att(
     image_path: str,
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
-    smooth: bool = True,
-    model_name: str = ''
+    smooth: bool = True
 ) -> None:
     """
     Visualize caption with weights at every word.
@@ -171,5 +166,5 @@ def visualize_att(
 
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
-    head, tail = os.path.split(image_path)
-    plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
+
+    plt.show()
