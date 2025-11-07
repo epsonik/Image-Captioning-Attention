@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Optional
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import skimage.transform
@@ -7,8 +7,7 @@ import numpy as np
 import os
 
 def visualize_att_beta(
-    image_data: Union[str, np.ndarray],
-    original_image_path: str,
+    image_path: str,
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
@@ -21,11 +20,8 @@ def visualize_att_beta(
 
     Parameters
     ----------
-    image_data : Union[str, np.ndarray]
-        Path to image or image as a numpy array.
-
-    original_image_path : str
-        Path to the original image, used for saving the visualization.
+    image_path : str
+        Path to image that has been captioned
 
     seq : list
         Generated caption on the above mentioned image using beam search
@@ -42,11 +38,7 @@ def visualize_att_beta(
     smooth : bool, optional, default=True
         Smooth weights or not?
     """
-    if isinstance(image_data, str):
-        image = Image.open(image_data)
-    else:
-        image = Image.fromarray(image_data)
-
+    image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
@@ -71,6 +63,19 @@ def visualize_att_beta(
     plt.imshow(image)
     plt.axis('off')
 
+    # betas' curve
+    if betas is not None:
+        plt.subplot(grid[0 : fig_height - 1, img_size : fig_width])
+
+        x = range(1, len(words), 1)
+        y = [ (1 - betas[t].item()) for t in range(1, len(words)) ]
+
+        for a, b in zip(x, y):
+            plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
+
+        plt.axis('off')
+        plt.plot(x, y)
+
     for t in range(1, len(words)):
         if t > 50:
             break
@@ -94,16 +99,15 @@ def visualize_att_beta(
 
         plt.axis('off')
 
-    output_dir = os.path.dirname(original_image_path)
+    output_dir = os.path.dirname(image_path)
     cleaned_model_name = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '').replace('checkpoint_', '')
-    image_basename = os.path.splitext(os.path.basename(original_image_path))[0]
+    image_basename = os.path.splitext(os.path.basename(image_path))[0]
     save_path = os.path.join(output_dir, f"{cleaned_model_name}_{image_basename}.png")
     plt.savefig(save_path)
     plt.close(fig)
 
 def visualize_att(
-    image_data: Union[str, np.ndarray],
-    original_image_path: str,
+    image_path: str,
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
@@ -117,11 +121,8 @@ def visualize_att(
 
     Parameters
     ----------
-    image_data : Union[str, np.ndarray]
-        Path to image or image as a numpy array.
-
-    original_image_path : str
-        Path to the original image, used for saving the visualization.
+    image_path : str
+        Path to image that has been captioned
 
     seq : list
         Generated caption on the above mentioned image using beam search
@@ -135,11 +136,7 @@ def visualize_att(
     smooth : bool, optional, default=True
         Smooth weights or not?
     """
-    if isinstance(image_data, str):
-        image = Image.open(image_data)
-    else:
-        image = Image.fromarray(image_data)
-
+    image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
@@ -178,9 +175,9 @@ def visualize_att(
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
 
-    output_dir = os.path.dirname(original_image_path)
+    output_dir = os.path.dirname(image_path)
     cleaned_model_name = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '').replace('checkpoint_', '')
-    image_basename = os.path.splitext(os.path.basename(original_image_path))[0]
+    image_basename = os.path.splitext(os.path.basename(image_path))[0]
     save_path = os.path.join(output_dir, f"{cleaned_model_name}_{image_basename}.png")
     plt.savefig(save_path)
     plt.close(fig)

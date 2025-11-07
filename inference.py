@@ -1,7 +1,6 @@
 import json
 import numpy as np
-from typing import Dict, Tuple, Union, List
-# from scipy.misc import imread, imresize
+from typing import Dict
 from imageio import imread
 from PIL import Image
 import torch
@@ -31,7 +30,7 @@ def generate_caption(
     caption_model: str,
     beam_size: int = 3,
     pretrained_encoder: str = 'Resnet101'
-) -> Tuple[Union[List, torch.Tensor], ...]:
+):
     """
     Generate a caption on a given image using beam search.
 
@@ -53,7 +52,8 @@ def generate_caption(
         Number of sequences to consider at each decode-step
 
     return:
-        A tuple containing the processed image and the model outputs (sequence, alphas, etc.).
+        seq: caption
+        alphas: weights for visualization
     """
 
     # read and process an image
@@ -61,45 +61,42 @@ def generate_caption(
     if len(img.shape) == 2:
         img = img[:, :, np.newaxis]
         img = np.concatenate([img, img, img], axis=2)
-
+    # img = imresize(img, (256, 256))
     resized_size = 256
-    if pretrained_encoder == 'Regnet32' or pretrained_encoder == 'Regnet16':
-        resized_size = 384
-    elif pretrained_encoder == 'Resnet152':
-        resized_size = 232
-
-    # Store the resized image for visualization
-    resized_img = np.array(Image.fromarray(img).resize((resized_size, resized_size)))
-
-    img_processed = resized_img.transpose(2, 0, 1)
-    img_processed = img_processed / 255.
-    img_processed = torch.FloatTensor(img_processed).to(device)
+    # if pretrained_encoder == 'Regnet32' or pretrained_encoder == 'Regnet16':
+    #     resized_size = 384
+    # elif pretrained_encoder == 'Resnet152':
+    #     resized_size = 232
+    img = np.array(Image.fromarray(img).resize((resized_size, resized_size)))
+    img = img.transpose(2, 0, 1)
+    img = img / 255.
+    img = torch.FloatTensor(img).to(device)
     normalize = transforms.Normalize(
         mean=[0.485, 0.456, 0.406],
         std=[0.229, 0.224, 0.225]
     )
     transform = transforms.Compose([normalize])
-    image = transform(img_processed)  # (3, resized_size, resized_size)
+    image = transform(img)  # (3, 256, 256)
 
     # encode
-    image = image.unsqueeze(0)  # (1, 3, resized_size, resized_size)
+    image = image.unsqueeze(0)  # (1, 3, 256, 256)
     encoder_out = encoder(image)  # (1, enc_image_size, enc_image_size, encoder_dim)
 
     # prediction (beam search)
     if caption_model == 'show_tell':
         seq = decoder.beam_search(encoder_out, beam_size, word_map)
-        return resized_img, seq
+        return seq
     elif caption_model == 'att2all' or caption_model == 'spatial_att':
         seq, alphas = decoder.beam_search(encoder_out, beam_size, word_map)
-        return resized_img, seq, alphas
+        return seq, alphas
     elif caption_model == 'adaptive_att':
         seq, alphas, betas = decoder.beam_search(encoder_out, beam_size, word_map)
-        return resized_img, seq, alphas, betas
+        return seq, alphas, betas
 
 
 if __name__ == '__main__':
     output_path = "att2all_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"
-    img_path = "./assets/make-weights/COCO_val2014_000000123321.jpg"
+    img = "./assets/make-weights/COCO_val2014_000000123321.jpg"
     model_names = [
         "best_checkpoint_adaptive_InceptionV3_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-15.pth.tar"
     ]
@@ -109,6 +106,8 @@ if __name__ == '__main__':
     for model_name in model_names:
         checkpoint_path = os.path.join(model_path, model_name)  # model checkpoint
         beam_size = 3
+        ifsmooth = True
+
         # load model
         checkpoint = torch.load(checkpoint_path, map_location=str(device))
 
@@ -121,43 +120,37 @@ if __name__ == '__main__':
         encoder.eval()
 
         caption_model = checkpoint['caption_model']
-        pretrained_encoder = checkpoint.get('encoder_name', 'Resnet101')  # Get encoder name, default to Resnet101
 
         # encoder-decoder with beam search
         if caption_model == 'show_tell':
-            resized_img, seq = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size,
-                                                pretrained_encoder)
+            seq = generate_caption(encoder, decoder, img, word_map, caption_model, beam_size)
             caption = [rev_word_map[ind] for ind in seq if
                        ind not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
             print('Caption: ', ' '.join(caption))
 
         elif caption_model == 'att2all' or caption_model == 'spatial_att':
-            resized_img, seq, alphas = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size,
-                                                        pretrained_encoder)
+            seq, alphas = generate_caption(encoder, decoder, img, word_map, caption_model, beam_size)
             prediction = [w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
             alphas = torch.FloatTensor(alphas)
             # visualize caption and attention of best sequence
             visualize_att(
-                image_data=resized_img,  # Use resized image
-                original_image_path=img_path,  # Pass original path for saving
+                image_path=img,
                 seq=seq,
                 rev_word_map=rev_word_map,
                 alphas=alphas,
-                smooth=True,
+                smooth=ifsmooth,
                 model_name=model_name
             )
 
         elif caption_model == 'adaptive_att':
-            resized_img, seq, alphas, betas = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size,
-                                                               pretrained_encoder)
+            seq, alphas, betas = generate_caption(encoder, decoder, img, word_map, caption_model, beam_size)
             alphas = torch.FloatTensor(alphas)
             visualize_att_beta(
-                image_data=resized_img,  # Use resized image
-                original_image_path=img_path,  # Pass original path for saving
+                image_path=img,
                 seq=seq,
                 rev_word_map=rev_word_map,
                 alphas=alphas,
                 betas=betas,
-                smooth=True,
+                smooth=ifsmooth,
                 model_name=model_name
             )
