@@ -99,7 +99,7 @@ if __name__ == '__main__':
     output_path = "att2all_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"
     img = "./assets/make-weights/COCO_val2014_000000123321.jpg"
     model_names = [
-        "checkpoint_att2all_DenseNet161_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-30.pth.tar"
+        "best_checkpoint_adaptive_InceptionV3_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-15.pth.tar"
     ]
 
     model_path = os.path.join(data_f, "output", output_path, "checkpoints")
