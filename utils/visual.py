@@ -1,9 +1,10 @@
-from typing import Dict
+from typing import Dict, Optional
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import skimage.transform
 from PIL import Image
 import numpy as np
+import os
 
 def visualize_att_beta(
     image_path: str,
@@ -98,7 +99,12 @@ def visualize_att_beta(
 
         plt.axis('off')
 
-    plt.show()
+    output_dir = os.path.dirname(image_path)
+    cleaned_model_name = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '').replace('checkpoint_', '')
+    image_basename = os.path.splitext(os.path.basename(image_path))[0]
+    save_path = os.path.join(output_dir, f"{cleaned_model_name}_{image_basename}.png")
+    plt.savefig(save_path)
+    plt.close(fig)
 
 def visualize_att(
     image_path: str,
@@ -169,4 +175,9 @@ def visualize_att(
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
 
-    plt.show()
+    output_dir = os.path.dirname(image_path)
+    cleaned_model_name = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '').replace('checkpoint_', '')
+    image_basename = os.path.splitext(os.path.basename(image_path))[0]
+    save_path = os.path.join(output_dir, f"{cleaned_model_name}_{image_basename}.png")
+    plt.savefig(save_path)
+    plt.close(fig)
