@@ -85,8 +85,7 @@ def visualize_att_beta(
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
-        plt.imshow(alpha, alpha=0.6)
-        plt.set_cmap('jet')
+        plt.imshow(alpha, alpha=0.6, cmap='jet')
         plt.axis('off')
     fig.savefig(os.path.join(output_dir, f'att_beta_{basename}.png'))
     plt.close(fig)
@@ -103,8 +102,7 @@ def visualize_att_beta(
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
-        ax_att.imshow(alpha, alpha=0.6)
-        ax_att.set_cmap('jet')
+        ax_att.imshow(alpha, alpha=0.6, cmap='jet')
         ax_att.axis('off')
 
         word = words[t]
@@ -175,11 +173,10 @@ def visualize_att(
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
 
         if t == 0:
-            ax.imshow(alpha, alpha=0)
+            ax.imshow(alpha, alpha=0, cmap=cm.Greys_r)
         else:
-            ax.imshow(alpha, alpha=0.8)
+            ax.imshow(alpha, alpha=0.8, cmap=cm.Greys_r)
 
-        ax.set_cmap(cm.Greys_r)
         ax.axis('off')
 
         word = words[t]
