@@ -66,17 +66,19 @@ def visualize_att_beta(
 
         # Alphas
         current_alpha = alphas[t, :]
+        # Reshape to 2D
+        alpha_reshaped = current_alpha.numpy().reshape(14, 14)
+
         if smooth:
-            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
+            alpha = skimage.transform.pyramid_expand(alpha_reshaped, upscale=24, sigma=8)
         else:
-            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+            alpha = skimage.transform.resize(alpha_reshaped, [14 * 24, 14 * 24])
 
         # Use colormap to convert alpha to a 4-channel RGBA image
         # The colormap returns values in [0, 1], so we multiply by 255
         heatmap = (cmap(alpha) * 255).astype(np.uint8)
 
         # Blend the original image with the heatmap
-        # blended_img = img * (1 - alpha) + heatmap * alpha
         # Here, we use a fixed blending factor of 0.6 for the heatmap
         blended_img_np = (
             (img_np.astype(float) * 0.4) + (heatmap[:, :, :3].astype(float) * 0.6)
@@ -91,6 +93,7 @@ def visualize_att_beta(
         sanitized_word = "".join(c if c.isalnum() else "_" for c in word)
         filename = f"{t}_{sanitized_word}.png"
         blended_img.save(os.path.join(output_dir, filename))
+
 
 
 def visualize_att(
