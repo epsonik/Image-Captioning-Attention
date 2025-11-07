@@ -13,140 +13,110 @@ def visualize_att_beta(
     alphas: list,
     rev_word_map: Dict[int, str],
     betas: list,
-    smooth: bool = True,
-    model_name: str = "model"
+    model_name: str,
+    smooth: bool = True
 ) -> None:
     """
     Visualize caption with weights and betas at every word.
-    Saves a folder named {model_name}\_{image_stem} in the image directory containing:
-      - the input image
-      - one image per word with filename: {index}\_{word}.jpg
 
-    Betas curve drawing is commented out.
-    """
-    image = Image.open(image_path).convert("RGB")
-    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
+    Parameters
+    ----------
+    image_path : str
+        Path to image that has been captioned
 
-    words = [rev_word_map[ind] for ind in seq]
+    seq : list
+        Generated caption on the above mentioned image using beam search
 
-    # create output directory: head/{model_name}_{image_stem}
-    head, tail = os.path.split(image_path)
-    stem, ext = os.path.splitext(tail)
-    out_dir = os.path.join(head, f"{model_name}_{stem}")
-    os.makedirs(out_dir, exist_ok=True)
+    alphas : list
+        Attention weights at each time step
 
-    # save input image
-    image.save(os.path.join(out_dir, f"0_input_{tail}"))
+    betas : list
+        Sentinel gate at each time step (only in 'adaptive_att' mode)
 
-    # subplot settings
-    num_col = len(words) - 1
-    num_row = 1
-    subplot_size = 4
+    rev_word_map : Dict[int, str]
+        Reverse word mapping, i.e. ix2word
 
-    # graph settings
-    fig = plt.figure(dpi=100)
-    fig.set_size_inches(subplot_size * num_col, subplot_size * num_row)
+    model_name : str
+        Name of the model, used for creating the output directory
 
-    img_size = 1
-    fig_height = img_size
-    fig_width = num_col + img_size
-
-    grid = plt.GridSpec(fig_height, fig_width)
-
-    # big image
-    plt.subplot(grid[0: img_size, 0: img_size])
-    plt.imshow(image)
-    plt.axis('off')
-
-    # Betas curve (commented out)
-    # if betas is not None:
-    #     plt.subplot(grid[0: fig_height - 1, img_size: fig_width])
-    #
-    #     x = range(1, len(words), 1)
-    #     y = [(1 - betas[t].item()) for t in range(1, len(words))]
-    #
-    #     for a, b in zip(x, y):
-    #         plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
-    #
-    #     plt.axis('off')
-    #     plt.plot(x, y)
-
-    for t in range(1, len(words)):
-        if t > 50:
-            break
-
-        plt.subplot(grid[fig_height - 1, img_size + t - 1])
-        # images
-        plt.imshow(image)
-        # words of sentence
-        plt.title('%s' % (words[t]), color='black', fontsize=10,
-                 horizontalalignment='center', verticalalignment='center')
-
-        # alphas
-        current_alpha = alphas[t, :]
-        # handle torch tensors safely
-        try:
-            alpha_arr = current_alpha.detach().cpu().numpy()
-        except Exception:
-            alpha_arr = current_alpha.numpy()
-
-        if smooth:
-            alpha = skimage.transform.pyramid_expand(alpha_arr, upscale=24, sigma=8)
-        else:
-            alpha = skimage.transform.resize(alpha_arr, [14 * 24, 14 * 24])
-
-        plt.imshow(alpha, alpha=0.6)
-        plt.set_cmap('jet')
-
-        plt.axis('off')
-
-        # --- save per-word overlay image ---
-        # prepare heatmap from alpha (values 0..1)
-        cmap = cm.get_cmap("jet")
-        heatmap_rgba = (cmap(alpha)[:, :, :3] * 255).astype(np.uint8)  # drop alpha channel
-        heat_img = Image.fromarray(heatmap_rgba).convert("RGBA")
-        base_img = image.convert("RGBA")
-        overlay = Image.blend(base_img, heat_img, alpha=0.6)
-
-        # sanitize word for filename
-        raw_word = words[t]
-        safe_word = ''.join(c for c in raw_word if c.isalnum() or c in ('_', '-')).strip()
-        if not safe_word:
-            safe_word = "word"
-
-        out_name = f"{t}_{safe_word}{ext}"
-        overlay.save(os.path.join(out_dir, out_name))
-
-    plt.savefig(os.path.join(out_dir, "att_" + tail), bbox_inches='tight')
-
-
-def visualize_att(
-    image_path: str,
-    seq: list,
-    alphas: list,
-    rev_word_map: Dict[int, str],
-    smooth: bool = True,
-    model_name: str = "model"
-) -> None:
-    """
-    Visualize caption with weights at every word.
-    Saves a folder named {model_name}_{image_stem} in the image directory containing:
-      - the input image
-      - one image per word with filename: {index}_{word}{ext}
+    smooth : bool, optional, default=True
+        Smooth weights or not?
     """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
 
-    # create output directory: head/{model_name}_{image_stem}
+    # Create output directory
     head, tail = os.path.split(image_path)
-    stem, ext = os.path.splitext(tail)
-    out_dir = os.path.join(head, f"{model_name}_{stem}")
-    os.makedirs(out_dir, exist_ok=True)
+    img_name = tail.split('.')[0]
+    output_dir = os.path.join(head, f"{model_name}_{img_name}")
+    os.makedirs(output_dir, exist_ok=True)
 
-    # save input image
-    image.save(os.path.join(out_dir, f"0_input_{tail}"))
+    # Save original image
+    image.save(os.path.join(output_dir, tail))
+
+
+    for t in range(1, len(words)):
+        if t > 50:
+            break
+
+        # Don't create a large figure, just one for each word
+        fig = plt.figure()
+        plt.imshow(image)
+
+        # alphas
+        current_alpha = alphas[t, :]
+        if smooth:
+            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
+        else:
+            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+        plt.imshow(alpha, alpha=0.6)
+        plt.set_cmap('jet')
+
+        plt.axis('off')
+
+        # Save the figure for the current word
+        word = words[t]
+        # Sanitize word for filename
+        sanitized_word = "".join(c if c.isalnum() else "_" for c in word)
+        filename = f"{t}_{sanitized_word}.png"
+        plt.savefig(os.path.join(output_dir, filename), bbox_inches='tight', pad_inches=0)
+        plt.close(fig)
+
+def visualize_att(
+    image_path: str,
+    seq: list,
+    alphas: list,
+    rev_word_map: Dict[int, str],
+    smooth: bool = True
+) -> None:
+    """
+    Visualize caption with weights at every word.
+
+    Adapted from: https://github.com/kelvinxu/arctic-captions/blob/master/alpha_visualization.ipynb
+
+    Parameters
+    ----------
+    image_path : str
+        Path to image that has been captioned
+
+    seq : list
+        Generated caption on the above mentioned image using beam search
+
+    alphas : list
+        Attention weights at each time step
+
+    rev_word_map : Dict[int, str]
+        Reverse word mapping, i.e. ix2word
+
+    smooth : bool, optional, default=True
+        Smooth weights or not?
+    """
+    image = Image.open(image_path)
+    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
+
+    words = [rev_word_map[ind] for ind in seq]
 
     # subplot settings
     num_col = 5
@@ -169,19 +139,10 @@ def visualize_att(
 
         current_alpha = alphas[t, :]
 
-        # handle torch tensors safely
-        try:
-            alpha_arr = current_alpha.detach().cpu().numpy()
-        except Exception:
-            try:
-                alpha_arr = current_alpha.numpy()
-            except Exception:
-                alpha_arr = np.array(current_alpha)
-
         if smooth:
-            alpha = skimage.transform.pyramid_expand(alpha_arr, upscale=24, sigma=8)
+            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
-            alpha = skimage.transform.resize(alpha_arr, [14 * 24, 14 * 24])
+            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
 
         if t == 0:
             plt.imshow(alpha, alpha=0)
@@ -190,20 +151,5 @@ def visualize_att(
 
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
-
-        # --- save per-word overlay image ---
-        cmap = cm.get_cmap("jet")
-        heatmap_rgba = (cmap(alpha)[:, :, :3] * 255).astype(np.uint8)
-        heat_img = Image.fromarray(heatmap_rgba).convert("RGBA")
-        base_img = image.convert("RGBA")
-        overlay = Image.blend(base_img, heat_img, alpha=0.6)
-
-        raw_word = words[t]
-        safe_word = ''.join(c for c in raw_word if c.isalnum() or c in ('_', '-')).strip()
-        if not safe_word:
-            safe_word = "word"
-
-        out_name = f"{t}_{safe_word}{ext}"
-        overlay.save(os.path.join(out_dir, out_name))
-
-    plt.savefig(os.path.join(out_dir, "att_" + tail), bbox_inches='tight')
+    head, tail = os.path.split(image_path)
+    plt.savefig(os.path.join(head, "att_" + tail), bbox_inches='tight')
