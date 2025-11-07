@@ -1,4 +1,5 @@
 import json
+import os
 import numpy as np
 from typing import Dict
 # from scipy.misc import imread, imresize
@@ -79,58 +80,69 @@ def generate_caption(
 
 
 if __name__ == '__main__':
-    img = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/assets/COCO_val2014_000000123321.jpg'
-    model_path = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/output/t/best_checkpoint_spatial_Regnet16_decoder_dim_512_fine_tune_encoder_false_fine_tune_embeddings_false-epoch-20.pth.tar'
+    image_folder = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/assets/make-weights'
+    model_folder = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/output/t'
     wordmap_path = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/evaluation/wordmap.json'
     beam_size = 5
     ifsmooth = False
-
-    # load model
-    checkpoint = torch.load(model_path, map_location=str(device))
-
-    decoder = checkpoint['decoder']
-    decoder = decoder.to(device)
-    decoder.eval()
-
-    encoder = checkpoint['encoder']
-    encoder = encoder.to(device)
-    encoder.eval()
-
-    caption_model = checkpoint['caption_model']
 
     # load word map (word2ix)
     with open(wordmap_path, 'r') as j:
         word_map = json.load(j)
     rev_word_map = {v: k for k, v in word_map.items()}  # ix2word
 
-    # encoder-decoder with beam search
-    if caption_model == 'show_tell':
-        seq = generate_caption(encoder, decoder, img, word_map, caption_model, beam_size)
-        caption = [rev_word_map[ind] for ind in seq if ind not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
-        print('Caption: ', ' '.join(caption))
+    model_files = [f for f in os.listdir(model_folder) if f.endswith('.pth.tar')]
+    image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
-    elif caption_model == 'att2all' or caption_model == 'spatial_att':
-        seq, alphas = generate_caption(encoder, decoder, img, word_map, caption_model, beam_size)
-        alphas = torch.FloatTensor(alphas)
-        # visualize caption and attention of best sequence
-        visualize_att(
-            image_path = img,
-            seq = seq,
-            rev_word_map = rev_word_map,
-            alphas = alphas,
-            model_name="test",
-            smooth = ifsmooth
-        )
+    for model_file in model_files:
+        model_path = os.path.join(model_folder, model_file)
+        print(f"Loading model: {model_path}")
 
-    elif caption_model == 'adaptive_att':
-        seq, alphas, betas = generate_caption(encoder, decoder, img, word_map, caption_model, beam_size)
-        alphas = torch.FloatTensor(alphas)
-        visualize_att_beta(
-            image_path = img,
-            seq = seq,
-            rev_word_map = rev_word_map,
-            alphas = alphas,
-            betas = betas,
-            model_name="test",
-            smooth = ifsmooth
-        )
+        # load model
+        checkpoint = torch.load(model_path, map_location=str(device))
+
+        decoder = checkpoint['decoder']
+        decoder = decoder.to(device)
+        decoder.eval()
+
+        encoder = checkpoint['encoder']
+        encoder = encoder.to(device)
+        encoder.eval()
+
+        caption_model = checkpoint['caption_model']
+
+        for image_file in image_files:
+            img_path = os.path.join(image_folder, image_file)
+            print(f"  Processing image: {img_path}")
+
+            # encoder-decoder with beam search
+            if caption_model == 'show_tell':
+                seq = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size)
+                caption = [rev_word_map[ind] for ind in seq if ind not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
+                print('  Caption: ', ' '.join(caption))
+
+            elif caption_model == 'att2all' or caption_model == 'spatial_att':
+                seq, alphas = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size)
+                alphas = torch.FloatTensor(alphas)
+                # visualize caption and attention of best sequence
+                visualize_att(
+                    image_path = img_path,
+                    seq = seq,
+                    rev_word_map = rev_word_map,
+                    alphas = alphas,
+                    model_name=model_file,
+                    smooth = ifsmooth
+                )
+
+            elif caption_model == 'adaptive_att':
+                seq, alphas, betas = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size)
+                alphas = torch.FloatTensor(alphas)
+                visualize_att_beta(
+                    image_path = img_path,
+                    seq = seq,
+                    rev_word_map = rev_word_map,
+                    alphas = alphas,
+                    betas = betas,
+                    model_name=model_file,
+                    smooth = ifsmooth
+                )
