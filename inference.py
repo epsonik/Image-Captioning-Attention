@@ -81,7 +81,7 @@ def generate_caption(
 if __name__ == '__main__':
     img = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/assets/COCO_val2014_000000123321.jpg'
     model_path = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/output/best_checkpoint_adaptive_att_InceptionV3_decoder_dim_512_attention_dim_512_fine_tune_encoder_true_fine_false_embeddings_true-epoch-33.pth.tar'
-    wordmap_path = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/output/evaluation/wordmap.json'
+    wordmap_path = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/evaluation/wordmap.json'
     beam_size = 5
     ifsmooth = False
 
