@@ -11,7 +11,8 @@ def visualize_att_beta(
     alphas: list,
     rev_word_map: Dict[int, str],
     betas: list,
-    smooth: bool = True
+    smooth: bool = True,
+    model_name: str = ''
 ) -> None:
     """
     Visualize caption with weights and betas at every word.
@@ -104,7 +105,8 @@ def visualize_att(
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
-    smooth: bool = True
+    smooth: bool = True,
+    model_name: str = ''
 ) -> None:
     """
     Visualize caption with weights at every word.
