@@ -96,7 +96,7 @@ def generate_caption(
 
 
 if __name__ == '__main__':
-    assets_dir = "./assets"
+    assets_dir = "./assets/make_weights"
     # set folder containing checkpoints
     model_dir = "/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/output/t"
 
