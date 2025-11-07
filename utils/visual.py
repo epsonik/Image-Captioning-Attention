@@ -48,8 +48,9 @@ def visualize_att_beta(
     words = [rev_word_map[ind] for ind in seq]
 
     # Create directory
+    clean_model_name = model_name.replace('best_checkpoint', '').replace('checkpoint', '').replace('.pth.tar', '')
     basename = os.path.splitext(os.path.basename(image_path))[0]
-    output_dir = os.path.join(model_name, basename)
+    output_dir = os.path.join(clean_model_name, basename)
     os.makedirs(output_dir, exist_ok=True)
 
     # Save original image
@@ -150,8 +151,9 @@ def visualize_att(
     words = [rev_word_map[ind] for ind in seq]
 
     # Create directory
+    clean_model_name = model_name.replace('best_checkpoint', '').replace('checkpoint', '').replace('.pth.tar', '')
     basename = os.path.splitext(os.path.basename(image_path))[0]
-    output_dir = os.path.join(model_name, basename)
+    output_dir = os.path.join(clean_model_name, basename)
     os.makedirs(output_dir, exist_ok=True)
 
     # Save original image
