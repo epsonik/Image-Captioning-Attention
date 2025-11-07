@@ -139,7 +139,8 @@ if __name__ == '__main__':
                 seq=seq,
                 rev_word_map=rev_word_map,
                 alphas=alphas,
-                smooth=ifsmooth
+                smooth=ifsmooth,
+                model_name=model_name
             )
 
         elif caption_model == 'adaptive_att':
@@ -151,5 +152,6 @@ if __name__ == '__main__':
                 rev_word_map=rev_word_map,
                 alphas=alphas,
                 betas=betas,
-                smooth=ifsmooth
+                smooth=ifsmooth,
+                model_name=model_name
             )
