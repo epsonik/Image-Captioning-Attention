@@ -138,7 +138,8 @@ if __name__ == '__main__':
             alphas = torch.FloatTensor(alphas)
             # visualize caption and attention of best sequence
             visualize_att(
-                image_path=resized_img,  # Use resized image
+                image_data=resized_img,  # Use resized image
+                original_image_path=img_path,  # Pass original path for saving
                 seq=seq,
                 rev_word_map=rev_word_map,
                 alphas=alphas,
@@ -147,11 +148,12 @@ if __name__ == '__main__':
             )
 
         elif caption_model == 'adaptive_att':
-            resized_img, seq, alphas, betas = generate_caption(encoder, decoder, img_path, word_map, caption_model,
-                                                               beam_size, pretrained_encoder)
+            resized_img, seq, alphas, betas = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size,
+                                                               pretrained_encoder)
             alphas = torch.FloatTensor(alphas)
             visualize_att_beta(
-                image_path=resized_img,  # Use resized image
+                image_data=resized_img,  # Use resized image
+                original_image_path=img_path,  # Pass original path for saving
                 seq=seq,
                 rev_word_map=rev_word_map,
                 alphas=alphas,
