@@ -1,11 +1,10 @@
 from typing import Dict
-import os
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import skimage.transform
 from PIL import Image
 import numpy as np
-
+import os
 
 def visualize_att_beta(
     image_path: str,
@@ -13,76 +12,95 @@ def visualize_att_beta(
     alphas: list,
     rev_word_map: Dict[int, str],
     betas: list,
-    model_name: str = "",
     smooth: bool = True,
+    model_name: str = ''
 ) -> None:
+    """
+    Visualize caption with weights and betas at every word.
+
+    Parameters
+    ----------
+    image_path : str
+        Path to image that has been captioned
+
+    seq : list
+        Generated caption on the above mentioned image using beam search
+
+    alphas : list
+        Attention weights at each time step
+
+    betas : list
+        Sentinel gate at each time step (only in 'adaptive_att' mode)
+
+    rev_word_map : Dict[int, str]
+        Reverse word mapping, i.e. ix2word
+
+    smooth : bool, optional, default=True
+        Smooth weights or not?
+    """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
 
     # subplot settings
-    num_col = max(1, len(words) - 1)
+    num_col = len(words) - 1
     num_row = 1
     subplot_size = 4
 
+    # graph settings
     fig = plt.figure(dpi=100)
     fig.set_size_inches(subplot_size * num_col, subplot_size * num_row)
 
-    img_size = 1
+    img_size = 4
     fig_height = img_size
     fig_width = num_col + img_size
 
     grid = plt.GridSpec(fig_height, fig_width)
 
     # big image
-    ax_img = plt.subplot(grid[0: img_size, 0: img_size])
-    ax_img.imshow(image)
-    ax_img.axis('off')
+    plt.subplot(grid[0 : img_size, 0 : img_size])
+    plt.imshow(image)
+    plt.axis('off')
 
-    if betas is not None and len(words) > 1:
-        ax_beta = plt.subplot(grid[0: fig_height, img_size: fig_width])
-        x = list(range(1, len(words)))
-        y = [(1 - betas[t].item()) for t in range(1, len(words))]
-        ax_beta.plot(x, y)
+    # betas' curve
+    if betas is not None:
+        plt.subplot(grid[0 : fig_height - 1, img_size : fig_width])
+
+        x = range(1, len(words), 1)
+        y = [ (1 - betas[t].item()) for t in range(1, len(words)) ]
+
         for a, b in zip(x, y):
-            ax_beta.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
-        ax_beta.axis('off')
+            plt.text(a + 0.05, b + 0.05, '%.2f' % b, ha='center', va='bottom', fontsize=12)
+
+        plt.axis('off')
+        plt.plot(x, y)
 
     for t in range(1, len(words)):
         if t > 50:
             break
 
-        ax = plt.subplot(grid[fig_height - 1, img_size + t - 1])
-        ax.imshow(image)
-        ax.axis('off')
+        plt.subplot(grid[fig_height - 1, img_size + t - 1])
 
+        # images
+        plt.imshow(image)
+
+        # words of sentence
+        plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10)
+
+        # alphas
         current_alpha = alphas[t, :]
         if smooth:
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+        plt.imshow(alpha, alpha=0.6)
+        plt.set_cmap('jet')
 
-        ax.imshow(alpha, alpha=0.6, cmap='jet')
+        plt.axis('off')
 
-        # place the word below the image using axis-relative coordinates
-        ax.text(
-            0.5, -0.12, words[t],
-            transform=ax.transAxes,
-            ha='center', va='top',
-            color='black', backgroundcolor='white', fontsize=10
-        )
-
-    head, tail = os.path.split(image_path)
-    # build cleaned model name
-    if model_name:
-        cleaned = model_name.replace('best_checkpoint_', '').replace('.pth.tar', '')
-        out_name = f"{cleaned}_{tail}"
-    else:
-        out_name = tail
-    out_path = os.path.join(head, out_name)
-    plt.savefig(out_path, bbox_inches='tight')
-    plt.close(fig)
+    plt.show()
+    _save_vis_figure(fig, image_path, model_name, 'att_beta')
 
 
 def visualize_att(
@@ -90,9 +108,31 @@ def visualize_att(
     seq: list,
     alphas: list,
     rev_word_map: Dict[int, str],
-    model_name: str = "",
     smooth: bool = True,
+    model_name: str = ''
 ) -> None:
+    """
+    Visualize caption with weights at every word.
+
+    Adapted from: https://github.com/kelvinxu/arctic-captions/blob/master/alpha_visualization.ipynb
+
+    Parameters
+    ----------
+    image_path : str
+        Path to image that has been captioned
+
+    seq : list
+        Generated caption on the above mentioned image using beam search
+
+    alphas : list
+        Attention weights at each time step
+
+    rev_word_map : Dict[int, str]
+        Reverse word mapping, i.e. ix2word
+
+    smooth : bool, optional, default=True
+        Smooth weights or not?
+    """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
@@ -100,9 +140,10 @@ def visualize_att(
 
     # subplot settings
     num_col = 5
-    num_row = int(np.ceil(len(words) / float(num_col)))
+    num_row = np.ceil(len(words) / float(num_col))
     subplot_size = 4
 
+    # graph settings
     fig = plt.figure(dpi=100)
     fig.set_size_inches(subplot_size * num_col, subplot_size * num_row)
 
@@ -110,9 +151,11 @@ def visualize_att(
         if t > 50:
             break
 
-        ax = plt.subplot(num_row, num_col, t + 1)
+        plt.subplot(num_row, num_col, t + 1)
 
-        ax.imshow(image)
+        plt.text(0, 1, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=12)
+
+        plt.imshow(image)
 
         current_alpha = alphas[t, :]
 
@@ -122,27 +165,26 @@ def visualize_att(
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
 
         if t == 0:
-            ax.imshow(alpha, alpha=0)
+            plt.imshow(alpha, alpha=0)
         else:
-            ax.imshow(alpha, alpha=0.8)
+            plt.imshow(alpha, alpha=0.8)
 
         plt.set_cmap(cm.Greys_r)
-        ax.axis('off')
+        plt.axis('off')
 
-        # place the word below the image using axis-relative coordinates
-        ax.text(
-            0.5, -0.12, words[t],
-            transform=ax.transAxes,
-            ha='center', va='top',
-            color='black', backgroundcolor='white', fontsize=12
-        )
+    plt.show()
+    saved = _save_vis_figure(fig, image_path, model_name, 'att')
 
-    head, tail = os.path.split(image_path)
-    if model_name:
-        cleaned = model_name.replace('best_checkpoint_', '').replace('.tar.tgz', '')
-        out_name = f"{cleaned}_{tail}"
-    else:
-        out_name = tail
-    out_path = os.path.join(head, out_name)
-    plt.savefig(out_path, bbox_inches='tight')
+def _save_vis_figure(fig, image_path: str, model_name: str, suffix: str) -> str:
+    """
+    Save matplotlib figure next to the source image with a name containing model_name and image basename.
+    Returns the saved filepath.
+    """
+    img_base = os.path.splitext(os.path.basename(image_path))[0]
+    safe_model = model_name.strip().replace(' ', '_') or 'model'
+    filename = f"{safe_model}_{img_base}_{suffix}.png"
+    out_dir = os.path.dirname(image_path) or os.getcwd()
+    out_path = os.path.join(out_dir, filename)
+    fig.savefig(out_path, bbox_inches='tight', dpi=150)
     plt.close(fig)
+    return out_path
