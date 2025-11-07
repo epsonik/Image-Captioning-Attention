@@ -78,16 +78,16 @@ def visualize_att_beta(
         plt.plot(x, y)
     for t in range(1, len(words)):
         if t > 50: break
-        plt.subplot(grid[fig_height - 1, img_size + t - 1])
-        plt.imshow(image)
-        plt.text(0, 500, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=10)
+        ax = plt.subplot(grid[fig_height - 1, img_size + t - 1])
+        ax.imshow(image)
+        ax.set_title(words[t], fontsize=10)
         current_alpha = alphas[t, :]
         if smooth:
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
-        plt.imshow(alpha, alpha=0.6, cmap='jet')
-        plt.axis('off')
+        ax.imshow(alpha, alpha=0.6, cmap='jet')
+        ax.axis('off')
     fig.savefig(os.path.join(output_dir, f'att_beta_{basename}.png'))
     plt.close(fig)
 
@@ -107,6 +107,7 @@ def visualize_att_beta(
         ax_att.axis('off')
 
         word = words[t]
+        ax_att.set_title(word, y=-0.2, fontsize=12)
         filename = f"{t}_{word}.png"
         fig_att.savefig(os.path.join(output_dir, filename), bbox_inches='tight', pad_inches=0)
         plt.close(fig_att)
@@ -165,7 +166,6 @@ def visualize_att(
             break
 
         fig, ax = plt.subplots()
-        ax.text(0, 1, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=12)
         ax.imshow(image)
 
         current_alpha = alphas[t, :]
@@ -182,6 +182,7 @@ def visualize_att(
         ax.axis('off')
 
         word = words[t]
+        ax.set_title(word, y=-0.2, fontsize=12)
         # Sanitize word for filename
         sanitized_word = "".join(c for c in word if c.isalnum() or c in (' ', '_')).rstrip()
         filename = f"{t}_{sanitized_word}.png"

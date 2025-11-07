@@ -94,32 +94,32 @@ if __name__ == '__main__':
     model_files = [f for f in os.listdir(model_folder) if f.endswith('.pth.tar')]
     image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
-    for model_file in model_files:
-        model_path = os.path.join(model_folder, model_file)
-        print(f"Loading model: {model_path}")
+    for image_file in image_files:
+        img_path = os.path.join(image_folder, image_file)
+        print(f"Processing image: {img_path}")
 
-        # load model
-        checkpoint = torch.load(model_path, map_location=str(device))
+        for model_file in model_files:
+            model_path = os.path.join(model_folder, model_file)
+            print(f"  Using model: {model_path}")
 
-        decoder = checkpoint['decoder']
-        decoder = decoder.to(device)
-        decoder.eval()
+            # load model
+            checkpoint = torch.load(model_path, map_location=str(device))
 
-        encoder = checkpoint['encoder']
-        encoder = encoder.to(device)
-        encoder.eval()
+            decoder = checkpoint['decoder']
+            decoder = decoder.to(device)
+            decoder.eval()
 
-        caption_model = checkpoint['caption_model']
+            encoder = checkpoint['encoder']
+            encoder = encoder.to(device)
+            encoder.eval()
 
-        for image_file in image_files:
-            img_path = os.path.join(image_folder, image_file)
-            print(f"  Processing image: {img_path}")
+            caption_model = checkpoint['caption_model']
 
             # encoder-decoder with beam search
             if caption_model == 'show_tell':
                 seq = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size)
                 caption = [rev_word_map[ind] for ind in seq if ind not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
-                print('  Caption: ', ' '.join(caption))
+                print('    Caption: ', ' '.join(caption))
 
             elif caption_model == 'att2all' or caption_model == 'spatial_att':
                 seq, alphas = generate_caption(encoder, decoder, img_path, word_map, caption_model, beam_size)
