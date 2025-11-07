@@ -146,9 +146,7 @@ if __name__ == '__main__':
                     seq=seq,
                     rev_word_map=rev_word_map,
                     alphas=alphas,
-                    model_name=model_name,
-                    smooth=ifsmooth
-                )
+                    smooth=ifsmooth                )
                 print('Saved attention visualization for:', img_fname, 'Model:', model_name)
 
             elif caption_model == 'adaptive_att':
@@ -160,7 +158,5 @@ if __name__ == '__main__':
                     rev_word_map=rev_word_map,
                     alphas=alphas,
                     betas=betas,
-                    model_name=model_name,
-                    smooth=ifsmooth
-                )
+                    smooth=ifsmooth                )
                 print('Saved adaptive attention visualization for:', img_fname, 'Model:', model_name)
