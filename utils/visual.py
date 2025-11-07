@@ -1,3 +1,4 @@
+import os
 from typing import Dict
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -97,7 +98,11 @@ def visualize_att_beta(
 
         plt.axis('off')
 
-    plt.show()
+    # Save the figure
+    basename = os.path.basename(image_path)
+    fig.savefig(f'att_beta_{basename}')
+    plt.close(fig)
+
 
 def visualize_att(
     image_path: str,
@@ -167,4 +172,7 @@ def visualize_att(
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
 
-    plt.show()
+    # Save the figure
+    basename = os.path.basename(image_path)
+    fig.savefig(f'att_{basename}')
+    plt.close(fig)
