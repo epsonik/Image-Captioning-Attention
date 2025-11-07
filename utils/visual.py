@@ -44,6 +44,7 @@ def visualize_att_beta(
     """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
+    img_np = np.array(image)
 
     words = [rev_word_map[ind] for ind in seq]
 
@@ -56,34 +57,40 @@ def visualize_att_beta(
     # Save original image
     image.save(os.path.join(output_dir, tail))
 
+    # Get the 'jet' colormap
+    cmap = cm.get_cmap('jet')
 
     for t in range(1, len(words)):
         if t > 50:
             break
 
-        # Create a new figure and axes for each word
-        fig, ax = plt.subplots()
-        ax.imshow(image)
-
-        # alphas
+        # Alphas
         current_alpha = alphas[t, :]
         if smooth:
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
-        ax.imshow(alpha, alpha=0.6, cmap='jet')
 
-        ax.axis('off')
-        # Remove padding and margins
-        fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+        # Use colormap to convert alpha to a 4-channel RGBA image
+        # The colormap returns values in [0, 1], so we multiply by 255
+        heatmap = (cmap(alpha) * 255).astype(np.uint8)
+
+        # Blend the original image with the heatmap
+        # blended_img = img * (1 - alpha) + heatmap * alpha
+        # Here, we use a fixed blending factor of 0.6 for the heatmap
+        blended_img_np = (
+            (img_np.astype(float) * 0.4) + (heatmap[:, :, :3].astype(float) * 0.6)
+        ).astype(np.uint8)
+
+        # Create a PIL image from the blended numpy array
+        blended_img = Image.fromarray(blended_img_np)
 
         # Save the figure for the current word
         word = words[t]
         # Sanitize word for filename
         sanitized_word = "".join(c if c.isalnum() else "_" for c in word)
         filename = f"{t}_{sanitized_word}.png"
-        plt.savefig(os.path.join(output_dir, filename))
-        plt.close(fig)
+        blended_img.save(os.path.join(output_dir, filename))
 
 
 def visualize_att(
