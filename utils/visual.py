@@ -175,16 +175,31 @@ def visualize_att(
     plt.show()
     saved = _save_vis_figure(fig, image_path, model_name, 'att')
 
+# python
 def _save_vis_figure(fig, image_path: str, model_name: str, suffix: str) -> str:
     """
-    Save matplotlib figure next to the source image with a name containing model_name and image basename.
-    Returns the saved filepath.
+    Save matplotlib figure next to the source image with a name containing
+    the cleaned model basename (no path, remove `best_checkpoint_` and `.pth.tar`)
+    and the image basename. Returns the saved filepath.
     """
+    # image basename (no directories, no extension)
     img_base = os.path.splitext(os.path.basename(image_path))[0]
-    safe_model = model_name.strip().replace(' ', '_') or 'model'
+
+    # model basename (remove any path)
+    model_base = os.path.basename(model_name or '')
+    # remove unwanted prefix
+    if model_base.startswith('best_checkpoint_'):
+        model_base = model_base[len('best_checkpoint_'):]
+    # remove unwanted suffix
+    if model_base.endswith('.pth.tar'):
+        model_base = model_base[:-len('.pth.tar')]
+    # normalize whitespace and replace spaces with underscores, fallback if empty
+    safe_model = model_base.strip().replace(' ', '_') or 'model'
+
     filename = f"{safe_model}_{img_base}_{suffix}.png"
     out_dir = os.path.dirname(image_path) or os.getcwd()
     out_path = os.path.join(out_dir, filename)
     fig.savefig(out_path, bbox_inches='tight', dpi=150)
     plt.close(fig)
     return out_path
+
