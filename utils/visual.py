@@ -7,6 +7,7 @@ from PIL import Image
 import numpy as np
 
 
+# python
 def visualize_att_beta(
     image_path: str,
     seq: list,
@@ -16,47 +17,18 @@ def visualize_att_beta(
     model_name: str,
     smooth: bool = True
 ) -> None:
-    """
-    Visualize caption with weights and betas at every word.
-
-    Parameters
-    ----------
-    image_path : str
-        Path to image that has been captioned
-
-    seq : list
-        Generated caption on the above mentioned image using beam search
-
-    alphas : list
-        Attention weights at each time step
-
-    betas : list
-        Sentinel gate at each time step (only in 'adaptive_att' mode)
-
-    rev_word_map : Dict[int, str]
-        Reverse word mapping, i.e. ix2word
-
-    model_name : str
-        Name of the model, used for creating the output directory.
-
-    smooth : bool, optional, default=True
-        Smooth weights or not?
-    """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
 
-    # Create directory
     clean_model_name = model_name.replace('best_checkpoint_', '').replace('checkpoint_', '').replace('.pth.tar', '')
     basename = os.path.splitext(os.path.basename(image_path))[0]
     output_dir = os.path.join('test', clean_model_name, basename)
     os.makedirs(output_dir, exist_ok=True)
 
-    # Save original image
     image.save(os.path.join(output_dir, 'original.png'))
 
-    # Save the main visualization figure
     num_col = len(words) - 1
     subplot_size = 4
     fig = plt.figure(dpi=100)
@@ -80,7 +52,7 @@ def visualize_att_beta(
         if t > 50: break
         ax = plt.subplot(grid[fig_height - 1, img_size + t - 1])
         ax.imshow(image)
-        ax.set_title(words[t], fontsize=10)
+        # caption removed: ax.set_title(words[t], fontsize=10)
         current_alpha = alphas[t, :]
         if smooth:
             alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
@@ -91,7 +63,6 @@ def visualize_att_beta(
     fig.savefig(os.path.join(output_dir, f'att_beta_{basename}.png'))
     plt.close(fig)
 
-    # Save individual attention images
     for t in range(1, len(words)):
         if t > 50:
             break
@@ -107,7 +78,7 @@ def visualize_att_beta(
         ax_att.axis('off')
 
         word = words[t]
-        ax_att.set_title(word, y=-0.2, fontsize=12)
+        # caption removed: ax_att.set_title(word, y=-0.2, fontsize=12)
         filename = f"{t}_{word}.png"
         fig_att.savefig(os.path.join(output_dir, filename), bbox_inches='tight', pad_inches=0)
         plt.close(fig_att)
@@ -121,46 +92,18 @@ def visualize_att(
     model_name: str,
     smooth: bool = True
 ) -> None:
-    """
-    Visualize caption with weights at every word.
-
-    Adapted from: https://github.com/kelvinxu/arctic-captions/blob/master/alpha_visualization.ipynb
-
-    Parameters
-    ----------
-    image_path : str
-        Path to image that has been captioned
-
-    seq : list
-        Generated caption on the above mentioned image using beam search
-
-    alphas : list
-        Attention weights at each time step
-
-    rev_word_map : Dict[int, str]
-        Reverse word mapping, i.e. ix2word
-
-    model_name : str
-        Name of the model, used for creating the output directory.
-
-    smooth : bool, optional, default=True
-        Smooth weights or not?
-    """
     image = Image.open(image_path)
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
 
-    # Create directory
     clean_model_name = model_name.replace('best_checkpoint_', '').replace('checkpoint_', '').replace('.pth.tar', '')
     basename = os.path.splitext(os.path.basename(image_path))[0]
     output_dir = os.path.join('test', clean_model_name, basename)
     os.makedirs(output_dir, exist_ok=True)
 
-    # Save original image
     image.save(os.path.join(output_dir, 'original.png'))
 
-    # Save individual attention images
     for t in range(len(words)):
         if t > 50:
             break
@@ -181,10 +124,8 @@ def visualize_att(
 
         ax.axis('off')
 
-        word = words[t]
-        ax.set_title(word, y=-0.2, fontsize=12)
-        # Sanitize word for filename
-        sanitized_word = "".join(c for c in word if c.isalnum() or c in (' ', '_')).rstrip()
+        # caption removed: ax.set_title(words[t], y=-0.2, fontsize=12)
+        sanitized_word = "".join(c for c in words[t] if c.isalnum() or c in (' ', '_')).rstrip()
         filename = f"{t}_{sanitized_word}.png"
 
         fig.savefig(os.path.join(output_dir, filename), bbox_inches='tight', pad_inches=0)
