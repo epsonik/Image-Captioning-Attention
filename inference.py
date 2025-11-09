@@ -83,7 +83,7 @@ if __name__ == '__main__':
     image_folder = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/assets/make-weights'
     model_folder = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/output/t'
     wordmap_path = '/home/bartosiewicz/mateusz/Image-Captioning-Attention/data/evaluation/wordmap.json'
-    beam_size = 5
+    beam_size = 3
     ifsmooth = False
 
     # load word map (word2ix)
