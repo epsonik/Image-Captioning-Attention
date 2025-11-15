@@ -224,7 +224,7 @@ if __name__ == '__main__':
                         help='Enable smooth visualization')
     parser.add_argument('--evaluate', action='store_true', default=True,
                         help='Enable evaluation mode (requires --annotations_path)')
-    parser.add_argument('--annotations_path', type=str, default='annotations/captions_val2014.json)',
+    parser.add_argument('--annotations_path', type=str, default='/annotations/captions_val2014.json)',
                         help='Path to COCO annotations JSON file (e.g., annotations/captions_val2014.json)')
     parser.add_argument('--save_results', type=str, default=True,
                         help='Path to save evaluation results JSON file')
