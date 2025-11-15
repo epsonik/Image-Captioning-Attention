@@ -102,20 +102,55 @@ During training stage, the BLEU-4 and CIDEr scores on validation set would be co
 
 To generate a caption (and visualize the attention weights if the model use an attention module) on a specific image:
 
-First edit the following items in [`inference.py`](inference.py):
-
-```python
-model_path = 'path_to_trained_model'
-wordmap_path = 'path_to_word_map'
-img = 'path_to_image'
-beam_size = 5  # beam size for beam search
-```
-
-Then run:
+#### Basic Usage
 
 ```bash
-python inference.py
+python inference.py \
+  --image_folder /path/to/images \
+  --model_folder /path/to/models \
+  --wordmap_path /path/to/wordmap.json \
+  --beam_size 3
 ```
+
+#### Evaluation Mode
+
+To evaluate generated captions against ground truth using BLEU, METEOR, ROUGE-L, and CIDEr metrics:
+
+```bash
+python inference.py \
+  --image_folder /path/to/images \
+  --model_folder /path/to/models \
+  --wordmap_path /path/to/wordmap.json \
+  --evaluate \
+  --annotations_path /path/to/annotations/captions_val2014.json
+```
+
+**Requirements for evaluation:**
+- Images must be from COCO dataset (val2014 or train2014)
+- Image filenames must contain the COCO image ID (e.g., `COCO_val2014_000000123456.jpg`)
+- Annotations file must be in COCO format with reference captions
+
+**Save evaluation results:**
+
+```bash
+python inference.py \
+  --image_folder /path/to/images \
+  --model_folder /path/to/models \
+  --wordmap_path /path/to/wordmap.json \
+  --evaluate \
+  --annotations_path /path/to/annotations/captions_val2014.json \
+  --save_results evaluation_results.json
+```
+
+**Command-line options:**
+- `--image_folder`: Path to folder containing images
+- `--model_folder`: Path to folder containing model checkpoints (.pth.tar files)
+- `--wordmap_path`: Path to word map JSON file
+- `--beam_size`: Beam size for beam search (default: 3)
+- `--smooth`: Enable smooth visualization for attention weights
+- `--evaluate`: Enable evaluation mode
+- `--annotations_path`: Path to COCO annotations JSON file (required with `--evaluate`)
+- `--save_results`: Path to save evaluation results as JSON (optional)
 
 
 &nbsp;
