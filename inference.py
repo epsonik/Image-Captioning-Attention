@@ -226,7 +226,7 @@ if __name__ == '__main__':
                         help='Enable evaluation mode (requires --annotations_path)')
     parser.add_argument('--annotations_path', type=str, default=None,
                         help='Path to COCO annotations JSON file (e.g., annotations/captions_val2014.json)')
-    parser.add_argument('--save_results', type=str, default=None,
+    parser.add_argument('--save_results', type=str, default=True,
                         help='Path to save evaluation results JSON file')
 
     args = parser.parse_args()
