@@ -1,4 +1,4 @@
-rom pycocotools.coco import COCO
+from pycocotools.coco import COCO
 from pycocoevalcap.eval import COCOEvalCap
 
 annotation_file = 'annotations/captions_val2014.json'
