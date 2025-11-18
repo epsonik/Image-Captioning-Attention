@@ -125,8 +125,8 @@ def extract_with_regex(content: str) -> List[Dict]:
 
 def main():
     parser = argparse.ArgumentParser(description="Wyodrębnij image_id i caption z pliku oceny i zapisz do JSON.")
-    parser.add_argument("input", required=False, help="Plik wejściowy (zawierający 'imgToEval')")
-    parser.add_argument("output", required=False, help="Plik wyjściowy JSON (lista obiektów)")
+    parser.add_argument("input",help="Plik wejściowy (zawierający 'imgToEval')")
+    parser.add_argument("output", help="Plik wyjściowy JSON (lista obiektów)")
     args = parser.parse_args()
 
     try:
