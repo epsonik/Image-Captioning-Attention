@@ -90,7 +90,7 @@ def extract_from_parsed(data) -> List[Dict]:
         for k, v in data.items():
             if isinstance(v, dict):
                 sample_vals = list(v.values())
-                if any(isinstance(x, dict) and ("caption" in x or "image_id" in x) for x in sample_vals):
+                if any(isinstance(x, dict) and ("captions" in x or "image_id" in x) for x in sample_vals):
                     imgmap = v
                     break
     if imgmap is None:
@@ -104,7 +104,7 @@ def extract_from_parsed(data) -> List[Dict]:
             if image_id is None:
                 # spróbuj użyć klucza (może to być ścieżka lub string z cyframi)
                 image_id = normalize_image_id(key)
-            caption = entry.get("caption")
+            caption = entry.get("captions")
             if caption is None:
                 # czasem caption może być pod inną właściwością lub w tablicy - ale zostawiamy prosty przypadek
                 continue
@@ -137,21 +137,21 @@ def extract_with_regex(content: str) -> List[Dict]:
                 raw_image_id = imgid_m2.group(1)
 
         # caption: obsługujemy zarówno "caption": "..." jak i 'caption': '...'
-        cap_m = re.search(r'"caption"\s*:\s*"((?:\\.|[^"\\])*)"', block)
+        cap_m = re.search(r'"captions"\s*:\s*"((?:\\.|[^"\\])*)"', block)
         caption = None
         if cap_m:
             caption = cap_m.group(1).encode('utf-8').decode('unicode_escape')
         else:
-            cap_m2 = re.search(r"'caption'\s*:\s*'([^']*)'", block)
+            cap_m2 = re.search(r"'captions'\s*:\s*'([^']*)'", block)
             if cap_m2:
                 caption = cap_m2.group(1)
             else:
                 # luźniejszy dopasowanie bez cudzysłowów wokół klucza
-                cap_m3 = re.search(r'caption\s*:\s*"((?:\\.|[^"\\])*)"', block)
+                cap_m3 = re.search(r'captions\s*:\s*"((?:\\.|[^"\\])*)"', block)
                 if cap_m3:
                     caption = cap_m3.group(1).encode('utf-8').decode('unicode_escape')
                 else:
-                    cap_m4 = re.search(r"caption\s*:\s*'([^']*)'", block)
+                    cap_m4 = re.search(r"captions\s*:\s*'([^']*)'", block)
                     if cap_m4:
                         caption = cap_m4.group(1)
 
