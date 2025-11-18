@@ -2,19 +2,14 @@
 """
 extract_captions.py
 
-Wersja z ustalonymi plikami:
-- Wejście:  results.json
-- Wyjście:  results2.json
+Wejście:  results.json
+Wyjście:  results2.json
 
 Skrypt:
 - wczytuje results.json (próbuje naprawić NaN/Infinity),
 - wyciąga image_id i caption z pola "imgToEval" (normalizuje image_id jeśli jest ścieżką),
 - fallback: wyrażenia regularne jeśli plik nie jest poprawnym JSON-em,
 - zapisuje listę obiektów [{"image_id": ..., "caption": "..."}, ...] do results2.json.
-
-Zmiany:
-- Dodano normalizację image_id: jeśli image_id jest ścieżką/plikiem, skrypt wyciąga ostatnią grupę cyfr
-  (np. "/.../COCO_val2014_000000544444.jpg" -> 544444).
 """
 
 import json
@@ -50,19 +45,15 @@ def normalize_image_id(raw) -> Optional[int]:
     """
     if raw is None:
         return None
-    # Jeśli już int
     if isinstance(raw, int):
         return raw
-    # Jeśli typ float, spróbuj przekonwertować jeśli to całkowite
     if isinstance(raw, float):
         try:
             return int(raw)
         except Exception:
             return None
-    # Jeśli string
     if isinstance(raw, str):
         s = raw.strip()
-        # bezpośrednie cyfry
         if s.isdigit():
             try:
                 return int(s)
@@ -76,6 +67,35 @@ def normalize_image_id(raw) -> Optional[int]:
             except Exception:
                 return None
     return None
+
+
+def normalize_caption(caption) -> Optional[str]:
+    """
+    Normalizuje caption do stringa:
+    - jeśli już string -> zwróć,
+    - jeśli lista -> połącz elementy spacją,
+    - jeśli dict -> spróbuj dostać caption/text, w przeciwnym razie dump JSON,
+    - w innych przypadkach -> str(...)
+    """
+    if caption is None:
+        return None
+    if isinstance(caption, str):
+        return caption
+    if isinstance(caption, list):
+        try:
+            return " ".join(str(x) for x in caption)
+        except Exception:
+            return " ".join(map(str, caption))
+    if isinstance(caption, dict):
+        for k in ("caption", "text"):
+            if k in caption:
+                return normalize_caption(caption[k])
+        try:
+            return json.dumps(caption, ensure_ascii=False)
+        except Exception:
+            return str(caption)
+    # fallback
+    return str(caption)
 
 
 def extract_from_parsed(data) -> List[Dict]:
@@ -98,17 +118,20 @@ def extract_from_parsed(data) -> List[Dict]:
 
     for key, entry in imgmap.items():
         if isinstance(entry, dict):
-            # Preferuj pole "image_id" w samym entry, fallback na klucz
             raw_image_id = entry.get("image_id", None)
             image_id = normalize_image_id(raw_image_id)
             if image_id is None:
-                # spróbuj użyć klucza (może to być ścieżka lub string z cyframi)
                 image_id = normalize_image_id(key)
-            caption = entry.get("captions")
+            raw_caption = entry.get("captions")
+            caption = normalize_caption(raw_caption)
             if caption is None:
-                # czasem caption może być pod inną właściwością lub w tablicy - ale zostawiamy prosty przypadek
-                continue
-            if image_id is not None:
+                # czasem caption może być w innym polu
+                # spróbuj znaleźć jakieś pole tekstowe
+                for possible in ("text", "sent", "sentence"):
+                    if possible in entry:
+                        caption = normalize_caption(entry[possible])
+                        break
+            if image_id is not None and caption is not None:
                 results.append({"image_id": image_id, "caption": caption})
     return results
 
@@ -146,7 +169,6 @@ def extract_with_regex(content: str) -> List[Dict]:
             if cap_m2:
                 caption = cap_m2.group(1)
             else:
-                # luźniejszy dopasowanie bez cudzysłowów wokół klucza
                 cap_m3 = re.search(r'captions\s*:\s*"((?:\\.|[^"\\])*)"', block)
                 if cap_m3:
                     caption = cap_m3.group(1).encode('utf-8').decode('unicode_escape')
@@ -155,17 +177,17 @@ def extract_with_regex(content: str) -> List[Dict]:
                     if cap_m4:
                         caption = cap_m4.group(1)
 
-        # jeśli nie ma caption, pomiń
         if caption is None:
             continue
 
-        # normalizuj image_id: najpierw z pola image_id, potem z klucza
         image_id = normalize_image_id(raw_image_id) if raw_image_id is not None else None
         if image_id is None:
             image_id = normalize_image_id(key)
 
         if image_id is not None:
-            results.append({"image_id": image_id, "caption": caption})
+            caption = normalize_caption(caption)
+            if caption is not None:
+                results.append({"image_id": image_id, "caption": caption})
     return results
 
 
