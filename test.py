@@ -166,9 +166,9 @@ if __name__ == '__main__':
 
     configs = dict()
     output_path2 = [
-        "best_checkpoint_spatial_50_Densenet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true-epoch-9.pth.tar"
+        "checkpoint_Resnet152_decoder_dim_512_fine_tune_embeddings_false-epoch-29.pth.tar"
     ]
-    output_path = ["spatial_50_Densenet201_decoder_dim_512_fine_tune_encoder_true_fine_tune_embeddings_true"]
+    output_path = ["Resnet152_decoder_dim_512_fine_tune_embeddings_false"]
     cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
 
     for data_name in output_path:
@@ -188,6 +188,24 @@ if __name__ == '__main__':
             encoder = checkpoint['encoder']
             encoder = encoder.to(device)
             encoder.eval()
+
+
+            # --- ADDED: print model structure and parameter counts ---
+            def _count_parameters(model):
+                total = sum(p.numel() for p in model.parameters())
+                trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+                return total, trainable
+
+            print("\n--- Model structures ---")
+            print("Encoder structure:\n", encoder)
+            enc_total, enc_trainable = _count_parameters(encoder)
+            print(f"Encoder parameters: total={enc_total:,}, trainable={enc_trainable:,}")
+
+            print("\nDecoder structure:\n", decoder)
+            dec_total, dec_trainable = _count_parameters(decoder)
+            print(f"Decoder parameters: total={dec_total:,}, trainable={dec_trainable:,}")
+            print("--- End model structures ---\n")
+            # --------------------------------------------------------
 
             caption_model = checkpoint['caption_model']
 
