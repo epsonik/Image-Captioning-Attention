@@ -338,72 +338,72 @@ if __name__ == '__main__':
                     smooth=ifsmooth
                 )
 
-            # Evaluate if enabled
-            if args.evaluate and generated_caption_text is not None and image_id is not None:
-                if image_id in image_captions:
-                    reference_captions = image_captions[image_id]
-                    print(f"    Reference captions ({len(reference_captions)}):")
-                    for ref_cap in reference_captions:
-                        print(f"      - {ref_cap}")
+            # # Evaluate if enabled
+            # if args.evaluate and generated_caption_text is not None and image_id is not None:
+            #     if image_id in image_captions:
+            #         reference_captions = image_captions[image_id]
+            #         print(f"    Reference captions ({len(reference_captions)}):")
+            #         for ref_cap in reference_captions:
+            #             print(f"      - {ref_cap}")
+            #
+            #         # Calculate metrics
+            #         metrics = evaluate_caption(generated_caption_text, reference_captions)
+            #
+            #         print(f"    Evaluation Metrics:")
+            #         print(f"      BLEU-1: {metrics['BLEU-1']:.4f}")
+            #         print(f"      BLEU-2: {metrics['BLEU-2']:.4f}")
+            #         print(f"      BLEU-3: {metrics['BLEU-3']:.4f}")
+            #         print(f"      BLEU-4: {metrics['BLEU-4']:.4f}")
+            #         print(f"      METEOR: {metrics['METEOR']:.4f}")
+            #         print(f"      ROUGE-L: {metrics['ROUGE-L']:.4f}")
+            #         print(f"      CIDEr: {metrics['CIDEr']:.4f}")
+            #
+            #         # Store results
+            #         result_entry = {
+            #             'image_file': image_file,
+            #             'image_id': image_id,
+            #             'model': model_file,
+            #             'generated_caption': generated_caption_text,
+            #             'reference_captions': reference_captions,
+            #             'metrics': metrics
+            #         }
+            #         all_results.append(result_entry)
+            #     else:
+            #         print(f"    Warning: No reference captions found for image ID {image_id}")
 
-                    # Calculate metrics
-                    metrics = evaluate_caption(generated_caption_text, reference_captions)
-
-                    print(f"    Evaluation Metrics:")
-                    print(f"      BLEU-1: {metrics['BLEU-1']:.4f}")
-                    print(f"      BLEU-2: {metrics['BLEU-2']:.4f}")
-                    print(f"      BLEU-3: {metrics['BLEU-3']:.4f}")
-                    print(f"      BLEU-4: {metrics['BLEU-4']:.4f}")
-                    print(f"      METEOR: {metrics['METEOR']:.4f}")
-                    print(f"      ROUGE-L: {metrics['ROUGE-L']:.4f}")
-                    print(f"      CIDEr: {metrics['CIDEr']:.4f}")
-
-                    # Store results
-                    result_entry = {
-                        'image_file': image_file,
-                        'image_id': image_id,
-                        'model': model_file,
-                        'generated_caption': generated_caption_text,
-                        'reference_captions': reference_captions,
-                        'metrics': metrics
-                    }
-                    all_results.append(result_entry)
-                else:
-                    print(f"    Warning: No reference captions found for image ID {image_id}")
-
-    # Save results if requested
-    if args.save_results and all_results:
-        print(f"\nSaving evaluation results to {args.save_results}")
-        with open(args.save_results, 'w') as f:
-            json.dump(all_results, f, indent=2)
-        print(f"Results saved successfully!")
-
-    # Print summary if evaluation was performed
-    if args.evaluate and all_results:
-        print("\n" + "=" * 80)
-        print("EVALUATION SUMMARY")
-        print("=" * 80)
-
-        # Calculate average metrics across all images
-        avg_metrics = {
-            'BLEU-1': 0.0, 'BLEU-2': 0.0, 'BLEU-3': 0.0, 'BLEU-4': 0.0,
-            'METEOR': 0.0, 'ROUGE-L': 0.0, 'CIDEr': 0.0
-        }
-
-        for result in all_results:
-            for metric_name, value in result['metrics'].items():
-                avg_metrics[metric_name] += value
-
-        num_results = len(all_results)
-        for metric_name in avg_metrics:
-            avg_metrics[metric_name] /= num_results
-
-        print(f"Average metrics across {num_results} images:")
-        print(f"  BLEU-1:  {avg_metrics['BLEU-1']:.4f}")
-        print(f"  BLEU-2:  {avg_metrics['BLEU-2']:.4f}")
-        print(f"  BLEU-3:  {avg_metrics['BLEU-3']:.4f}")
-        print(f"  BLEU-4:  {avg_metrics['BLEU-4']:.4f}")
-        print(f"  METEOR:  {avg_metrics['METEOR']:.4f}")
-        print(f"  ROUGE-L: {avg_metrics['ROUGE-L']:.4f}")
-        print(f"  CIDEr:   {avg_metrics['CIDEr']:.4f}")
-        print("=" * 80)
+    # # Save results if requested
+    # if args.save_results and all_results:
+    #     print(f"\nSaving evaluation results to {args.save_results}")
+    #     with open(args.save_results, 'w') as f:
+    #         json.dump(all_results, f, indent=2)
+    #     print(f"Results saved successfully!")
+    #
+    # # Print summary if evaluation was performed
+    # if args.evaluate and all_results:
+    #     print("\n" + "=" * 80)
+    #     print("EVALUATION SUMMARY")
+    #     print("=" * 80)
+    #
+    #     # Calculate average metrics across all images
+    #     avg_metrics = {
+    #         'BLEU-1': 0.0, 'BLEU-2': 0.0, 'BLEU-3': 0.0, 'BLEU-4': 0.0,
+    #         'METEOR': 0.0, 'ROUGE-L': 0.0, 'CIDEr': 0.0
+    #     }
+    #
+    #     for result in all_results:
+    #         for metric_name, value in result['metrics'].items():
+    #             avg_metrics[metric_name] += value
+    #
+    #     num_results = len(all_results)
+    #     for metric_name in avg_metrics:
+    #         avg_metrics[metric_name] /= num_results
+    #
+    #     print(f"Average metrics across {num_results} images:")
+    #     print(f"  BLEU-1:  {avg_metrics['BLEU-1']:.4f}")
+    #     print(f"  BLEU-2:  {avg_metrics['BLEU-2']:.4f}")
+    #     print(f"  BLEU-3:  {avg_metrics['BLEU-3']:.4f}")
+    #     print(f"  BLEU-4:  {avg_metrics['BLEU-4']:.4f}")
+    #     print(f"  METEOR:  {avg_metrics['METEOR']:.4f}")
+    #     print(f"  ROUGE-L: {avg_metrics['ROUGE-L']:.4f}")
+    #     print(f"  CIDEr:   {avg_metrics['CIDEr']:.4f}")
+    #     print("=" * 80)
