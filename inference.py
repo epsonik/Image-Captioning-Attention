@@ -311,7 +311,7 @@ if __name__ == '__main__':
 
                 alphas = torch.FloatTensor(alphas)
                 # visualize caption and attention of best sequence
-                visualize_att(
+                visualize_att_beta(
                     image_path=img_path,
                     seq=seq,
                     rev_word_map=rev_word_map,
