@@ -7,7 +7,6 @@ from PIL import Image
 import numpy as np
 
 
-# python
 def visualize_att_beta(
     image_path: str,
     seq: list,
@@ -17,18 +16,27 @@ def visualize_att_beta(
     model_name: str,
     smooth: bool = True
 ) -> None:
+    # Otwórz obraz
     image = Image.open(image_path)
-    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
+    # Dopasowanie rozmiaru obrazu do wymiarów alphas
+    alpha_height, alpha_width = alphas[0].shape
+    upscale_factor = 24  # Czynnik skalowania
+    image = image.resize([alpha_width * upscale_factor, alpha_height * upscale_factor], Image.LANCZOS)
+
+    # Konwersja sekwencji na słowa
     words = [rev_word_map[ind] for ind in seq]
 
+    # Przygotowanie katalogów
     clean_model_name = model_name.replace('best_checkpoint_', '').replace('checkpoint_', '').replace('.pth.tar', '')
     basename = os.path.splitext(os.path.basename(image_path))[0]
     output_dir = os.path.join('test', clean_model_name, basename)
     os.makedirs(output_dir, exist_ok=True)
 
+    # Zapisz oryginalny obraz
     image.save(os.path.join(output_dir, 'original.png'))
 
+    # Wizualizacja zbiorczej uwagi i betas
     num_col = len(words) - 1
     subplot_size = 4
     fig = plt.figure(dpi=100)
@@ -49,20 +57,22 @@ def visualize_att_beta(
         plt.axis('off')
         plt.plot(x, y)
     for t in range(1, len(words)):
-        if t > 50: break
+        if t > 50:
+            break
         ax = plt.subplot(grid[fig_height - 1, img_size + t - 1])
         ax.imshow(image)
-        # caption removed: ax.set_title(words[t], fontsize=10)
         current_alpha = alphas[t, :]
+
         if smooth:
-            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
+            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=upscale_factor, sigma=8)
         else:
-            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+            alpha = skimage.transform.resize(current_alpha.numpy(), [alpha_height * upscale_factor, alpha_width * upscale_factor])
         ax.imshow(alpha, alpha=0.6, cmap='jet')
         ax.axis('off')
     fig.savefig(os.path.join(output_dir, f'att_beta_{basename}.png'))
     plt.close(fig)
 
+    # Indywidualna wizualizacja uwagi dla każdej klatki
     for t in range(1, len(words)):
         if t > 50:
             break
@@ -71,15 +81,14 @@ def visualize_att_beta(
         ax_att.imshow(image)
         current_alpha = alphas[t, :]
         if smooth:
-            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
+            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=upscale_factor, sigma=8)
         else:
-            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+            alpha = skimage.transform.resize(current_alpha.numpy(), [alpha_height * upscale_factor, alpha_width * upscale_factor])
         ax_att.imshow(alpha, alpha=0.6, cmap='jet')
         ax_att.axis('off')
 
-        word = words[t]
-        # caption removed: ax_att.set_title(word, y=-0.2, fontsize=12)
-        filename = f"{t}_{word}.png"
+        sanitized_word = "".join(c for c in words[t] if c.isalnum() or c in (' ', '_')).rstrip()
+        filename = f"{t}_{sanitized_word}.png"
         fig_att.savefig(os.path.join(output_dir, filename), bbox_inches='tight', pad_inches=0)
         plt.close(fig_att)
 
@@ -92,18 +101,27 @@ def visualize_att(
     model_name: str,
     smooth: bool = True
 ) -> None:
+    # Otwórz obraz
     image = Image.open(image_path)
-    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
+    # Dopasowanie rozmiaru obrazu do wymiarów alphas
+    alpha_height, alpha_width = alphas[0].shape
+    upscale_factor = 24  # Czynnik skalowania
+    image = image.resize([alpha_width * upscale_factor, alpha_height * upscale_factor], Image.LANCZOS)
+
+    # Konwersja sekwencji na słowa
     words = [rev_word_map[ind] for ind in seq]
 
+    # Przygotowanie katalogów
     clean_model_name = model_name.replace('best_checkpoint_', '').replace('checkpoint_', '').replace('.pth.tar', '')
     basename = os.path.splitext(os.path.basename(image_path))[0]
     output_dir = os.path.join('test', clean_model_name, basename)
     os.makedirs(output_dir, exist_ok=True)
 
+    # Zapisz oryginalny obraz
     image.save(os.path.join(output_dir, 'original.png'))
 
+    # Wizualizacja dla każdej klatki
     for t in range(len(words)):
         if t > 50:
             break
@@ -113,18 +131,13 @@ def visualize_att(
 
         current_alpha = alphas[t, :]
         if smooth:
-            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=24, sigma=8)
+            alpha = skimage.transform.pyramid_expand(current_alpha.numpy(), upscale=upscale_factor, sigma=8)
         else:
-            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+            alpha = skimage.transform.resize(current_alpha.numpy(), [alpha_height * upscale_factor, alpha_width * upscale_factor])
 
-        if t == 0:
-            ax.imshow(alpha, alpha=0, cmap=cm.Greys_r)
-        else:
-            ax.imshow(alpha, alpha=0.8, cmap=cm.Greys_r)
-
+        ax.imshow(alpha, alpha=0.6, cmap='jet')
         ax.axis('off')
 
-        # caption removed: ax.set_title(words[t], y=-0.2, fontsize=12)
         sanitized_word = "".join(c for c in words[t] if c.isalnum() or c in (' ', '_')).rstrip()
         filename = f"{t}_{sanitized_word}.png"
 
