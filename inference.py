@@ -311,12 +311,11 @@ if __name__ == '__main__':
 
                 alphas = torch.FloatTensor(alphas)
                 # visualize caption and attention of best sequence
-                visualize_att_beta(
+                visualize_att(
                     image_path=img_path,
                     seq=seq,
                     rev_word_map=rev_word_map,
                     alphas=alphas,
-                    betas=None,
                     model_name=model_file,
                     smooth=ifsmooth
                 )
